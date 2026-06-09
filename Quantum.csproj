@@ -18,16 +18,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
-        <PackageReference Include="BepInEx.Core" Version="5.*" />
-        <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
+        <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all"/>
+        <PackageReference Include="BepInEx.Core" Version="5.*"/>
+        <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*"/>
         <PackageReference
                 Include="BepInEx.AssemblyPublicizer.MSBuild"
                 Version="0.4.2"
                 PrivateAssets="all"
         />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.4" IncludeAssets="compile" />
-        <PackageReference Include="Lib.Harmony" Version="2.4.2" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.4" IncludeAssets="compile"/>
+        <PackageReference Include="Lib.Harmony" Version="2.4.2"/>
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
@@ -377,10 +377,6 @@
         </Reference>
     </ItemGroup>
 
-    <ItemGroup>
-        <Folder Include="obj\" />
-    </ItemGroup>
-
     <PropertyGroup>
         <RequiredFilesToCopy>
             $(AssemblyName).dll;
@@ -391,9 +387,9 @@
     </PropertyGroup>
 
     <Target Name="CopyOutputDllsToPluginsFolder" AfterTargets="AfterBuild" Condition="'$(RequiredFilesToCopy)'!=''">
-        <MakeDir Directories="$(BepInExDir)/plugins/$(PluginDirName)" />
+        <MakeDir Directories="$(BepInExDir)/plugins/$(PluginDirName)"/>
         <CombinePath BasePath="$(OutDir)" Paths="$(RequiredFilesToCopy)">
-            <Output TaskParameter="CombinedPaths" ItemName="RequiredFilesToCopy_Combined" />
+            <Output TaskParameter="CombinedPaths" ItemName="RequiredFilesToCopy_Combined"/>
         </CombinePath>
         <Copy
                 SourceFiles="@(RequiredFilesToCopy_Combined)"
@@ -403,8 +399,8 @@
 
     <Target Name="CopyFoldersToPluginsFolder" AfterTargets="AfterBuild" Condition="'$(RequiredFoldersToCopy)'!=''">
         <ItemGroup>
-            <RequiredFolders Include="$(RequiredFoldersToCopy.Split(';'))" />
-            <FilesToCopy Include="%(RequiredFolders.Identity)/**/*" />
+            <RequiredFolders Include="$(RequiredFoldersToCopy.Split(';'))"/>
+            <FilesToCopy Include="%(RequiredFolders.Identity)/**/*"/>
         </ItemGroup>
         <Copy
                 SourceFiles="@(FilesToCopy)"
