@@ -1,11 +1,14 @@
-using HarmonyLib;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Text;
+using HarmonyLib;
 using UnityEngine;
 
 namespace Quantum.Patch;
 
 [HarmonyPatch(typeof(ConsoleScript))]
+[SuppressMessage("ReSharper", "InconsistentNaming")]
 public class ConsoleScriptPatch
 {
     private static string[] _candidates = [];
@@ -27,8 +30,6 @@ public class ConsoleScriptPatch
         return _candidates.Length == 0;
     }
 
-    // ── 命令历史上限 ─────────────────────────────────────────────
-
     [HarmonyPatch("AddCommandToLogAndClearInput")]
     [HarmonyPostfix]
     private static void PostAddCommandToLogAndClearInput(ConsoleScript __instance)
@@ -45,12 +46,13 @@ public class ConsoleScriptPatch
     {
         return _candidates.Length == 0;
     }
-    
+
     [HarmonyPatch(nameof(ConsoleScript.HandleDescriptionText))]
     [HarmonyPostfix]
     private static void PostHandleDescriptionText(ConsoleScript __instance)
     {
-        if (_candidates.Length == 0 || __instance.descriptionText == null)
+        if (_candidates.Length == 0
+            || __instance.descriptionText == null)
             return;
 
         var text = __instance.descriptionText.text;
@@ -89,12 +91,11 @@ public class ConsoleScriptPatch
             }
         }
 
-        var sb = new System.Text.StringBuilder();
+        var sb = new StringBuilder();
         sb.Append(header);
         sb.Append('\n');
 
         for (var i = windowStart; i < windowEnd; i++)
-        {
             if (i == _index)
             {
                 sb.Append("<b><color=yellow>");
@@ -106,7 +107,6 @@ public class ConsoleScriptPatch
                 sb.Append(_candidates[i]);
                 sb.Append('\n');
             }
-        }
 
         __instance.descriptionText.text = sb.ToString();
     }
@@ -121,7 +121,8 @@ public class ConsoleScriptPatch
         var text = __instance.input.text;
         var args = text.Split([' '], StringSplitOptions.None);
 
-        if (Input.GetKeyDown(KeyCode.KeypadEnter) && !string.IsNullOrEmpty(text))
+        if (Input.GetKeyDown(KeyCode.KeypadEnter)
+            && !string.IsNullOrEmpty(text))
         {
             __instance.ExecuteCommand(text);
             return;

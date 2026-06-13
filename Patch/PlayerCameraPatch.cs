@@ -40,13 +40,6 @@ public static class PlayerCameraPatch
         }
     }
 
-    private enum SortMode
-    {
-        Name,
-        Value,
-        Weight,
-    }
-
     [HarmonyPatch("OpenContainer")]
     [HarmonyPostfix]
     private static void OnContainerOpened(PlayerCamera __instance)
@@ -152,7 +145,7 @@ public static class PlayerCameraPatch
                 : items.OrderByDescending(i => i.favourited)
                     .ThenByDescending(i => i.Stats.weight).ToList(),
 
-            _ => items,
+            _ => items
         };
     }
 
@@ -297,7 +290,7 @@ public static class PlayerCameraPatch
             highlightedColor = new Color(0f, 0f, 0f, 1f),
             pressedColor = new Color(0.7f, 0.7f, 0.7f, 1f),
             colorMultiplier = 1f,
-            fadeDuration = 0.1f,
+            fadeDuration = 0.1f
         };
         btn.navigation = new Navigation { mode = Navigation.Mode.None };
 
@@ -412,7 +405,7 @@ public static class PlayerCameraPatch
             SortMode.Name => ModLocale.GetFormat("ui.sort.mode.name"),
             SortMode.Value => ModLocale.GetFormat("ui.sort.mode.value"),
             SortMode.Weight => ModLocale.GetFormat("ui.sort.mode.weight"),
-            _ => "?",
+            _ => "?"
         };
     }
 
@@ -832,5 +825,12 @@ public static class PlayerCameraPatch
     private static void Alert(string text, bool important = false, float delay = 0f)
     {
         Log.Alert(text, Logger, important, delay);
+    }
+
+    private enum SortMode
+    {
+        Name,
+        Value,
+        Weight
     }
 }

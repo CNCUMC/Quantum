@@ -4,9 +4,12 @@
 )
 
 # 自动从命名空间生成显示名称（仅大驼峰多单词时加空格）
-if ($ModNamespace -cmatch '^[A-Z][a-z]+([A-Z][a-z]+)+$') {
+if ($ModNamespace -cmatch '^[A-Z][a-z]+([A-Z][a-z]+)+$')
+{
     $ModName = $ModNamespace -replace '(?<=[a-z])([A-Z])', ' $1'
-} else {
+}
+else
+{
     $ModName = $ModNamespace
 }
 
