@@ -2,7 +2,6 @@ using HarmonyLib;
 using System;
 using System.Linq;
 using UnityEngine;
-using Quantum;
 
 namespace Quantum.Patch;
 
@@ -16,8 +15,8 @@ public class ConsoleScriptPatch
     private static string _lastPartial = "";
     private static float _lastUpTime;
     private static float _lastDownTime;
-    /// <summary>DoReplace 之前的输入文本（用于 Ctrl+Z 撤销）</summary>
     private static string _previousText = "";
+    private static int MaxHistorySize => Plugin.MaxHistorySize.Value;
 
     private static int MaxVisible => Plugin.MaxVisibleCandidates.Value;
 
@@ -26,6 +25,18 @@ public class ConsoleScriptPatch
     private static bool BlockTryFinishCommandPart()
     {
         return _candidates.Length == 0;
+    }
+
+    // ── 命令历史上限 ─────────────────────────────────────────────
+
+    [HarmonyPatch("AddCommandToLogAndClearInput")]
+    [HarmonyPostfix]
+    private static void PostAddCommandToLogAndClearInput(ConsoleScript __instance)
+    {
+        // 限制历史记录数量，防止无限增长
+        if (__instance.executedCommands.Count <= MaxHistorySize)
+            return;
+        __instance.executedCommands.RemoveRange(0, __instance.executedCommands.Count - MaxHistorySize);
     }
 
     [HarmonyPatch(nameof(ConsoleScript.GoToCommandHistory))]

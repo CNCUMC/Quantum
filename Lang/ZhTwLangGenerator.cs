@@ -46,6 +46,8 @@ public class ZhTwLangGenerator : ModLangGenBase
         Add("config.ui.sort_key.description", "按下整理容器物品");
         Add("config.ui.max_visible_candidates.name", "最大候選數");
         Add("config.ui.max_visible_candidates.description", "控制台參數候選列表最多顯示的行數");
+        Add("config.ui.max_history_size.name", "歷史記錄上限");
+        Add("config.ui.max_history_size.description", "控制台歷史命令最多保留的條數");
 
         // UI - Sort
         Add("ui.sort.mode.name", "名稱");

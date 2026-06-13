@@ -46,6 +46,8 @@ public class EnLangGenerator : ModLangGenBase
         Add("config.ui.sort_key.description", "Press to sort container items");
         Add("config.ui.max_visible_candidates.name", "Max Candidates");
         Add("config.ui.max_visible_candidates.description", "Maximum number of candidate lines displayed in console autocomplete");
+        Add("config.ui.max_history_size.name", "History Size");
+        Add("config.ui.max_history_size.description", "Maximum number of executed commands kept in console history");
 
         // UI - Sort
         Add("ui.sort.mode.name", "Name");

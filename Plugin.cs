@@ -35,6 +35,7 @@ public class Plugin : BaseUnityPlugin
     // UI
     public static ConfigEntry<KeyCode> SortKey;
     public static ConfigEntry<int> MaxVisibleCandidates;
+    public static ConfigEntry<int> MaxHistorySize;
 
     public void Awake()
     {
@@ -64,6 +65,7 @@ public class Plugin : BaseUnityPlugin
         AmmunitionUi = RegisterConfigUi(Config, nameof(AmmunitionUi).ToSnakeCase(), true);
         SortKey = RegisterConfigUi(Config, nameof(SortKey).ToSnakeCase(), KeyCode.E);
         MaxVisibleCandidates = RegisterConfigUi(Config, nameof(MaxVisibleCandidates).ToSnakeCase(), 27);
+        MaxHistorySize = RegisterConfigUi(Config, nameof(MaxHistorySize).ToSnakeCase(), 100);
     }
 
     private static ConfigEntry<T> RegisterConfigInfo<T>(ConfigFile configFile, string key, T defaultValue)
