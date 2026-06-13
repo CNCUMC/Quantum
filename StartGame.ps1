@@ -1,10 +1,14 @@
 ﻿param(
-    [string]$GamePath, # 游戏路径
-    [string]$ModNamespace # 模组命名空间
+    [string]$GamePath,
+    [string]$ModNamespace
 )
 
-# 自动从命名空间生成显示名称（大驼峰 → 带空格的名称）
-$ModName = $ModNamespace -replace '(?<=[a-z])([A-Z])', ' $1'
+# 自动从命名空间生成显示名称（仅大驼峰多单词时加空格）
+if ($ModNamespace -cmatch '^[A-Z][a-z]+([A-Z][a-z]+)+$') {
+    $ModName = $ModNamespace -replace '(?<=[a-z])([A-Z])', ' $1'
+} else {
+    $ModName = $ModNamespace
+}
 
 # 设置编码为 UTF-8
 $OutputEncoding = [System.Text.Encoding]::UTF8

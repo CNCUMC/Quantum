@@ -22,8 +22,6 @@ public class ZhCnLangGenerator : ModLangGenBase
         Add("key.ctrl_to_expand.down", "松开Ctrl折叠更多信息");
 
         // Config - Info
-        Add("config.info.ammunition_ui.name", "弹药UI");
-        Add("config.info.ammunition_ui.description", "在原枪械菜单的上方显示枪械剩余弹量和最大弹量");
         Add("config.info.ctrl_to_expand.name", "Ctrl 更多信息");
         Add("config.info.ctrl_to_expand.description", "按下Ctrl才显示更多信息");
 
@@ -40,5 +38,25 @@ public class ZhCnLangGenerator : ModLangGenBase
         Add("config.item.gun.no_casing.description", "开启后，枪械将不会弹出弹壳");
         Add("config.item.gun.recoilless.name", "无后座力");
         Add("config.item.gun.recoilless.description", "开启后，枪械将没有后坐力");
+        
+        // Config - UI
+        Add("config.ui.ammunition_ui.name", "弹药UI");
+        Add("config.ui.ammunition_ui.description", "在原枪械菜单的上方显示枪械剩余弹量和最大弹量");
+        Add("config.ui.sort_key.name", "整理按键");
+        Add("config.ui.sort_key.description", "按下整理容器物品");
+
+        // UI - Sort
+        Add("ui.sort.mode.name", "名称");
+        Add("ui.sort.mode.value", "价值");
+        Add("ui.sort.mode.weight", "重量");
+        Add("ui.sort.ascending", "↑ 升序");
+        Add("ui.sort.descending", "↓ 降序");
+        Add("ui.sort.mode_tip", "排序方式");
+        Add("ui.sort.mode_desc", "按{0}排序");
+        Add("ui.sort.order_tip", "排序顺序");
+        Add("ui.sort.completed", "已整理: {0} {1}");
+        Add("ui.sort.no_change", "无需整理");
+        Add("ui.sort.execute_tip", "整理");
+        Add("ui.sort.execute_desc", "整理容器物品");
     }
 }

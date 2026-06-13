@@ -21,11 +21,6 @@ public class ModLocale : ModLocaleBase
         return _instance?.GetStringFormatted(key, args) ?? $"[{key}]";
     }
 
-    public static string Get(string key)
-    {
-        return _instance?.GetString(key) ?? $"[{key}]";
-    }
-
     public static bool HasLocaleKey(string key)
     {
         return _instance != null

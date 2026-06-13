@@ -22,15 +22,12 @@ public class EnLangGenerator : ModLangGenBase
         Add("key.ctrl_to_expand.down", "Release Ctrl to Fold More Info");
 
         // Config - Info
-        Add("config.info.ammunition_ui.name", "Ammunition UI");
-        Add("config.info.ammunition_ui.description", "Display your ammunition in real time!");
         Add("config.info.ctrl_to_expand.name", "Ctrl for more information");
         Add("config.info.ctrl_to_expand.description", "Press Ctrl to show more information");
 
         // Config - Item - Gun
         Add("config.item.gun.auto_rack.name", "Auto Rack");
-        Add("config.item.gun.auto_rack.description",
-            "If true, guns will automatically rack and stay racked when ammo is available");
+        Add("config.item.gun.auto_rack.description", "If true, guns will automatically rack and stay racked when ammo is available");
         Add("config.item.gun.indestructible_gun.name", "Indestructible Gun");
         Add("config.item.gun.indestructible_gun.description", "If true, guns will not be destroyed");
         Add("config.item.gun.infinite_ammunition.name", "Infinite Ammunition");
@@ -41,5 +38,25 @@ public class EnLangGenerator : ModLangGenBase
         Add("config.item.gun.no_casing.description", "If true, guns will not eject the cartridge casing");
         Add("config.item.gun.recoilless.name", "Recoilless");
         Add("config.item.gun.recoilless.description", "If true, guns will not have recoil");
+        
+        // Config - UI
+        Add("config.ui.ammunition_ui.name", "Ammunition UI");
+        Add("config.ui.ammunition_ui.description", "Display your ammunition in real time!");
+        Add("config.ui.sort_key.name", "Sort Key");
+        Add("config.ui.sort_key.description", "Press to sort container items");
+
+        // UI - Sort
+        Add("ui.sort.mode.name", "Name");
+        Add("ui.sort.mode.value", "Value");
+        Add("ui.sort.mode.weight", "Weight");
+        Add("ui.sort.ascending", "↑ Ascending");
+        Add("ui.sort.descending", "↓ Descending");
+        Add("ui.sort.mode_tip", "Sort Mode");
+        Add("ui.sort.mode_desc", "Sort by {0}");
+        Add("ui.sort.order_tip", "Sort Order");
+        Add("ui.sort.completed", "Sorted: {0} {1}");
+        Add("ui.sort.no_change", "Already sorted");
+        Add("ui.sort.execute_tip", "Sort");
+        Add("ui.sort.execute_desc", "Sort container items");
     }
 }

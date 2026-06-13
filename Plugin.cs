@@ -6,6 +6,7 @@ using BepInEx.Logging;
 using HarmonyLib;
 using MossLib.Tool;
 using Quantum.Lang;
+using UnityEngine;
 
 namespace Quantum;
 
@@ -16,6 +17,7 @@ public class Plugin : BaseUnityPlugin
     public const string Name = "Quantum";
     public const string Version = "1.0.0";
     internal new static ManualLogSource Logger;
+    private readonly Harmony _harmony = new(Guid);
     private static readonly Dictionary<string, ConfigEntryBase> Registry = new();
 
     // Info
@@ -29,8 +31,9 @@ public class Plugin : BaseUnityPlugin
     public static ConfigEntry<bool> NeverJam;
     public static ConfigEntry<bool> NoCasing;
     public static ConfigEntry<bool> Recoilless;
-    private readonly Harmony _harmony = new(Guid);
-
+    
+    // UI
+    public static ConfigEntry<KeyCode> SortKey;
 
     public void Awake()
     {
@@ -46,9 +49,8 @@ public class Plugin : BaseUnityPlugin
         _harmony.PatchAll();
 
         // Info
-        AmmunitionUi = RegisterConfigInfo(Config, nameof(AmmunitionUi).ToSnakeCase(), true);
         CtrlToExpand = RegisterConfigInfo(Config, nameof(CtrlToExpand).ToSnakeCase(), true);
-
+        
         // Item - Gun
         AutoRack = RegisterConfigItemGun(Config, nameof(AutoRack).ToSnakeCase(), false);
         IndestructibleGun = RegisterConfigItemGun(Config, nameof(IndestructibleGun).ToSnakeCase(), false);
@@ -56,6 +58,11 @@ public class Plugin : BaseUnityPlugin
         NeverJam = RegisterConfigItemGun(Config, nameof(NeverJam).ToSnakeCase(), false);
         NoCasing = RegisterConfigItemGun(Config, nameof(NoCasing).ToSnakeCase(), false);
         Recoilless = RegisterConfigItemGun(Config, nameof(Recoilless).ToSnakeCase(), false);
+        
+        // UI
+        AmmunitionUi = RegisterConfigUi(Config, nameof(AmmunitionUi).ToSnakeCase(), true);
+        SortKey = RegisterConfigUi(Config, nameof(SortKey).ToSnakeCase(), KeyCode.E);
+
     }
 
     private static ConfigEntry<T> RegisterConfigInfo<T>(ConfigFile configFile, string key, T defaultValue)
@@ -72,6 +79,11 @@ public class Plugin : BaseUnityPlugin
     private static ConfigEntry<T> RegisterConfigItemGun<T>(ConfigFile configFile, string key, T defaultValue)
     {
         return RegisterConfigItem(configFile, "Gun", key, defaultValue);
+    }
+    
+    private static ConfigEntry<T> RegisterConfigUi<T>(ConfigFile configFile, string key, T defaultValue)
+    {
+        return RegisterConfig(configFile, "UI", key, defaultValue);
     }
 
     private static string SectionToLocalePrefix(string section)
