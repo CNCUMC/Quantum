@@ -25,15 +25,15 @@ public class ZhTwLangGenerator : ModLangGenBase
         Add("config.info.ammunition_ui.name", "彈藥UI");
         Add("config.info.ammunition_ui.description", "在原槍械菜单的上方顯示槍械剩余弹量和最大弹量");
         Add("config.info.ctrl_to_expand.name", "Ctrl 更多信息");
-        Add("config.ctrl_to_expand.description", "按下Ctrl才顯示更多資訊");
+        Add("config.info.ctrl_to_expand.description", "按下Ctrl才顯示更多資訊");
         
         // Config - Item - Gun
-        Add("config.item.gun.auto_rock.name", "自動上膛");
-        Add("config.item.gun.auto_rock.description", "開啟後，當有彈藥時，槍械將自動拉栓並保持拉栓狀態");
+        Add("config.item.gun.auto_rack.name", "自動上膛");
+        Add("config.item.gun.auto_rack.description", "開啟後，當有彈藥時，槍械將自動拉栓並保持拉栓狀態");
         Add("config.item.gun.indestructible_gun.name", "不毁槍械");
         Add("config.item.gun.indestructible_gun.description", "開啟後，槍械將不會損壞");
         Add("config.item.gun.infinite_ammunition.name", "無限彈藥");
-        Add("config.item.gun.infinite_ammunition.description", "∞ 無限子彈 ∞");
+        Add("config.item.gun.infinite_ammunition.description", "∞ 無限彈藥 ∞");
         Add("config.item.gun.never_jam.name", "永不卡殼");
         Add("config.item.gun.never_jam.description", "開啟後，槍械將不會卡殼");
         Add("config.item.gun.recoilless.name", "無後座力");

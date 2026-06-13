@@ -15,22 +15,21 @@ public class Plugin : BaseUnityPlugin
     public const string Guid = "org.explosivehydra.quantum";
     public const string Name = "Quantum";
     public const string Version = "1.0.0";
+    private readonly Harmony _harmony = new(Guid);
     internal new static ManualLogSource Logger;
-
     private static readonly Dictionary<string, ConfigEntryBase> Registry = new();
 
     // Info
     public static ConfigEntry<bool> CtrlToExpand;
     public static ConfigEntry<bool> AmmunitionUi;
-    
+
     // Item - Gun
     public static ConfigEntry<bool> AutoRack;
     public static ConfigEntry<bool> IndestructibleGun;
     public static ConfigEntry<bool> InfiniteAmmunition;
     public static ConfigEntry<bool> NeverJam;
     public static ConfigEntry<bool> Recoilless;
-    
-    private readonly Harmony _harmony = new(Guid);
+
 
     public void Awake()
     {
@@ -42,8 +41,8 @@ public class Plugin : BaseUnityPlugin
         LocaleGenerator.Register(new ZhTwLangGenerator(), Logger);
         LocaleGenerator.GenerateAll();
 
-        _harmony.PatchAll();
         ModLocale.Initialize(Logger);
+        _harmony.PatchAll();
 
         // Info
         AmmunitionUi = RegisterConfigInfo(Config, nameof(AmmunitionUi).ToSnakeCase(), true);

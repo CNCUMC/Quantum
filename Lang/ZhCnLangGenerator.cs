@@ -28,8 +28,8 @@ public class ZhCnLangGenerator : ModLangGenBase
         Add("config.info.ctrl_to_expand.description", "按下Ctrl才显示更多信息");
         
         // Config - Item - Gun
-        Add("config.item.gun.auto_rock.name", "自动上膛");
-        Add("config.item.gun.auto_rock.description", "开启后，当有弹药时，枪械将自动拉栓并保持拉栓状态");
+        Add("config.item.gun.auto_rack.name", "自动上膛");
+        Add("config.item.gun.auto_rack.description", "开启后，当有弹药时，枪械将自动拉栓并保持拉栓状态");
         Add("config.item.gun.indestructible_gun.name", "不毁枪械");
         Add("config.item.gun.indestructible_gun.description", "开启后，枪械将不会损坏");
         Add("config.item.gun.infinite_ammunition.name", "无限弹药");
