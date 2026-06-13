@@ -1,8 +1,10 @@
 ﻿param(
     [string]$GamePath, # 游戏路径
-    [string]$ModNamespace, # 模组命名空间
-    [string]$ModName
+    [string]$ModNamespace # 模组命名空间
 )
+
+# 自动从命名空间生成显示名称（大驼峰 → 带空格的名称）
+$ModName = $ModNamespace -replace '(?<=[a-z])([A-Z])', ' $1'
 
 # 设置编码为 UTF-8
 $OutputEncoding = [System.Text.Encoding]::UTF8
@@ -28,7 +30,7 @@ $ModDll = [System.IO.Path]::Combine($PSScriptRoot, "bin/Debug/net472", "$ModName
 $targetModFolder = $ModName
 
 # 文档文件列表
-$docFiles = @("README.md", "README_ZH.md", "LICENSE.md", "Covor.png")
+$docFiles = @("README.md", "README_ZH.md", "LICENSE.md", "Cover.png")
 
 # 日志目标路径
 $logDestination = [System.IO.Path]::Combine($PSScriptRoot, "Logs", "$timestamp.log") # 日志目标路径
