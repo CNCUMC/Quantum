@@ -46,6 +46,8 @@ public class ZhCnLangGenerator : ModLangGenBase
         // Config - UI
         Add("config.ui.ammunition_ui.name", "弹药UI");
         Add("config.ui.ammunition_ui.description", "在原枪械菜单的上方显示枪械剩余弹量和最大弹量");
+        Add("config.ui.bilingual_name.name", "双语名称");
+        Add("config.ui.bilingual_name.description", "设定后会在物品原名旁附加指定语言的翻译（如 EN / zh-CN / zh-TW），留空则只显示原名");
         Add("config.ui.sort_key.name", "整理按键");
         Add("config.ui.sort_key.description", "按下整理容器物品");
         Add("config.ui.max_visible_candidates.name", "最大候选数");

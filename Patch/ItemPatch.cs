@@ -1,6 +1,10 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using HarmonyLib;
+using MossLib.Tool;
+using Newtonsoft.Json.Linq;
 
 namespace Quantum.Patch;
 
@@ -8,6 +12,11 @@ namespace Quantum.Patch;
 public static class ItemPatch
 {
     private const string LocaleKeyPre = "item.";
+
+    /// <summary>
+    /// 缓存已加载的语言文件 main 字典，key = 语言代码（如 "EN", "zh-CN"）
+    /// </summary>
+    private static readonly Dictionary<string, Dictionary<string, string>> LangCache = new();
 
     [HarmonyPatch("SetupItems")]
     [HarmonyPostfix]
@@ -24,19 +33,32 @@ public static class ItemPatch
 
         foreach (var item in query)
         {
-            var extra = BuildExtraInfo(item.itemId, item.itemInfo);
+            var extra = BuildInfo(item.itemId, item.itemInfo);
             if (!string.IsNullOrEmpty(extra))
                 item.itemInfo.description = AppendIfMissing(
                     item.itemInfo.description ?? "", extra);
         }
     }
 
-    private static string BuildExtraInfo(string id, ItemInfo info)
+    private static string BuildInfo(string id, ItemInfo info)
     {
         if (info == null)
             return null;
 
+        // 双语名称：在物品原名后附加指定语言的翻译
+        var bilingualCode = Plugin.BilingualName.Value?.Trim();
+        if (!string.IsNullOrEmpty(bilingualCode)
+            && !string.Equals(bilingualCode, global::Locale.currentLangName, StringComparison.OrdinalIgnoreCase))
+        {
+            var secondName = GetItemNameInLang(id, bilingualCode);
+            if (!string.IsNullOrEmpty(secondName) && !info.fullName.Contains(secondName))
+            {
+                info.fullName += RichText.Italic($" ({secondName})");
+            }
+        }
+
         var result = "";
+        result += $"ID: {id}";
 
         if (!ModLocale.HasLocaleKey(LocaleKeyPre + id))
             return string.IsNullOrEmpty(result.Trim())
@@ -48,6 +70,36 @@ public static class ItemPatch
         return string.IsNullOrEmpty(result.Trim())
             ? null
             : result.TrimEnd('\n');
+    }
+
+    private static string GetItemNameInLang(string itemId, string langCode)
+    {
+        // 尝试从缓存获取
+        if (LangCache.TryGetValue(langCode, out var mainDict))
+            return mainDict?.TryGetValue(itemId, out var name) == true ? name : null;
+
+        // 加载语言文件
+        var path = $"{UnityEngine.Application.dataPath}/Lang/{langCode}.json";
+        if (!File.Exists(path))
+        {
+            LangCache[langCode] = null;
+            return null;
+        }
+
+        try
+        {
+            var json = File.ReadAllText(path);
+            var obj = JObject.Parse(json);
+            mainDict = obj["main"]?.ToObject<Dictionary<string, string>>();
+            LangCache[langCode] = mainDict; // 可能为 null（JSON 中无 main 字段时）
+        }
+        catch
+        {
+            LangCache[langCode] = null;
+            return null;
+        }
+
+        return mainDict?.TryGetValue(itemId, out var result) == true ? result : null;
     }
 
     private static string AppendIfMissing(string current, string addition)

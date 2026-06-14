@@ -46,6 +46,8 @@ public class EnLangGenerator : ModLangGenBase
         // Config - UI
         Add("config.ui.ammunition_ui.name", "Ammunition UI");
         Add("config.ui.ammunition_ui.description", "Display your ammunition in real time!");
+        Add("config.ui.bilingual_name.name", "Bilingual Name");
+        Add("config.ui.bilingual_name.description", "Appends a translation in the specified language (e.g. EN / zh-CN / zh-TW) to item names; leave empty for original only");
         Add("config.ui.sort_key.name", "Sort Key");
         Add("config.ui.sort_key.description", "Press to sort container items");
         Add("config.ui.max_visible_candidates.name", "Max Candidates");

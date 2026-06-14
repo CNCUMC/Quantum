@@ -21,7 +21,6 @@ public class Plugin : BaseUnityPlugin
 
     // Info
     public static ConfigEntry<bool> CtrlToExpand;
-    public static ConfigEntry<bool> AmmunitionUi;
 
     // Item - Gun
     public static ConfigEntry<bool> AutoRack;
@@ -35,9 +34,12 @@ public class Plugin : BaseUnityPlugin
     public static ConfigEntry<bool> NoObserver;
 
     // UI
+    public static ConfigEntry<bool> AmmunitionUi;
+    public static ConfigEntry<string> BilingualName;
     public static ConfigEntry<KeyCode> SortKey;
     public static ConfigEntry<int> MaxVisibleCandidates;
     public static ConfigEntry<int> MaxHistorySize;
+    
     private readonly Harmony _harmony = new(Guid);
 
     public void Awake()
@@ -69,6 +71,7 @@ public class Plugin : BaseUnityPlugin
 
         // UI
         AmmunitionUi = RegisterConfigUi(Config, nameof(AmmunitionUi).ToSnakeCase(), true);
+        BilingualName = RegisterConfigUi(Config, nameof(BilingualName).ToSnakeCase(), "");
         SortKey = RegisterConfigUi(Config, nameof(SortKey).ToSnakeCase(), KeyCode.E);
         MaxVisibleCandidates = RegisterConfigUi(Config, nameof(MaxVisibleCandidates).ToSnakeCase(), 27);
         MaxHistorySize = RegisterConfigUi(Config, nameof(MaxHistorySize).ToSnakeCase(), 100);
