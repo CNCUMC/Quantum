@@ -69,9 +69,12 @@ public class EnLangGenerator : ModLangGenBase
         Add("ui.sort.execute_tip", "Sort");
         Add("ui.sort.execute_desc", "Sort container items");
 
-        // Pinyin Search
-        Add("pinyin.library.not_found", "TinyPinyin library not loaded — pinyin search disabled");
-        Add("pinyin.api_not_found", "TinyPinyin API methods not found — pinyin search disabled");
-        Add("pinyin.init_failed", "TinyPinyin init failed: {0} — pinyin search disabled");
+        // Log - PlayerCameraPatch - Pin Yin
+        Add("log.player_camera_patch.pinyin.library.not_found", "TinyPinyin library not loaded — pinyin search disabled");
+        Add("log.player_camera_patch.pinyin.api_not_found", "TinyPinyin API methods not found — pinyin search disabled");
+        Add("log.player_camera_patch.pinyin.init_failed", "TinyPinyin init failed: {0} — pinyin search disabled");
+
+        // Log - ItemPatch
+        Add("log.item_patch.durability_exhaustion_alert", "{0} durability dropped below {1}% (currently {2}%)");
     }
 }

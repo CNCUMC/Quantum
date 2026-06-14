@@ -69,9 +69,12 @@ public class ZhTwLangGenerator : ModLangGenBase
         Add("ui.sort.execute_tip", "整理");
         Add("ui.sort.execute_desc", "整理容器物品");
 
-        // Pinyin Search
-        Add("pinyin.library.not_found", "TinyPinyin 庫未載入 — 拼音搜尋已停用");
-        Add("pinyin.api_not_found", "TinyPinyin API 方法未找到 — 拼音搜尋已停用");
-        Add("pinyin.init_failed", "TinyPinyin 初始化失敗: {0} — 拼音搜尋已停用");
+        // Log - PlayerCameraPatch - Pin Yin
+        Add("log.player_camera_patch.pinyin.library.not_found", "TinyPinyin 庫未載入 — 拼音搜尋已停用");
+        Add("log.player_camera_patch.pinyin.api_not_found", "TinyPinyin API 方法未找到 — 拼音搜尋已停用");
+        Add("log.player_camera_patch.pinyin.init_failed", "TinyPinyin 初始化失敗: {0} — 拼音搜尋已停用");
+
+        // Log - ItemPatch
+        Add("log.item_patch.durability_exhaustion_alert", "{0} 的耐久度已低於 {1}%（當前 {2}%）");
     }
 }

@@ -19,6 +19,7 @@ namespace Quantum.Patch;
 public static class PlayerCameraPatch
 {
     private static readonly ManualLogSource Logger = Plugin.Logger;
+    private const string LocaleKeyPre = "log.player_camera_patch.";
     private static readonly Dictionary<string, List<Recipe>> ProductToRecipes = new();
 
     private static readonly Dictionary<string, string> PinyinCache = new();
@@ -1055,7 +1056,7 @@ public static class PlayerCameraPatch
 
     private static void Warning(string text, params object[] args)
     {
-        Log.Warning(Locale(text, args), Logger);
+        Log.Warning(Locale(LocaleKeyPre + text, args), Logger);
     }
 
     private enum SortMode

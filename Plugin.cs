@@ -21,6 +21,7 @@ public class Plugin : BaseUnityPlugin
 
     // Info
     public static ConfigEntry<bool> CtrlToExpand;
+    public static ConfigEntry<float> FavouritedItemDurabilityExhaustionAlert;
 
     // Item - Gun
     public static ConfigEntry<bool> AutoRack;
@@ -57,6 +58,7 @@ public class Plugin : BaseUnityPlugin
 
         // Info
         CtrlToExpand = RegisterConfigInfo(Config, nameof(CtrlToExpand).ToSnakeCase(), true);
+        FavouritedItemDurabilityExhaustionAlert = RegisterConfigInfo(Config, nameof(FavouritedItemDurabilityExhaustionAlert).ToSnakeCase(), 0.3f);
 
         // Item - Gun
         AutoRack = RegisterConfigItemGun(Config, nameof(AutoRack).ToSnakeCase(), false);
