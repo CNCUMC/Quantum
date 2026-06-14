@@ -228,22 +228,38 @@ public static class PlayerCameraPatch
 
     [HarmonyPatch("OpenContainer")]
     [HarmonyPostfix]
-    private static void OnContainerOpened(PlayerCamera __instance)
+    private static void ContainerOpenedPostfix(PlayerCamera __instance)
     {
         CreateSortButtons(__instance);
     }
 
     [HarmonyPatch("CloseContainer")]
     [HarmonyPostfix]
-    private static void OnContainerClosed()
+    private static void ContainerClosedPostfix()
     {
         DestroySortButtons();
     }
 
     [HarmonyPatch("HandleInput")]
     [HarmonyPostfix]
-    private static void OnHandleInputPostfix(PlayerCamera __instance)
+    private static void HandleInputPostfix(PlayerCamera __instance)
     {
+        var camera = PlayerCamera.main;
+        if (camera.craftingPanel.activeSelf
+            && (Input.GetKeyDown(KeyCode.Tab)
+                || Input.GetKeyDown(KeyCode.Escape)))
+            camera.craftingPanel.SetActive(false);
+        
+        if (camera.woundView.activeSelf
+            && (Input.GetKeyDown(KeyCode.Tab)
+                || Input.GetKeyDown(KeyCode.Escape)))
+            __instance.ToggleWoundView();
+        
+        if (camera.tradeMenu.activeSelf
+            && (Input.GetKeyDown(KeyCode.Tab)
+                || Input.GetKeyDown(KeyCode.Escape)))
+            __instance.ToggleTradeMenu();
+        
         if (!Input.GetKeyDown(Plugin.SortKey.Value))
             return;
         if (!CanSort(__instance))
