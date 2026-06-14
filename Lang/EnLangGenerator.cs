@@ -24,6 +24,8 @@ public class EnLangGenerator : ModLangGenBase
         // Config - Info
         Add("config.info.ctrl_to_expand.name", "Ctrl for more information");
         Add("config.info.ctrl_to_expand.description", "Press Ctrl to show more information");
+        Add("config.info.favourited_item_durability_exhaustion_alert.name", "Favourite Durability Alert Threshold");
+        Add("config.info.favourited_item_durability_exhaustion_alert.description", "Alert when favourited item durability falls below this ratio (0 = disabled)");
 
         // Config - Item - Gun
         Add("config.item.gun.auto_rack.name", "Auto Rack");

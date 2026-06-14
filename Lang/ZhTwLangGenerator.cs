@@ -22,8 +22,10 @@ public class ZhTwLangGenerator : ModLangGenBase
         Add("key.ctrl_to_expand.down", "松開Ctrl摺疊更多資訊");
 
         // Config - Info
-        Add("config.info.ctrl_to_expand.name", "Ctrl 更多信息");
+        Add("config.info.ctrl_to_expand.name", "Ctrl 更多資訊");
         Add("config.info.ctrl_to_expand.description", "按下Ctrl才顯示更多資訊");
+        Add("config.info.favourited_item_durability_exhaustion_alert.name", "收藏品耐久警報閾值");
+        Add("config.info.favourited_item_durability_exhaustion_alert.description", "當收藏的物品耐久度低於此比例時發出警報（0 = 關閉）");
 
         // Config - Item - Gun
         Add("config.item.gun.auto_rack.name", "自動上膛");

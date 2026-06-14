@@ -24,6 +24,8 @@ public class ZhCnLangGenerator : ModLangGenBase
         // Config - Info
         Add("config.info.ctrl_to_expand.name", "Ctrl 更多信息");
         Add("config.info.ctrl_to_expand.description", "按下Ctrl才显示更多信息");
+        Add("config.info.favourited_item_durability_exhaustion_alert.name", "收藏品耐久警报阈值");
+        Add("config.info.favourited_item_durability_exhaustion_alert.description", "当收藏的物品耐久度低于此比例时发出警报（0 = 关闭）");
 
         // Config - Item - Gun
         Add("config.item.gun.auto_rack.name", "自动上膛");
