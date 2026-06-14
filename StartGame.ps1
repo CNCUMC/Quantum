@@ -102,6 +102,9 @@ Write-ColoredMessage "Mod namespace: $ModNamespace" Yellow
 Write-ColoredMessage "Mod name: $ModName" Yellow
 Write-ColoredMessage "Target folder: $targetModFolder" Yellow
 
+# 需要额外复制的依赖 dll 列表
+$extraDlls = @("TinyPinyin.dll")
+
 # 复制dll文件到游戏目录 - 统一使用 ModName 文件夹
 try
 {
@@ -109,6 +112,22 @@ try
     New-Item -ItemType Directory -Path $pluginPath -Force
     Copy-Item $ModDll ([System.IO.Path]::Combine($pluginPath, "$ModNamespace.dll")) -Force
     Write-ColoredMessage "Copying Mod dll file to ""$pluginPath\$ModNamespace.dll""." Cyan
+
+    # 复制额外依赖 dll
+    foreach ($extraDll in $extraDlls)
+    {
+        $sourceDll = [System.IO.Path]::Combine($PSScriptRoot, "bin/Debug/net472", $extraDll)
+        $destDll = [System.IO.Path]::Combine($pluginPath, $extraDll)
+        if (Test-Path $sourceDll -PathType Leaf)
+        {
+            Copy-Item $sourceDll $destDll -Force
+            Write-ColoredMessage "Copying dependency ""$extraDll"" to ""$pluginPath""." Cyan
+        }
+        else
+        {
+            Write-Warning "Dependency ""$extraDll"" not found at ""$sourceDll"", skipping."
+        }
+    }
 }
 catch
 {

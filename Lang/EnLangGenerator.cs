@@ -64,5 +64,10 @@ public class EnLangGenerator : ModLangGenBase
         Add("ui.sort.no_change", "Already sorted");
         Add("ui.sort.execute_tip", "Sort");
         Add("ui.sort.execute_desc", "Sort container items");
+
+        // Pinyin Search
+        Add("pinyin.library.not_found", "TinyPinyin library not loaded — pinyin search disabled");
+        Add("pinyin.api_not_found", "TinyPinyin API methods not found — pinyin search disabled");
+        Add("pinyin.init_failed", "TinyPinyin init failed: {0} — pinyin search disabled");
     }
 }

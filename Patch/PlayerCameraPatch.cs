@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using BepInEx.Logging;
 using HarmonyLib;
@@ -13,11 +14,18 @@ using Object = UnityEngine.Object;
 namespace Quantum.Patch;
 
 [HarmonyPatch(typeof(PlayerCamera))]
+[SuppressMessage("ReSharper", "InconsistentNaming")]
 public static class PlayerCameraPatch
 {
-    private const string LocaleKeyPre = "hover.";
     private static readonly ManualLogSource Logger = Plugin.Logger;
     private static readonly Dictionary<string, List<Recipe>> ProductToRecipes = new();
+
+    private static readonly Dictionary<string, string> PinyinCache = new();
+    private static bool _pinyinInitialized;
+    private static bool _hasPinyinLibrary;
+    private static Func<string, string, string> _getPinyin;
+    private static Func<string, string, string> _getPinyinInitials;
+    private static string _pinyinFilterCache;
 
     private static TextMeshProUGUI _ammunitionText;
     private static GameObject _ammunitionUiObject;
@@ -38,6 +46,169 @@ public static class PlayerCameraPatch
                 => f.name.Contains("Retro Gaming SDF"));
             return field;
         }
+    }
+
+    private static void EnsurePinyinLibrary()
+    {
+        if (_pinyinInitialized)
+            return;
+        _pinyinInitialized = true;
+
+        try
+        {
+            var type = Type.GetType("TinyPinyin.PinyinHelper, TinyPinyin");
+            if (type == null)
+            {
+                Warning("pinyin.library.not_found");
+                return;
+            }
+
+            var getPinyin = type.GetMethod("GetPinyin", [typeof(string), typeof(string)]);
+            var getInitials = type.GetMethod("GetPinyinInitials", [typeof(string), typeof(string)]);
+
+            if (getPinyin == null || getInitials == null)
+            {
+                Warning("pinyin.api_not_found");
+                return;
+            }
+
+            _getPinyin = (str, sep) => (string)getPinyin.Invoke(null, [str, sep]);
+            _getPinyinInitials = (str, sep) => (string)getInitials.Invoke(null, [str, sep]);
+            _hasPinyinLibrary = true;
+        }
+        catch (Exception ex)
+        {
+            Warning("pinyin.init_failed", ex.Message);
+        }
+    }
+
+    [HarmonyPatch("RefreshRecipeList")]
+    [HarmonyPrefix]
+    private static void PreRefreshRecipeList(PlayerCamera __instance)
+    {
+        _pinyinFilterCache = null;
+
+        var filter = __instance.recipeFilter;
+        if (string.IsNullOrEmpty(filter))
+            return;
+
+        // 如果 filter 包含非 ASCII 字符（中文直接输入），走原始逻辑即可
+        var isAscii = filter.All(t => t <= 127);
+
+        if (!isAscii)
+            return;
+
+        // 纯 ASCII → 可能是拼音输入，绕过原始过滤
+        EnsurePinyinLibrary();
+        if (!_hasPinyinLibrary)
+            return;
+
+        _pinyinFilterCache = filter;
+        __instance.recipeFilter = "";
+    }
+
+    [HarmonyPatch("RefreshRecipeList")]
+    [HarmonyPostfix]
+    private static void PostRefreshRecipeList(PlayerCamera __instance)
+    {
+        var rawFilter = _pinyinFilterCache;
+        _pinyinFilterCache = null;
+        if (rawFilter == null)
+            return;
+
+        var cleanFilter = rawFilter.Replace(" ", "").ToUpperInvariant();
+
+        // recipeObjects 是 PlayerCamera 的私有字段，通过反射访问
+        var recipeObjectsField = AccessTools.Field(typeof(PlayerCamera), "recipeObjects");
+        var recipeObjects = (List<GameObject>)recipeObjectsField.GetValue(__instance);
+        if (recipeObjects == null || recipeObjects.Count == 0)
+            return;
+
+        // 先重排：将匹配项推到列表前面，不匹配项推到后面
+        // 再过滤：销毁不匹配项
+        var matched = new List<GameObject>(recipeObjects.Count);
+        var unmatched = new List<GameObject>(recipeObjects.Count);
+
+        foreach (var go in recipeObjects)
+        {
+            var displayName = go.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text;
+            if (IsPinyinMatch(displayName, cleanFilter))
+                matched.Add(go);
+            else
+                unmatched.Add(go);
+        }
+
+        // 重排：匹配项在前，不匹配项在后
+        recipeObjects.Clear();
+        recipeObjects.AddRange(matched);
+        recipeObjects.AddRange(unmatched);
+
+        // 过滤：销毁不匹配项
+        foreach (var go in unmatched)
+            Object.Destroy(go);
+    }
+
+    private static bool IsPinyinMatch(string displayName, string filter)
+    {
+        // 1. 原名匹配
+        if (displayName.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
+            return true;
+
+        // 2. 拼音匹配
+        EnsurePinyinLibrary();
+        if (!_hasPinyinLibrary)
+            return false;
+
+        if (!PinyinCache.TryGetValue(displayName, out var pinyin))
+        {
+            try
+            {
+                var full = _getPinyin(displayName, "");
+                var initials = _getPinyinInitials(displayName, "");
+                pinyin = full + "\n" + initials;
+            }
+            catch
+            {
+                pinyin = "";
+            }
+
+            PinyinCache[displayName] = pinyin;
+        }
+
+        if (string.IsNullOrEmpty(pinyin))
+            return false;
+
+        var parts = pinyin.Split('\n');
+
+        // 全拼匹配
+        if (parts[0].IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
+            return true;
+
+        // 首字母简码匹配
+        if (parts.Length > 1 && parts[1].IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
+            return true;
+
+        // 逐字符顺序匹配：用于 "bdai" → "BENGDAI" 这类模糊拼音
+        // 检查 filter 的每个字符是否按顺序出现在全拼中
+        if (SequentialMatch(parts[0], filter))
+            return true;
+
+        // 简码也尝试逐字符
+        return parts.Length > 1 && SequentialMatch(parts[1], filter);
+    }
+
+    private static bool SequentialMatch(string text, string pattern)
+    {
+        var ti = 0;
+        foreach (var t in pattern)
+        {
+            ti = text.IndexOf(t, ti);
+            if (ti < 0)
+                return false;
+            ti++;
+        }
+
+        return true;
     }
 
     [HarmonyPatch("OpenContainer")]
@@ -201,18 +372,18 @@ public static class PlayerCameraPatch
         AddOrderClickEvent(_orderButton, camera);
 
         AddTooltip(_sortButton,
-            ModLocale.GetFormat("ui.sort.mode_tip"),
-            ModLocale.GetFormat("ui.sort.mode_desc", GetSortModeLabel(_currentSortMode)));
+            Locale("ui.sort.mode_tip"),
+            Locale("ui.sort.mode_desc", GetSortModeLabel(_currentSortMode)));
 
         AddTooltip(_executeButton,
-            ModLocale.GetFormat("ui.sort.execute_tip"),
-            ModLocale.GetFormat("ui.sort.execute_desc"));
+            Locale("ui.sort.execute_tip"),
+            Locale("ui.sort.execute_desc"));
 
         AddTooltip(_orderButton,
-            ModLocale.GetFormat("ui.sort.order_tip"),
+            Locale("ui.sort.order_tip"),
             _currentSortAscending
-                ? ModLocale.GetFormat("ui.sort.ascending")
-                : ModLocale.GetFormat("ui.sort.descending"));
+                ? Locale("ui.sort.ascending")
+                : Locale("ui.sort.descending"));
     }
 
     private static void DestroySortButtons()
@@ -388,10 +559,10 @@ public static class PlayerCameraPatch
                     : "↓";
 
             AddTooltip(_orderButton,
-                ModLocale.GetFormat("ui.sort.order_tip"),
+                Locale("ui.sort.order_tip"),
                 _currentSortAscending
-                    ? ModLocale.GetFormat("ui.sort.ascending")
-                    : ModLocale.GetFormat("ui.sort.descending"));
+                    ? Locale("ui.sort.ascending")
+                    : Locale("ui.sort.descending"));
 
             camera.PlayUISound(PlayerCamera.UISoundType.Click);
         });
@@ -402,9 +573,9 @@ public static class PlayerCameraPatch
     {
         return mode switch
         {
-            SortMode.Name => ModLocale.GetFormat("ui.sort.mode.name"),
-            SortMode.Value => ModLocale.GetFormat("ui.sort.mode.value"),
-            SortMode.Weight => ModLocale.GetFormat("ui.sort.mode.weight"),
+            SortMode.Name => Locale("ui.sort.mode.name"),
+            SortMode.Value => Locale("ui.sort.mode.value"),
+            SortMode.Weight => Locale("ui.sort.mode.weight"),
             _ => "?"
         };
     }
@@ -421,35 +592,35 @@ public static class PlayerCameraPatch
         }
 
         AddTooltip(_sortButton,
-            ModLocale.GetFormat("ui.sort.mode_tip"),
-            ModLocale.GetFormat("ui.sort.mode_desc", GetSortModeLabel(_currentSortMode)));
+            Locale("ui.sort.mode_tip"),
+            Locale("ui.sort.mode_desc", GetSortModeLabel(_currentSortMode)));
     }
 
     private static void UpdateOrderButtonText()
     {
         AddTooltip(_orderButton,
-            ModLocale.GetFormat("ui.sort.order_tip"),
+            Locale("ui.sort.order_tip"),
             _currentSortAscending
-                ? ModLocale.GetFormat("ui.sort.ascending")
-                : ModLocale.GetFormat("ui.sort.descending"));
+                ? Locale("ui.sort.ascending")
+                : Locale("ui.sort.descending"));
     }
 
     private static void ShowSortNotification(bool noChange)
     {
         var modeLabel = _currentSortMode switch
         {
-            SortMode.Name => ModLocale.GetFormat("ui.sort.mode.name"),
-            SortMode.Value => ModLocale.GetFormat("ui.sort.mode.value"),
-            SortMode.Weight => ModLocale.GetFormat("ui.sort.mode.weight"),
+            SortMode.Name => Locale("ui.sort.mode.name"),
+            SortMode.Value => Locale("ui.sort.mode.value"),
+            SortMode.Weight => Locale("ui.sort.mode.weight"),
             _ => ""
         };
         var orderLabel = _currentSortAscending
-            ? ModLocale.GetFormat("ui.sort.ascending")
-            : ModLocale.GetFormat("ui.sort.descending");
+            ? Locale("ui.sort.ascending")
+            : Locale("ui.sort.descending");
 
         Alert(noChange
-            ? ModLocale.GetFormat("ui.sort.no_change")
-            : ModLocale.GetFormat("ui.sort.completed", modeLabel, orderLabel));
+            ? Locale("ui.sort.no_change")
+            : Locale("ui.sort.completed", modeLabel, orderLabel));
     }
 
     [HarmonyPatch("HandleGunMenu")]
@@ -591,7 +762,7 @@ public static class PlayerCameraPatch
 
         // Shift 按住时原版"按住Shift展开"消失，加上"松开Shift"替代
         var hint =
-            $"<color=#a2e8af><sprite index=2 tint=1><i>{ModLocale.GetFormat("key.shift_to_expand.down")}</i></color>\n";
+            $"<color=#a2e8af><sprite index=2 tint=1><i>{Locale("key.shift_to_expand.down")}</i></color>\n";
         extraInfo = hint + extraInfo;
 
         if (string.IsNullOrEmpty(description))
@@ -612,10 +783,10 @@ public static class PlayerCameraPatch
         var result = "";
 
         // 物品专属描述
-        if (ModLocale.HasLocaleKey(LocaleKeyPre + item.id))
+        if (ModLocale.HasLocaleKey($"hover.{item.id}"))
         {
             result += "\n";
-            result += Locale(item.id);
+            result += Locale($"hover.{item.id}");
             result += "\n\n";
         }
 
@@ -624,8 +795,8 @@ public static class PlayerCameraPatch
         var showRecipe = !needCtrl || ctrlHeld;
 
         var ctrlHint = ctrlHeld
-            ? ModLocale.GetFormat("key.ctrl_to_expand.down")
-            : ModLocale.GetFormat("key.ctrl_to_expand.up");
+            ? Locale("key.ctrl_to_expand.down")
+            : Locale("key.ctrl_to_expand.up");
         if (needCtrl) result += $"<color=#a2e8af><sprite index=2 tint=1><i>{ctrlHint}</i></color>\n";
 
         if (showRecipe && !string.IsNullOrEmpty(recipeInfo))
@@ -633,25 +804,25 @@ public static class PlayerCameraPatch
 
         // 技术标志（始终显示）
         result += info.usable
-            ? RichText.Green("✓ " + Locale("info.usable.true"))
-            : RichText.Red("X  " + Locale("info.usable.false"));
+            ? RichText.Green("✓ " + Locale("hover.info.usable.true"))
+            : RichText.Red("X  " + Locale("hover.info.usable.false"));
         result += "\n";
 
         result += info.usableOnLimb
-            ? RichText.Green("✓ " + Locale("info.usable_on_limb.true"))
-            : RichText.Red("X  " + Locale("info.usable_on_limb.false"));
+            ? RichText.Green("✓ " + Locale("hover.info.usable_on_limb.true"))
+            : RichText.Red("X  " + Locale("hover.info.usable_on_limb.false"));
         result += "\n";
 
         result += info.autoAttack
-            ? Locale("info.auto_attack") + "\n"
+            ? Locale("hover.info.auto_attack") + "\n"
             : null;
 
         result += info.usableWithLMB
-            ? Locale("info.usable_with_lrb") + "\n"
+            ? Locale("hover.info.usable_with_lrb") + "\n"
             : null;
 
         result += info.ignoreDepression
-            ? RichText.Color(Locale("info.ignore_depression"), "#FFFB91") + "\n"
+            ? RichText.Color(Locale("hover.info.ignore_depression"), "#FFFB91") + "\n"
             : null;
 
         return string.IsNullOrEmpty(result.Trim())
@@ -787,7 +958,7 @@ public static class PlayerCameraPatch
 
         return recipeBlocks.Count > 0
             ? RichText.White("\n" +
-                             Locale("info.recipe") +
+                             Locale("hover.info.recipe") +
                              "\n" +
                              string.Join("\n", recipeBlocks))
             : null;
@@ -819,12 +990,17 @@ public static class PlayerCameraPatch
 
     private static string Locale(string key, params object[] args)
     {
-        return ModLocale.GetFormat($"{LocaleKeyPre}{key}", args);
+        return ModLocale.GetFormat(key, args);
     }
 
     private static void Alert(string text, bool important = false, float delay = 0f)
     {
         Log.Alert(text, Logger, important, delay);
+    }
+
+    private static void Warning(string text, params object[] args)
+    {
+        Log.Warning(Locale(text, args), Logger);
     }
 
     private enum SortMode

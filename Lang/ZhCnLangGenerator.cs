@@ -62,5 +62,10 @@ public class ZhCnLangGenerator : ModLangGenBase
         Add("ui.sort.no_change", "无需整理");
         Add("ui.sort.execute_tip", "整理");
         Add("ui.sort.execute_desc", "整理容器物品");
+
+        // Pinyin Search
+        Add("pinyin.library.not_found", "TinyPinyin 库未加载 — 拼音搜索已禁用");
+        Add("pinyin.api_not_found", "TinyPinyin API 方法未找到 — 拼音搜索已禁用");
+        Add("pinyin.init_failed", "TinyPinyin 初始化失败: {0} — 拼音搜索已禁用");
     }
 }

@@ -28,6 +28,7 @@
         />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.4" IncludeAssets="compile"/>
         <PackageReference Include="Lib.Harmony" Version="2.4.2"/>
+        <PackageReference Include="TinyPinyin.NetFramework" Version="1.0.2.2"/>
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
@@ -380,6 +381,7 @@
     <PropertyGroup>
         <RequiredFilesToCopy>
             $(AssemblyName).dll;
+            TinyPinyin.dll;
         </RequiredFilesToCopy>
 
         <RequiredFoldersToCopy>
