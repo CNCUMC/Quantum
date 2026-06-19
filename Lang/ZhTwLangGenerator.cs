@@ -41,6 +41,10 @@ public class ZhTwLangGenerator : ModLangGenBase
         Add("config.item.gun.recoilless.name", "無後座力");
         Add("config.item.gun.recoilless.description", "開啟後，槍械將沒有後座力");
 
+        // Config - Mechanism
+        Add("config.mechanism.dont_shit.name", "不排泄");
+        Add("config.mechanism.dont_shit.description", "開啟後，昏迷時不再排泄");
+
         // Config - Misc
         Add("config.misc.no_observer.name", "無觀察者");
         Add("config.misc.no_observer.description", "開啟後，再無觀察者");

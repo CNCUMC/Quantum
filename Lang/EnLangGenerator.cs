@@ -43,6 +43,10 @@ public class EnLangGenerator : ModLangGenBase
         Add("config.item.gun.recoilless.name", "Recoilless");
         Add("config.item.gun.recoilless.description", "If true, guns will not have recoil");
 
+        // Config - Mechanism
+        Add("config.mechanism.dont_shit.name", "Don't Shit");
+        Add("config.mechanism.dont_shit.description", "If true, you won't shit yourself when unconscious");
+
         // Config - Misc
         Add("config.misc.no_observer.name", "No Observer");
         Add("config.misc.no_observer.description", "If true, the world will not have observers");

@@ -30,6 +30,9 @@ public class Plugin : BaseUnityPlugin
     public static ConfigEntry<bool> NeverJam;
     public static ConfigEntry<bool> NoCasing;
     public static ConfigEntry<bool> Recoilless;
+    
+    // Mechanism
+    public static ConfigEntry<bool> DontShit;
 
     // Misc
     public static ConfigEntry<bool> NoObserver;
@@ -58,8 +61,7 @@ public class Plugin : BaseUnityPlugin
 
         // Info
         CtrlToExpand = RegisterConfigInfo(Config, nameof(CtrlToExpand).ToSnakeCase(), true);
-        FavouritedItemDurabilityExhaustionAlert = RegisterConfigInfo(Config,
-            nameof(FavouritedItemDurabilityExhaustionAlert).ToSnakeCase(), 0.3f);
+        FavouritedItemDurabilityExhaustionAlert = RegisterConfigInfo(Config, nameof(FavouritedItemDurabilityExhaustionAlert).ToSnakeCase(), 0.3f);
 
         // Item - Gun
         AutoRack = RegisterConfigItemGun(Config, nameof(AutoRack).ToSnakeCase(), false);
@@ -69,6 +71,9 @@ public class Plugin : BaseUnityPlugin
         NoCasing = RegisterConfigItemGun(Config, nameof(NoCasing).ToSnakeCase(), false);
         Recoilless = RegisterConfigItemGun(Config, nameof(Recoilless).ToSnakeCase(), false);
 
+        // Mechanism
+        DontShit = RegisterConfigMechanism(Config, nameof(DontShit).ToSnakeCase(), true);
+        
         // Misc
         NoObserver = RegisterConfigMisc(Config, nameof(NoObserver).ToSnakeCase(), false);
 
@@ -94,6 +99,11 @@ public class Plugin : BaseUnityPlugin
     private static ConfigEntry<T> RegisterConfigItemGun<T>(ConfigFile configFile, string key, T defaultValue)
     {
         return RegisterConfigItem(configFile, "Gun", key, defaultValue);
+    }
+    
+    private static ConfigEntry<T> RegisterConfigMechanism<T>(ConfigFile configFile, string key, T defaultValue)
+    {
+        return RegisterConfig(configFile, "Mechanism", key, defaultValue);
     }
 
     private static ConfigEntry<T> RegisterConfigMisc<T>(ConfigFile configFile, string key, T defaultValue)
