@@ -15,7 +15,7 @@ public class Plugin : BaseUnityPlugin
 {
     public const string Guid = "org.explosivehydra.quantum";
     public const string Name = "Quantum";
-    public const string Version = "1.0.0";
+    public const string Version = "1.1.0";
     internal new static ManualLogSource Logger;
     private static readonly Dictionary<string, ConfigEntryBase> Registry = new();
 
@@ -40,7 +40,7 @@ public class Plugin : BaseUnityPlugin
     public static ConfigEntry<KeyCode> SortKey;
     public static ConfigEntry<int> MaxVisibleCandidates;
     public static ConfigEntry<int> MaxHistorySize;
-    
+
     private readonly Harmony _harmony = new(Guid);
 
     public void Awake()
@@ -58,7 +58,8 @@ public class Plugin : BaseUnityPlugin
 
         // Info
         CtrlToExpand = RegisterConfigInfo(Config, nameof(CtrlToExpand).ToSnakeCase(), true);
-        FavouritedItemDurabilityExhaustionAlert = RegisterConfigInfo(Config, nameof(FavouritedItemDurabilityExhaustionAlert).ToSnakeCase(), 0.3f);
+        FavouritedItemDurabilityExhaustionAlert = RegisterConfigInfo(Config,
+            nameof(FavouritedItemDurabilityExhaustionAlert).ToSnakeCase(), 0.3f);
 
         // Item - Gun
         AutoRack = RegisterConfigItemGun(Config, nameof(AutoRack).ToSnakeCase(), false);

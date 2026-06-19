@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 
-namespace Quantum.Patch;
+namespace Quantum.Misc;
 
 [HarmonyPatch(typeof(Observer))]
 public class ObserverPatch

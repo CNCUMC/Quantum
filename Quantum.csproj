@@ -378,6 +378,11 @@
         </Reference>
     </ItemGroup>
 
+    <ItemGroup>
+        <Folder Include="ItemChange\Gun\"/>
+        <Folder Include="Misc\"/>
+    </ItemGroup>
+
     <PropertyGroup>
         <RequiredFilesToCopy>
             $(AssemblyName).dll;

@@ -25,11 +25,13 @@ public class EnLangGenerator : ModLangGenBase
         Add("config.info.ctrl_to_expand.name", "Ctrl for more information");
         Add("config.info.ctrl_to_expand.description", "Press Ctrl to show more information");
         Add("config.info.favourited_item_durability_exhaustion_alert.name", "Favourite Durability Alert Threshold");
-        Add("config.info.favourited_item_durability_exhaustion_alert.description", "Alert when favourited item durability falls below this ratio (0 = disabled)");
+        Add("config.info.favourited_item_durability_exhaustion_alert.description",
+            "Alert when favourited item durability falls below this ratio (0 = disabled)");
 
         // Config - Item - Gun
         Add("config.item.gun.auto_rack.name", "Auto Rack");
-        Add("config.item.gun.auto_rack.description", "If true, guns will automatically rack and stay racked when ammo is available");
+        Add("config.item.gun.auto_rack.description",
+            "If true, guns will automatically rack and stay racked when ammo is available");
         Add("config.item.gun.indestructible_gun.name", "Indestructible Gun");
         Add("config.item.gun.indestructible_gun.description", "If true, guns will not be destroyed");
         Add("config.item.gun.infinite_ammunition.name", "Infinite Ammunition");
@@ -49,11 +51,13 @@ public class EnLangGenerator : ModLangGenBase
         Add("config.ui.ammunition_ui.name", "Ammunition UI");
         Add("config.ui.ammunition_ui.description", "Display your ammunition in real time!");
         Add("config.ui.bilingual_name.name", "Bilingual Name");
-        Add("config.ui.bilingual_name.description", "Appends a translation in the specified language (e.g. EN / zh-CN / zh-TW) to item names; leave empty for original only");
+        Add("config.ui.bilingual_name.description",
+            "Appends a translation in the specified language (e.g. EN / zh-CN / zh-TW) to item names; leave empty for original only");
         Add("config.ui.sort_key.name", "Sort Key");
         Add("config.ui.sort_key.description", "Press to sort container items");
         Add("config.ui.max_visible_candidates.name", "Max Candidates");
-        Add("config.ui.max_visible_candidates.description", "Maximum number of candidate lines displayed in console autocomplete");
+        Add("config.ui.max_visible_candidates.description",
+            "Maximum number of candidate lines displayed in console autocomplete");
         Add("config.ui.max_history_size.name", "History Size");
         Add("config.ui.max_history_size.description", "Maximum number of executed commands kept in console history");
 
@@ -72,8 +76,10 @@ public class EnLangGenerator : ModLangGenBase
         Add("ui.sort.execute_desc", "Sort container items");
 
         // Log - PlayerCameraPatch - Pin Yin
-        Add("log.player_camera_patch.pinyin.library.not_found", "TinyPinyin library not loaded — pinyin search disabled");
-        Add("log.player_camera_patch.pinyin.api_not_found", "TinyPinyin API methods not found — pinyin search disabled");
+        Add("log.player_camera_patch.pinyin.library.not_found",
+            "TinyPinyin library not loaded — pinyin search disabled");
+        Add("log.player_camera_patch.pinyin.api_not_found",
+            "TinyPinyin API methods not found — pinyin search disabled");
         Add("log.player_camera_patch.pinyin.init_failed", "TinyPinyin init failed: {0} — pinyin search disabled");
 
         // Log - ItemPatch

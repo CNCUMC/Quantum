@@ -1,7 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using HarmonyLib;
+using Quantum.UI;
 
-namespace Quantum.Patch;
+namespace Quantum.ItemChange.Gun;
 
 [HarmonyPatch(typeof(GunScript))]
 [SuppressMessage("ReSharper", "InconsistentNaming")]
@@ -37,7 +38,7 @@ public static class GunScriptPatch
             __instance.conditionLossPerShot = 0;
 
         if (!Plugin.AmmunitionUi.Value)
-            PlayerCameraPatch.DestroyAmmunitionUi();
+            AmmunitionUi.Destroy();
     }
 
     [HarmonyPatch("Fire")]
