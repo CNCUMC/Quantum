@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Bark.BetterCCL;
 using BepInEx;
 using CUCoreLib.Data;
@@ -55,9 +58,9 @@ public class Plugin : BaseUnityPlugin
         new EnLangGenerator().Initialize(Logger);
 
         // Info
-        BetterOptions.Bool(NameSpace, "ctrl_to_expand", NameSpace,
+        BetterOptions.Bool(NameSpace, "ctrl_to_expand", Setting.SettingCategory.Video,
             CtrlToExpand, v => CtrlToExpand = v);
-        BetterOptions.Float(NameSpace, "favourited_item_durability_exhaustion_alert", NameSpace,
+        BetterOptions.Float(NameSpace, "favourited_item_durability_exhaustion_alert", Setting.SettingCategory.Video,
             FavouritedItemDurabilityExhaustionAlert, 0f, 1f,
             v => FavouritedItemDurabilityExhaustionAlert = v,
             v => Mathf.FloorToInt(v * 100f) + "%");
@@ -78,26 +81,28 @@ public class Plugin : BaseUnityPlugin
         BetterOptions.Bool(NameSpace, "no_observer", NameSpace, NoObserver, v => NoObserver = v);
 
         // UI
-        BetterOptions.Bool(NameSpace, "ammunition_ui", NameSpace, AmmunitionUi, v => AmmunitionUi = v);
+        BetterOptions.Bool(NameSpace, "ammunition_ui", Setting.SettingCategory.Video, AmmunitionUi, v => AmmunitionUi = v);
 
-        // BilingualName: dropdown
-        var bilingualChoices = new[]
-        {
-            new ModDropdownChoice("off", "Off"),
-            new ModDropdownChoice("EN", "EN"),
-            new ModDropdownChoice("zh-CN", "zh-CN"),
-            new ModDropdownChoice("zh-TW", "zh-TW"),
-        };
-        BetterOptions.Dropdown(NameSpace, "bilingual_name", NameSpace,
-            0, bilingualChoices,
-            i => BilingualName = i > 0 && i < bilingualChoices.Length
-                ? bilingualChoices[i].Key
+        // todo: 双语没搞好
+        // BilingualName: dropdown — 自动扫描游戏 Lang 目录下所有已加载的语言文件
+        var bilingualChoices = new List<ModDropdownChoice>();
+        var langDir = $"{Application.dataPath}/Lang";
+        if (Directory.Exists(langDir))
+            bilingualChoices.AddRange(from file in Directory.GetFiles(langDir, "*.json")
+                select Path.GetFileNameWithoutExtension(file)
+                into code
+                select new ModDropdownChoice(code, code));
+        var bilingualArr = bilingualChoices.ToArray();
+        BetterOptions.Dropdown(NameSpace, "bilingual_name", Setting.SettingCategory.Video,
+            0, bilingualArr,
+            i => BilingualName = i > 0 && i < bilingualArr.Length
+                ? bilingualArr[i].Key
                 : "");
 
         BetterOptions.Keybind(NameSpace, "sort_key", Setting.SettingCategory.Input, SortKey, k => SortKey = k);
-        BetterOptions.Int(NameSpace, "max_visible_candidates", NameSpace, MaxVisibleCandidates, 1, 200,
+        BetterOptions.Int(NameSpace, "max_visible_candidates", Setting.SettingCategory.Video, MaxVisibleCandidates, 1, 200,
             v => MaxVisibleCandidates = v);
-        BetterOptions.Int(NameSpace, "max_history_size", NameSpace, MaxHistorySize, 10, 200,
+        BetterOptions.Int(NameSpace, "max_history_size", Setting.SettingCategory.Video, MaxHistorySize, 10, 200,
             v => MaxHistorySize = v);
 
         BetterLocale.Flush();
