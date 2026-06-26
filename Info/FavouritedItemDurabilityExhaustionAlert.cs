@@ -1,7 +1,9 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Bark.BetterCCL;
+using Bark.Tool;
+using CUCoreLib.Helpers;
 using HarmonyLib;
-using MossLib.Tool;
 using UnityEngine;
 
 namespace Quantum.Info;
@@ -35,14 +37,12 @@ public static class FavouritedItemDurabilityExhaustionAlert
             return;
         _lastDurabilityCheckTime = now;
 
-        var threshold = Plugin.FavouritedItemDurabilityExhaustionAlert.Value;
+        var threshold = Plugin.FavouritedItemDurabilityExhaustionAlert;
 
         if (threshold <= 0f)
             return;
 
-        var items = Inventory.GetAllItems();
-        if (items == null)
-            return;
+        var items = InventoryUtil.GetAllItems();
 
         const int alertStep = 5; // 每下降 5% 提醒一次
 
@@ -79,6 +79,6 @@ public static class FavouritedItemDurabilityExhaustionAlert
 
     private static void LogAlert(string text, params object[] args)
     {
-        Log.Alert(ModLocale.GetFormat(LogLocaleKeyPre + text, args), Plugin.Logger, false);
+        CUCoreUtils.ShowAlert(BetterLocale.GetOther(LogLocaleKeyPre + text, args));
     }
 }

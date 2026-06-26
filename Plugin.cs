@@ -1,48 +1,49 @@
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
+using Bark.BetterCCL;
 using BepInEx;
-using BepInEx.Configuration;
+using CUCoreLib.Data;
 using BepInEx.Logging;
 using HarmonyLib;
-using MossLib.Tool;
 using Quantum.Lang;
 using UnityEngine;
 
 namespace Quantum;
 
 [BepInPlugin(Guid, Name, Version)]
+[BepInDependency("net.cucorelib", "1.0.1")]
+[BepInDependency("org.cncumc.bark", "1.0.0")]
 public class Plugin : BaseUnityPlugin
 {
     public const string Guid = "org.explosivehydra.quantum";
     public const string Name = "Quantum";
     public const string Version = "1.1.0";
     internal new static ManualLogSource Logger;
-    private static readonly Dictionary<string, ConfigEntryBase> Registry = new();
+
+    private const string NameSpace = "quantum";
 
     // Info
-    public static ConfigEntry<bool> CtrlToExpand;
-    public static ConfigEntry<float> FavouritedItemDurabilityExhaustionAlert;
+    public static bool CtrlToExpand = true;
+    public static float FavouritedItemDurabilityExhaustionAlert = 0.3f;
 
     // Item - Gun
-    public static ConfigEntry<bool> AutoRack;
-    public static ConfigEntry<bool> IndestructibleGun;
-    public static ConfigEntry<bool> InfiniteAmmunition;
-    public static ConfigEntry<bool> NeverJam;
-    public static ConfigEntry<bool> NoCasing;
-    public static ConfigEntry<bool> Recoilless;
-    
+    public static bool AutoRack;
+    public static bool IndestructibleGun;
+    public static bool InfiniteAmmunition;
+    public static bool NeverJam;
+    public static bool NoCasing;
+    public static bool Recoilless;
+
     // Mechanism
-    public static ConfigEntry<bool> DontShit;
+    public static bool DontShit = true;
 
     // Misc
-    public static ConfigEntry<bool> NoObserver;
+    public static bool NoObserver;
 
     // UI
-    public static ConfigEntry<bool> AmmunitionUi;
-    public static ConfigEntry<string> BilingualName;
-    public static ConfigEntry<KeyCode> SortKey;
-    public static ConfigEntry<int> MaxVisibleCandidates;
-    public static ConfigEntry<int> MaxHistorySize;
+    public static bool AmmunitionUi = true;
+    public static string BilingualName = "";
+    public static KeyCode SortKey = KeyCode.E;
+    public static int MaxVisibleCandidates = 27;
+    public static int MaxHistorySize = 100;
 
     private readonly Harmony _harmony = new(Guid);
 
@@ -50,98 +51,56 @@ public class Plugin : BaseUnityPlugin
     {
         Logger = base.Logger;
 
-        LocaleGenerator.SetLogger(Logger);
-        LocaleGenerator.Register(new EnLangGenerator(), Logger);
-        LocaleGenerator.Register(new ZhCnLangGenerator(), Logger);
-        LocaleGenerator.Register(new ZhTwLangGenerator(), Logger);
-        LocaleGenerator.GenerateAll();
-
-        ModLocale.Initialize(Logger);
-        _harmony.PatchAll();
+        new ZhCnLangGenerator().Initialize(Logger);
+        new EnLangGenerator().Initialize(Logger);
 
         // Info
-        CtrlToExpand = RegisterConfigInfo(Config, nameof(CtrlToExpand).ToSnakeCase(), true);
-        FavouritedItemDurabilityExhaustionAlert = RegisterConfigInfo(Config, nameof(FavouritedItemDurabilityExhaustionAlert).ToSnakeCase(), 0.3f);
+        BetterOptions.Bool(NameSpace, "ctrl_to_expand", NameSpace,
+            CtrlToExpand, v => CtrlToExpand = v);
+        BetterOptions.Float(NameSpace, "favourited_item_durability_exhaustion_alert", NameSpace,
+            FavouritedItemDurabilityExhaustionAlert, 0f, 1f,
+            v => FavouritedItemDurabilityExhaustionAlert = v,
+            v => Mathf.FloorToInt(v * 100f) + "%");
 
         // Item - Gun
-        AutoRack = RegisterConfigItemGun(Config, nameof(AutoRack).ToSnakeCase(), false);
-        IndestructibleGun = RegisterConfigItemGun(Config, nameof(IndestructibleGun).ToSnakeCase(), false);
-        InfiniteAmmunition = RegisterConfigItemGun(Config, nameof(InfiniteAmmunition).ToSnakeCase(), false);
-        NeverJam = RegisterConfigItemGun(Config, nameof(NeverJam).ToSnakeCase(), false);
-        NoCasing = RegisterConfigItemGun(Config, nameof(NoCasing).ToSnakeCase(), false);
-        Recoilless = RegisterConfigItemGun(Config, nameof(Recoilless).ToSnakeCase(), false);
+        BetterOptions.Bool(NameSpace, "auto_rack", NameSpace, AutoRack, v => AutoRack = v);
+        BetterOptions.Bool(NameSpace, "indestructible_gun", NameSpace, IndestructibleGun, v => IndestructibleGun = v);
+        BetterOptions.Bool(NameSpace, "infinite_ammunition", NameSpace, InfiniteAmmunition,
+            v => InfiniteAmmunition = v);
+        BetterOptions.Bool(NameSpace, "never_jam", NameSpace, NeverJam, v => NeverJam = v);
+        BetterOptions.Bool(NameSpace, "no_casing", NameSpace, NoCasing, v => NoCasing = v);
+        BetterOptions.Bool(NameSpace, "recoilless", NameSpace, Recoilless, v => Recoilless = v);
 
         // Mechanism
-        DontShit = RegisterConfigMechanism(Config, nameof(DontShit).ToSnakeCase(), true);
-        
+        BetterOptions.Bool(NameSpace, "dont_shit", NameSpace, DontShit, v => DontShit = v);
+
         // Misc
-        NoObserver = RegisterConfigMisc(Config, nameof(NoObserver).ToSnakeCase(), false);
+        BetterOptions.Bool(NameSpace, "no_observer", NameSpace, NoObserver, v => NoObserver = v);
 
         // UI
-        AmmunitionUi = RegisterConfigUi(Config, nameof(AmmunitionUi).ToSnakeCase(), true);
-        BilingualName = RegisterConfigUi(Config, nameof(BilingualName).ToSnakeCase(), "");
-        SortKey = RegisterConfigUi(Config, nameof(SortKey).ToSnakeCase(), KeyCode.E);
-        MaxVisibleCandidates = RegisterConfigUi(Config, nameof(MaxVisibleCandidates).ToSnakeCase(), 27);
-        MaxHistorySize = RegisterConfigUi(Config, nameof(MaxHistorySize).ToSnakeCase(), 100);
-    }
+        BetterOptions.Bool(NameSpace, "ammunition_ui", NameSpace, AmmunitionUi, v => AmmunitionUi = v);
 
-    private static ConfigEntry<T> RegisterConfigInfo<T>(ConfigFile configFile, string key, T defaultValue)
-    {
-        return RegisterConfig(configFile, "Info", key, defaultValue);
-    }
+        // BilingualName: dropdown
+        var bilingualChoices = new[]
+        {
+            new ModDropdownChoice("off", "Off"),
+            new ModDropdownChoice("EN", "EN"),
+            new ModDropdownChoice("zh-CN", "zh-CN"),
+            new ModDropdownChoice("zh-TW", "zh-TW"),
+        };
+        BetterOptions.Dropdown(NameSpace, "bilingual_name", NameSpace,
+            0, bilingualChoices,
+            i => BilingualName = i > 0 && i < bilingualChoices.Length
+                ? bilingualChoices[i].Key
+                : "");
 
-    private static ConfigEntry<T> RegisterConfigItem<T>(ConfigFile configFile, string sectionPostfix, string key,
-        T defaultValue)
-    {
-        return RegisterConfig(configFile, $"Item - {sectionPostfix}", key, defaultValue);
-    }
+        BetterOptions.Keybind(NameSpace, "sort_key", Setting.SettingCategory.Input, SortKey, k => SortKey = k);
+        BetterOptions.Int(NameSpace, "max_visible_candidates", NameSpace, MaxVisibleCandidates, 1, 200,
+            v => MaxVisibleCandidates = v);
+        BetterOptions.Int(NameSpace, "max_history_size", NameSpace, MaxHistorySize, 10, 200,
+            v => MaxHistorySize = v);
 
-    private static ConfigEntry<T> RegisterConfigItemGun<T>(ConfigFile configFile, string key, T defaultValue)
-    {
-        return RegisterConfigItem(configFile, "Gun", key, defaultValue);
-    }
-    
-    private static ConfigEntry<T> RegisterConfigMechanism<T>(ConfigFile configFile, string key, T defaultValue)
-    {
-        return RegisterConfig(configFile, "Mechanism", key, defaultValue);
-    }
-
-    private static ConfigEntry<T> RegisterConfigMisc<T>(ConfigFile configFile, string key, T defaultValue)
-    {
-        return RegisterConfig(configFile, "Misc", key, defaultValue);
-    }
-
-    private static ConfigEntry<T> RegisterConfigUi<T>(ConfigFile configFile, string key, T defaultValue)
-    {
-        return RegisterConfig(configFile, "UI", key, defaultValue);
-    }
-
-    private static string SectionToLocalePrefix(string section)
-    {
-        return section.ToLower().Replace(" - ", ".");
-    }
-
-    private static ConfigEntry<T> RegisterConfig<T>(ConfigFile configFile, string section, string key, T defaultValue)
-    {
-        var sectionPrefix = SectionToLocalePrefix(section);
-        return MossLib.Tool.Config.Register(configFile, section, key, defaultValue,
-            _ => Locale($"config.{sectionPrefix}.{key}.description"), Registry);
-    }
-
-    private static string Locale(string key)
-    {
-        return ModLocale.GetFormat(key);
-    }
-}
-
-internal static class StringExtensions
-{
-    public static string ToSnakeCase(this string str)
-    {
-        return string.IsNullOrEmpty(str)
-            ? str
-            :
-            // 在非首字母的大写字母前插入下划线，再将所有字母转为小写
-            Regex.Replace(str, "(?<=[a-z0-9])([A-Z])", "_$1").ToLower();
+        BetterLocale.Flush();
+        _harmony.PatchAll();
     }
 }

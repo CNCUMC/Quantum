@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using HarmonyLib;
 using Quantum.UI;
 
@@ -16,7 +16,7 @@ public static class GunScriptPatch
     {
         HasOne = __instance.roundInChamber == GunScript.RoundInChamber.Round;
 
-        if (Plugin.AutoRack.Value
+        if (Plugin.AutoRack
             && __instance.roundInChamber
                 is GunScript.RoundInChamber.Casing
                 or GunScript.RoundInChamber.None
@@ -27,17 +27,17 @@ public static class GunScriptPatch
             __instance.racked = false;
         }
 
-        if (Plugin.InfiniteAmmunition.Value)
+        if (Plugin.InfiniteAmmunition)
             __instance.roundsInMag = __instance.magCapacity;
 
-        __instance.knockBack = Plugin.Recoilless.Value
+        __instance.knockBack = Plugin.Recoilless
             ? 0
             : 8;
 
-        if (Plugin.IndestructibleGun.Value)
+        if (Plugin.IndestructibleGun)
             __instance.conditionLossPerShot = 0;
 
-        if (!Plugin.AmmunitionUi.Value)
+        if (!Plugin.AmmunitionUi)
             AmmunitionUi.Destroy();
     }
 
@@ -45,7 +45,7 @@ public static class GunScriptPatch
     [HarmonyPostfix]
     public static void FirePostfix(GunScript __instance)
     {
-        if (Plugin.NoCasing.Value
+        if (Plugin.NoCasing
             && __instance.roundInChamber == GunScript.RoundInChamber.Casing)
             __instance.roundInChamber = GunScript.RoundInChamber.None;
     }
@@ -54,7 +54,7 @@ public static class GunScriptPatch
     [HarmonyPostfix]
     public static void JamChancePostfix(ref float __result)
     {
-        if (!Plugin.NeverJam.Value) return;
+        if (!Plugin.NeverJam) return;
         __result = 0;
     }
 }

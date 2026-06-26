@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
@@ -19,9 +19,9 @@ public class ConsoleScriptPatch
     private static float _lastUpTime;
     private static float _lastDownTime;
     private static string _previousText = "";
-    private static int MaxHistorySize => Plugin.MaxHistorySize.Value;
+    private static int MaxHistorySize => Plugin.MaxHistorySize;
 
-    private static int MaxVisible => Plugin.MaxVisibleCandidates.Value;
+    private static int MaxVisible => Plugin.MaxVisibleCandidates;
 
     [HarmonyPatch(nameof(ConsoleScript.TryFinishCommandPart))]
     [HarmonyPrefix]
@@ -34,7 +34,7 @@ public class ConsoleScriptPatch
     [HarmonyPostfix]
     private static void PostAddCommandToLogAndClearInput(ConsoleScript __instance)
     {
-        // 限制历史记录数量，防止无限增长
+        // 限制历史记录数量，防止无限增�?
         if (__instance.executedCommands.Count <= MaxHistorySize)
             return;
         __instance.executedCommands.RemoveRange(0, __instance.executedCommands.Count - MaxHistorySize);

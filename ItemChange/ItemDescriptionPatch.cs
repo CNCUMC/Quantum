@@ -1,9 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Bark.BetterCCL;
+using Bark.Tool;
 using HarmonyLib;
-using MossLib.Tool;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 
@@ -48,16 +49,16 @@ public static class ItemDescriptionPatch
         result += $"ID: {id}\n";
 
         // 双语名称：在物品原名后附加指定语言的翻译
-        var bilingualCode = Plugin.BilingualName.Value?.Trim();
+        var bilingualCode = Plugin.BilingualName?.Trim();
         if (!string.IsNullOrEmpty(bilingualCode)
             && !string.Equals(bilingualCode, global::Locale.currentLangName, StringComparison.OrdinalIgnoreCase))
         {
             var secondName = GetItemNameInLang(id, bilingualCode);
             if (!string.IsNullOrEmpty(secondName) && !info.fullName.Contains(secondName))
-                result += RichText.Italic($"({secondName})\n");
+                result += RichTextUtil.Italic($"({secondName})\n");
         }
 
-        if (!ModLocale.HasLocaleKey(LocaleKeyPre + id))
+        if (!BetterLocale.HasKeyOther(LocaleKeyPre + id))
             return string.IsNullOrEmpty(result.Trim())
                 ? null
                 : result.TrimEnd('\n');
@@ -88,7 +89,7 @@ public static class ItemDescriptionPatch
             var json = File.ReadAllText(path);
             var obj = JObject.Parse(json);
             mainDict = obj["main"]?.ToObject<Dictionary<string, string>>();
-            LangCache[langCode] = mainDict; // 可能为 null（JSON 中无 main 字段时）
+            LangCache[langCode] = mainDict; // 可能�?null（JSON 中无 main 字段时）
         }
         catch
         {
@@ -113,6 +114,6 @@ public static class ItemDescriptionPatch
 
     private static string Locale(string key, params object[] args)
     {
-        return ModLocale.GetFormat($"{LocaleKeyPre}{key}", args);
+        return BetterLocale.GetOther($"{LocaleKeyPre}{key}", args);
     }
 }

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Bark.BetterCCL;
+using Bark.Tool;
 using HarmonyLib;
-using MossLib.Tool;
 using UnityEngine;
 
 namespace Quantum.Info;
@@ -44,13 +45,13 @@ public class CtrlToExpand
         if (info == null)
             return null;
 
-        var needCtrl = Plugin.CtrlToExpand.Value;
+        var needCtrl = Plugin.CtrlToExpand;
         var ctrlHeld = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
 
         var result = "";
 
         // 物品专属描述
-        if (ModLocale.HasLocaleKey($"hover.{item.id}"))
+        if (BetterLocale.HasKeyOther($"hover.{item.id}"))
         {
             result += "\n";
             result += Locale($"hover.{item.id}");
@@ -71,13 +72,13 @@ public class CtrlToExpand
 
         // 技术标志（始终显示）
         result += info.usable
-            ? RichText.Green("✓ " + Locale("hover.info.usable.true"))
-            : RichText.Red("X  " + Locale("hover.info.usable.false"));
+            ? RichTextUtil.Green("? " + Locale("hover.info.usable.true"))
+            : RichTextUtil.Red("X  " + Locale("hover.info.usable.false"));
         result += "\n";
 
         result += info.usableOnLimb
-            ? RichText.Green("✓ " + Locale("hover.info.usable_on_limb.true"))
-            : RichText.Red("X  " + Locale("hover.info.usable_on_limb.false"));
+            ? RichTextUtil.Green("? " + Locale("hover.info.usable_on_limb.true"))
+            : RichTextUtil.Red("X  " + Locale("hover.info.usable_on_limb.false"));
         result += "\n";
 
         result += info.autoAttack
@@ -89,7 +90,7 @@ public class CtrlToExpand
             : null;
 
         result += info.ignoreDepression
-            ? RichText.Color(Locale("hover.info.ignore_depression"), "#FFFB91") + "\n"
+            ? RichTextUtil.Color(Locale("hover.info.ignore_depression"), "#FFFB91") + "\n"
             : null;
 
         return string.IsNullOrEmpty(result.Trim())
@@ -224,10 +225,10 @@ public class CtrlToExpand
         }
 
         return recipeBlocks.Count > 0
-            ? RichText.White("\n" +
-                             Locale("hover.info.recipe") +
-                             "\n" +
-                             string.Join("\n", recipeBlocks))
+            ? RichTextUtil.White("\n" +
+                                 Locale("hover.info.recipe") +
+                                 "\n" +
+                                 string.Join("\n", recipeBlocks))
             : null;
     }
 
@@ -257,6 +258,6 @@ public class CtrlToExpand
 
     private static string Locale(string key, params object[] args)
     {
-        return ModLocale.GetFormat(key, args);
+        return BetterLocale.GetOther(key, args);
     }
 }

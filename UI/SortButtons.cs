@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Bark.BetterCCL;
 using HarmonyLib;
-using MossLib.Tool;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -159,8 +159,8 @@ public static class SortButtons
 
         _orderButton = CreateSmallButton(top, "OrderButton", layer,
             _currentSortAscending
-                ? "↑"
-                : "↓", baseX, y - 5f);
+                ? "\u2191"
+                : "\u2193", baseX, y - 5f);
 
         _executeButton = CreateSmallButton(top, "ExecuteButton", layer,
             "S", baseX + 50f, y - 5f);
@@ -215,12 +215,10 @@ public static class SortButtons
         rect.sizeDelta = new Vector2(48f, 48f);
         rect.anchoredPosition = new Vector2(xPos, yPos);
 
-        // 外层白色 — 形成边框背景
         var image = go.AddComponent<Image>();
         image.raycastTarget = true;
         image.color = Color.white;
 
-        // 内层黑色填充（游戏处理为透明），比父级小 4px 露出白色边框
         var fillGo = new GameObject("Fill");
         fillGo.transform.SetParent(go.transform, false);
         fillGo.layer = uiLayer;
@@ -290,7 +288,6 @@ public static class SortButtons
             var ped = (PointerEventData)data;
             switch (ped.button)
             {
-                // 左键 / 右键 → 切换排序模式
                 case PointerEventData.InputButton.Left:
                 case PointerEventData.InputButton.Right:
                 {
@@ -353,8 +350,8 @@ public static class SortButtons
             var tmp = _orderButton?.transform.Find("Text")?.GetComponent<TextMeshProUGUI>();
             if (tmp != null)
                 tmp.text = _currentSortAscending
-                    ? "↑"
-                    : "↓";
+                    ? "\u2191"
+                    : "\u2193";
 
             AddTooltip(_orderButton,
                 Locale("ui.sort.order_tip"),
@@ -423,12 +420,12 @@ public static class SortButtons
 
     private static string Locale(string key, params object[] args)
     {
-        return ModLocale.GetFormat(key, args);
+        return BetterLocale.GetOther(key, args);
     }
 
-    private static void Alert(string text, bool important = false, float delay = 0f)
+    private static void Alert(string text)
     {
-        Log.Alert(text, Plugin.Logger, important, delay);
+        PlayerCamera.main.DoAlert(text);
     }
 
     private enum SortMode

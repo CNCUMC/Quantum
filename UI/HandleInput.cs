@@ -1,5 +1,5 @@
+using Bark.Constant;
 using HarmonyLib;
-using MossLib.Constant;
 using UnityEngine;
 
 namespace Quantum.UI;
@@ -23,7 +23,7 @@ public static class HandleInput
                 __instance.ToggleTradeMenu();
         }
 
-        if (!Input.GetKeyDown(Plugin.SortKey.Value))
+        if (!Input.GetKeyDown(Plugin.SortKey))
             return;
         if (!SortButtons.CanSort(__instance))
             return;

@@ -1,7 +1,5 @@
-using System.Linq;
-using BepInEx.Logging;
+﻿using System.Linq;
 using HarmonyLib;
-using Quantum.ItemChange.Gun;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,8 +9,6 @@ namespace Quantum.UI;
 [HarmonyPatch(typeof(PlayerCamera))]
 public static class AmmunitionUi
 {
-    private static readonly ManualLogSource Logger = Plugin.Logger;
-
     private static TextMeshProUGUI _ammunitionText;
     private static GameObject _ammunitionUiObject;
     private static int _remainingAmmunition;
@@ -32,7 +28,7 @@ public static class AmmunitionUi
     [HarmonyPostfix]
     private static void HandleGunMenuPostfix(PlayerCamera __instance)
     {
-        if (!Plugin.AmmunitionUi.Value) return;
+        if (!Plugin.AmmunitionUi) return;
 
         var handSlot = __instance.body.handSlot;
         if (!__instance.body.HoldingItem(handSlot))
@@ -110,11 +106,11 @@ public static class AmmunitionUi
 
     private static void UpdateAmmunitionUi()
     {
-        var realRemainingAmmunition = GunScriptPatch.HasOne ? _remainingAmmunition + 1 : _remainingAmmunition;
+        var realRemainingAmmunition = ItemChange.Gun.GunScriptPatch.HasOne ? _remainingAmmunition + 1 : _remainingAmmunition;
         if (_ammunitionText == null)
             return;
 
-        if (!Plugin.InfiniteAmmunition.Value)
+        if (!Plugin.InfiniteAmmunition)
         {
             if (realRemainingAmmunition >= 0.8)
                 _ammunitionText.color = Color.green;
@@ -130,7 +126,7 @@ public static class AmmunitionUi
         {
             _ammunitionText.fontSize = 64;
             _ammunitionText.color = Color.black;
-            _ammunitionText.text = "∞";
+            _ammunitionText.text = "\u221e";
         }
     }
 
@@ -139,8 +135,6 @@ public static class AmmunitionUi
         if (_ammunitionUiObject == null || gunMenu == null)
             return;
 
-        // 弹药 UI 仅在枪械菜单打开且没有其他覆盖界面时显示
-        // 制作界面、医疗面板、交易菜单、暂停界面打开时隐藏
         var camera = PlayerCamera.main;
         if (camera == null)
         {

@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 
 namespace Quantum.Misc;
 
@@ -9,7 +9,7 @@ public class ObserverPatch
     [HarmonyPrefix]
     public static bool UpdatePrefix()
     {
-        if (!Plugin.NoObserver.Value) return true;
+        if (!Plugin.NoObserver) return true;
 
         Observer.main.gameObject.SetActive(false);
         return false;

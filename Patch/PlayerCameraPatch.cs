@@ -1,9 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Bark.BetterCCL;
+using Bark.Tool;
 using HarmonyLib;
-using MossLib.Tool;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -203,11 +204,11 @@ public static class PlayerCameraPatch
 
     private static string Locale(string key, params object[] args)
     {
-        return ModLocale.GetFormat(key, args);
+        return BetterLocale.GetOther(key, args);
     }
 
     private static void Warning(string text, params object[] args)
     {
-        Log.Warning(Locale(LocaleKeyPre + text, args), Plugin.Logger);
+        LogUtil.Warning(Locale(LocaleKeyPre + text, args), Plugin.Logger);
     }
 }

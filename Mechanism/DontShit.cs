@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 
 namespace Quantum.Mechanism;
 
@@ -9,6 +9,6 @@ public class DontShit
     [HarmonyPrefix]
     public static bool TheCoroutineThatMakesYouShitYourselfWhenUnconsciousPrefix()
     {
-        return !Plugin.DontShit.Value;
+        return !Plugin.DontShit;
     }
 }
