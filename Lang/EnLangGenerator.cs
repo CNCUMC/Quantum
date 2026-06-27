@@ -24,8 +24,8 @@ public class EnLangGenerator : ModLangGenBase
         QOther("key.ctrl_to_expand.down", "Release Ctrl to Fold More Info");
 
         // Config - Info
-        QOption("ctrl_to_expand", "Ctrl for more information", "Press Ctrl to show more information");
-        QOption("favourited_item_durability_exhaustion_alert", "Favourite Durability Alert Threshold", "Alert when favourited item durability falls below this ratio (0 = disabled)");
+        Option("quantum.video.ctrl_to_expand", "Ctrl for more information", "Press Ctrl to show more information");
+        Option("quantum.video.favourited_item_durability_exhaustion_alert", "Favourite Durability Alert Threshold", "Alert when favourited item durability falls below this ratio (0 = disabled)");
         
         // Config - Item - Gun
         QOption("auto_rack", "Auto Rack", "If true, guns will automatically rack and stay racked when ammo is available");

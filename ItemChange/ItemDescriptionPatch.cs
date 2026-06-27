@@ -55,7 +55,7 @@ public static class ItemDescriptionPatch
         {
             var secondName = GetItemNameInLang(id, bilingualCode);
             if (!string.IsNullOrEmpty(secondName) && !info.fullName.Contains(secondName))
-                result += RichTextUtil.Italic($"({secondName})\n");
+                result += TextUtil.Italic($"({secondName})\n");
         }
 
         if (!BetterLocale.HasKeyOther(LocaleKeyPre + id))

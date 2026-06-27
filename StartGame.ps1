@@ -1,22 +1,17 @@
 ﻿param(
-    [string]$GamePath = "F:/SteamLibrary/steamapps/common/Casualties Unknown Demo",
-    [string]$ModNamespace = "Quantum"
+    [string]$GamePath = "__GAME_ROOT_PATH__",
+    [string]$ModNamespace = "__MOD_NAMESPACE__"
 )
 
-function Convert-ToDisplayName
-{
+function Convert-ToDisplayName {
     param([string]$Namespace)
-    if ( [string]::IsNullOrWhiteSpace($Namespace))
-    {
-        return $Namespace
-    }
+    if ([string]::IsNullOrWhiteSpace($Namespace)) { return $Namespace }
 
     $result = [System.Text.StringBuilder]::new()
     $chars = $Namespace.ToCharArray()
     for ($i = 0; $i -lt $chars.Length; $i++) {
         $c = $chars[$i]
-        if ($i -gt 0 -and [char]::IsUpper($c) -and [char]::IsLower($chars[$i - 1]))
-        {
+        if ($i -gt 0 -and [char]::IsUpper($c) -and [char]::IsLower($chars[$i-1])) {
             $result.Append(' ') | Out-Null
         }
         $result.Append($c) | Out-Null
@@ -42,7 +37,7 @@ $ModDll = [System.IO.Path]::Combine($PSScriptRoot, "bin/Debug/net472", "$ModName
 
 $targetModFolder = $ModName
 
-$docFiles = @("README.md", "README_ZH.md", "LICENSE.md", "Cover.png")
+$docFiles = @("README.md", "README_ZH.md", "LICENSE.md", "CHANGELOG.md", "CHANGELOG_ZH.md", "Cover.png")
 
 $logDestination = [System.IO.Path]::Combine($PSScriptRoot, "Logs", "$timestamp.log")
 

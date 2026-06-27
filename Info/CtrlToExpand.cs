@@ -72,13 +72,13 @@ public class CtrlToExpand
 
         // 技术标志（始终显示）
         result += info.usable
-            ? RichTextUtil.Green("? " + Locale("hover.info.usable.true"))
-            : RichTextUtil.Red("X  " + Locale("hover.info.usable.false"));
+            ? TextUtil.Green("? " + Locale("hover.info.usable.true"))
+            : TextUtil.Red("X  " + Locale("hover.info.usable.false"));
         result += "\n";
 
         result += info.usableOnLimb
-            ? RichTextUtil.Green("? " + Locale("hover.info.usable_on_limb.true"))
-            : RichTextUtil.Red("X  " + Locale("hover.info.usable_on_limb.false"));
+            ? TextUtil.Green("? " + Locale("hover.info.usable_on_limb.true"))
+            : TextUtil.Red("X  " + Locale("hover.info.usable_on_limb.false"));
         result += "\n";
 
         result += info.autoAttack
@@ -90,7 +90,7 @@ public class CtrlToExpand
             : null;
 
         result += info.ignoreDepression
-            ? RichTextUtil.Color(Locale("hover.info.ignore_depression"), "#FFFB91") + "\n"
+            ? TextUtil.Color(Locale("hover.info.ignore_depression"), "#FFFB91") + "\n"
             : null;
 
         return string.IsNullOrEmpty(result.Trim())
@@ -225,7 +225,7 @@ public class CtrlToExpand
         }
 
         return recipeBlocks.Count > 0
-            ? RichTextUtil.White("\n" +
+            ? TextUtil.White("\n" +
                                  Locale("hover.info.recipe") +
                                  "\n" +
                                  string.Join("\n", recipeBlocks))

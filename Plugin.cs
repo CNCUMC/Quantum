@@ -16,7 +16,7 @@ namespace Quantum;
 [BepInDependency("org.cncumc.bark", "1.0.0")]
 public class Plugin : BaseUnityPlugin
 {
-    public const string Guid = "org.explosivehydra.quantum";
+    public const string Guid = "org.cncumc.quantum";
     public const string Name = "Quantum";
     public const string Version = "1.1.0";
     internal new static ManualLogSource Logger;
@@ -83,15 +83,17 @@ public class Plugin : BaseUnityPlugin
         // UI
         BetterOptions.Bool(NameSpace, "ammunition_ui", Setting.SettingCategory.Video, AmmunitionUi, v => AmmunitionUi = v);
 
-        // todo: 双语没搞好
         // BilingualName: dropdown — 自动扫描游戏 Lang 目录下所有已加载的语言文件
         var bilingualChoices = new List<ModDropdownChoice>();
         var langDir = $"{Application.dataPath}/Lang";
         if (Directory.Exists(langDir))
-            bilingualChoices.AddRange(from file in Directory.GetFiles(langDir, "*.json")
-                select Path.GetFileNameWithoutExtension(file)
-                into code
-                select new ModDropdownChoice(code, code));
+            foreach (var file in Directory.GetFiles(langDir, "*.json"))
+            {
+                var code = Path.GetFileNameWithoutExtension(file);
+                // 注册每种语言的显示名称，供 CCL 自动解析
+                BetterLocale.SetDefault("EN", "option", $"quantum.video.bilingual_name{code}", code);
+                bilingualChoices.Add(new ModDropdownChoice(code, code));
+            }
         var bilingualArr = bilingualChoices.ToArray();
         BetterOptions.Dropdown(NameSpace, "bilingual_name", Setting.SettingCategory.Video,
             0, bilingualArr,
