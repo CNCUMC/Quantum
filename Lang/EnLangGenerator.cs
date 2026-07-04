@@ -48,6 +48,7 @@ public class EnLangGenerator : ModLangGenBase
         Option("quantum.input.console_scroll_speed", "Console Scroll Speed", "Candidate switching speed when holding Up/Down (ms)");
         Option("quantum.video.max_visible_candidates", "Max Candidates", "Maximum number of candidate lines displayed in console autocomplete");
         Option("quantum.video.max_history_size", "History Size", "Maximum number of executed commands kept in console history");
+        Option("quantum.video.no_demo_tips", "No Demo Tips", "Hides the demo-version tips panel");
 
         // UI - Sort
         QOther("ui.sort.mode.name", "Name");

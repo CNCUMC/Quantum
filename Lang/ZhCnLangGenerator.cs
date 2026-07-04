@@ -48,6 +48,7 @@ public class ZhCnLangGenerator : ModLangGenBase
         Option("quantum.input.console_scroll_speed", "控制台滚动速度", "长按上下键切换候选参数的速度（毫秒）");
         Option("quantum.video.max_visible_candidates", "最大候选数", "控制台参数候选列表最多显示的行数");
         Option("quantum.video.max_history_size", "历史记录上限", "控制台历史命令最多保留的条数");
+        Option("quantum.video.no_demo_tips", "隐藏试玩提示", "隐藏试玩版提示面板");
 
         // UI - Sort
         QOther("ui.sort.mode.name", "名称");

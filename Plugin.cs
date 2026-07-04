@@ -21,7 +21,7 @@ public class Plugin : BaseUnityPlugin
     public const string Version = "1.0.0";
     internal new static ManualLogSource Logger;
 
-    private const string NameSpace = "quantum";
+    private const string Ns = "quantum";
 
     // Info
     public static bool CtrlToExpand = true;
@@ -59,50 +59,59 @@ public class Plugin : BaseUnityPlugin
         new ZhCnLangGenerator().Initialize(Logger);
         new EnLangGenerator().Initialize(Logger);
 
-        // Info
-        BetterOptions.Bool(NameSpace, "ctrl_to_expand", Setting.SettingCategory.Video,
-            CtrlToExpand, v => CtrlToExpand = v);
-        BetterOptions.Float(NameSpace, "favourited_item_durability_exhaustion_alert", Setting.SettingCategory.Video,
-            FavouritedItemDurabilityExhaustionAlert, 0f, 1f,
+        // Info (Video tab)
+        BoolV("ctrl_to_expand", CtrlToExpand, v => CtrlToExpand = v);
+        FloatV("favourited_item_durability_exhaustion_alert", FavouritedItemDurabilityExhaustionAlert, 0f, 1f,
             v => FavouritedItemDurabilityExhaustionAlert = v,
             v => Mathf.FloorToInt(v * 100f) + "%");
 
-        // Item - Gun
-        BetterOptions.Bool(NameSpace, "auto_rack", NameSpace, AutoRack, v => AutoRack = v);
-        BetterOptions.Bool(NameSpace, "indestructible_gun", NameSpace, IndestructibleGun, v => IndestructibleGun = v);
-        BetterOptions.Bool(NameSpace, "infinite_ammunition", NameSpace, InfiniteAmmunition,
-            v => InfiniteAmmunition = v);
-        BetterOptions.Bool(NameSpace, "never_jam", NameSpace, NeverJam, v => NeverJam = v);
-        BetterOptions.Bool(NameSpace, "no_casing", NameSpace, NoCasing, v => NoCasing = v);
-        BetterOptions.Bool(NameSpace, "recoilless", NameSpace, Recoilless, v => Recoilless = v);
-
-        // Mechanism
-        BetterOptions.Bool(NameSpace, "dont_shit", NameSpace, DontShit, v => DontShit = v);
-
-        // Misc
-        BetterOptions.Bool(NameSpace, "no_observer", NameSpace, NoObserver, v => NoObserver = v);
+        // Gun / Mechanism / Misc (Quantum tab)
+        BoolQ("auto_rack", AutoRack, v => AutoRack = v);
+        BoolQ("indestructible_gun", IndestructibleGun, v => IndestructibleGun = v);
+        BoolQ("infinite_ammunition", InfiniteAmmunition, v => InfiniteAmmunition = v);
+        BoolQ("never_jam", NeverJam, v => NeverJam = v);
+        BoolQ("no_casing", NoCasing, v => NoCasing = v);
+        BoolQ("recoilless", Recoilless, v => Recoilless = v);
+        BoolQ("dont_shit", DontShit, v => DontShit = v);
+        BoolQ("no_observer", NoObserver, v => NoObserver = v);
 
         // UI
-        BetterOptions.Bool(NameSpace, "ammunition_ui", Setting.SettingCategory.Video, AmmunitionUi,
-            v => AmmunitionUi = v);
+        BoolV("ammunition_ui", AmmunitionUi, v => AmmunitionUi = v);
         RegisterBilingualOption();
-        BetterOptions.Keybind(NameSpace, "sort_key", Setting.SettingCategory.Input, SortKey, k => SortKey = k);
-        BetterOptions.Float(NameSpace, "console_scroll_speed", Setting.SettingCategory.Input,
-            ConsoleScrollSpeed, 0.01f, 0.2f,
+        KeyI("sort_key", SortKey, k => SortKey = k);
+        FloatI("console_scroll_speed", ConsoleScrollSpeed, 0.01f, 0.2f,
             v => ConsoleScrollSpeed = v,
             v => (v * 1000f).ToString("F0") + "ms");
-        BetterOptions.Int(NameSpace, "max_visible_candidates", Setting.SettingCategory.Video,
-            MaxVisibleCandidates, 1, 200,
+        IntV("max_visible_candidates", MaxVisibleCandidates, 1, 200,
             v => MaxVisibleCandidates = v);
-        BetterOptions.Int(NameSpace, "max_history_size", Setting.SettingCategory.Video,
-            MaxHistorySize, 10, 500,
+        IntV("max_history_size", MaxHistorySize, 10, 500,
             v => MaxHistorySize = v);
-        BetterOptions.Bool(NameSpace, "no_demo_tips", Setting.SettingCategory.Video, NoDemoTips, v => NoDemoTips = v);
+        BoolV("no_demo_tips", NoDemoTips, v => NoDemoTips = v);
 
         BetterLocale.Flush();
         _harmony.PatchAll();
     }
 
+    // ── 注册辅助方法 ──
+
+    private static void BoolQ(string key, bool val, Action<bool> set) =>
+        BetterOptions.Bool(Ns, key, Ns, val, set);
+
+    private static void BoolV(string key, bool val, Action<bool> set) =>
+        BetterOptions.Bool(Ns, key, Setting.SettingCategory.Video, val, set);
+
+    private static void FloatV(string key, float val, float min, float max, Action<float> set, Func<float, string> fmt) =>
+        BetterOptions.Float(Ns, key, Setting.SettingCategory.Video, val, min, max, set, fmt);
+
+    private static void FloatI(string key, float val, float min, float max, Action<float> set, Func<float, string> fmt) =>
+        BetterOptions.Float(Ns, key, Setting.SettingCategory.Input, val, min, max, set, fmt);
+
+    private static void IntV(string key, int val, int min, int max, Action<int> set) =>
+        BetterOptions.Int(Ns, key, Setting.SettingCategory.Video, val, min, max, set);
+
+    private static void KeyI(string key, KeyCode val, Action<KeyCode> set) =>
+        BetterOptions.Keybind(Ns, key, Setting.SettingCategory.Input, val, set);
+    
     private static void RegisterBilingualOption()
     {
         var choices = new List<ModDropdownChoice>();
@@ -123,8 +132,8 @@ public class Plugin : BaseUnityPlugin
         }
 
         var arr = choices.ToArray();
-        BetterOptions.Dropdown(NameSpace, "bilingual_name", Setting.SettingCategory.Video,
-            0, arr,
+        BetterOptions.Dropdown(Ns, "bilingual_name", Setting.SettingCategory.Video,
+            0, arr, 
             i => BilingualName = i > 0 && i < arr.Length ? arr[i].Key : "");
     }
 }
