@@ -5,7 +5,6 @@ using System.Text;
 using HarmonyLib;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 namespace Quantum.Patch;
 
@@ -172,6 +171,11 @@ public static class ConsoleScriptPatch
 
             var partial = args[args.Length - 1];
             var filteredFills = ConsoleScript.SearchArgumentAutofill(partial, fills);
+            // 追加模糊点匹配：输入 "xX" 匹配 "xxx.XXX"
+            var fuzzyMatches = fills
+                .Where(f => FuzzyDotMatch(f, partial))
+                .Except(filteredFills);
+            filteredFills = filteredFills.Concat(fuzzyMatches).ToList();
 
             if (_cmdName != args[0] || _paramIdx != paramIdx)
             {
@@ -236,6 +240,28 @@ public static class ConsoleScriptPatch
         _lastDownTime = 0f;
         _previousText = "";
         _isInAutocomplete = false;
+    }
+
+    private static bool FuzzyDotMatch(string candidate, string pattern)
+    {
+        if (string.IsNullOrEmpty(pattern)) return true;
+        if (SequentialMatch(candidate.Replace(".", ""), pattern))
+            return true;
+        var initials = string.Concat(candidate.Split('.').Where(s => s.Length > 0).Select(s => s[0]));
+        return SequentialMatch(initials, pattern);
+    }
+
+    private static bool SequentialMatch(string text, string pattern)
+    {
+        var ti = 0;
+        foreach (var p in pattern)
+        {
+            ti = text.IndexOf(p.ToString(), ti, StringComparison.OrdinalIgnoreCase);
+            if (ti < 0) return false;
+            ti++;
+        }
+
+        return true;
     }
 
     private static void ClampIndex()
