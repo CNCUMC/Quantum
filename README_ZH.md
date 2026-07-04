@@ -1,3 +1,5 @@
+![Logo](Logo.png)
+
 # Quantum（量子）
 
 《Casualties Unknown》的便捷功能模组，添加合成搜索、容器整理、枪械修改和玩法调整 — 全部可在游戏内 **Quantum** 选项标签页中配置。

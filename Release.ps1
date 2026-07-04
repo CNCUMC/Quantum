@@ -197,7 +197,7 @@ if (Test-Path $localPluginsDir) {
 }
 
 # 文档文件 (含更新日志)
-$docFiles = @("README.md", "README_ZH.md", "LICENSE.md", "CHANGELOG.md", "CHANGELOG_ZH.md", "Cover.png")
+$docFiles = @("README.md", "README_ZH.md", "LICENSE.md", "CHANGELOG.md", "CHANGELOG_ZH.md")
 foreach ($doc in $docFiles) {
     $docPath = Join-Path $scriptDir $doc
     if (Test-Path $docPath) {

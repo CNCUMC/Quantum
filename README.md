@@ -1,3 +1,5 @@
+![Logo](Logo.png)
+
 # Quantum
 
 A quality-of-life mod for *Casualties Unknown* that adds crafting search, container sorting, gun modifiers, and gameplay tweaks — all configurable from the in-game **Quantum** options tab.
