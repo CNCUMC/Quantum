@@ -3,13 +3,15 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using HarmonyLib;
+using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Quantum.Patch;
 
 [HarmonyPatch(typeof(ConsoleScript))]
 [SuppressMessage("ReSharper", "InconsistentNaming")]
-public class ConsoleScriptPatch
+public static class ConsoleScriptPatch
 {
     private static string[] _candidates = [];
     private static int _index;
@@ -19,40 +21,41 @@ public class ConsoleScriptPatch
     private static float _lastUpTime;
     private static float _lastDownTime;
     private static string _previousText = "";
-    private static int MaxHistorySize => Plugin.MaxHistorySize;
+    private static bool _isInAutocomplete;
 
+    private static int MaxHistorySize => Plugin.MaxHistorySize;
     private static int MaxVisible => Plugin.MaxVisibleCandidates;
+
+    public static bool IsAutocomplete() => _isInAutocomplete;
 
     [HarmonyPatch(nameof(ConsoleScript.TryFinishCommandPart))]
     [HarmonyPrefix]
     private static bool BlockTryFinishCommandPart()
     {
-        return _candidates.Length == 0;
+        return !_isInAutocomplete;
     }
 
     [HarmonyPatch("AddCommandToLogAndClearInput")]
     [HarmonyPostfix]
     private static void PostAddCommandToLogAndClearInput(ConsoleScript __instance)
     {
-        // 限制历史记录数量，防止无限增�?
         if (__instance.executedCommands.Count <= MaxHistorySize)
             return;
         __instance.executedCommands.RemoveRange(0, __instance.executedCommands.Count - MaxHistorySize);
     }
 
-    [HarmonyPatch(nameof(ConsoleScript.GoToCommandHistory))]
+    [HarmonyPatch("GoToCommandHistory")]
     [HarmonyPrefix]
     private static bool BlockGoToCommandHistory()
     {
-        return _candidates.Length == 0;
+        return !_isInAutocomplete;
     }
 
-    [HarmonyPatch(nameof(ConsoleScript.HandleDescriptionText))]
+    [HarmonyPatch("HandleDescriptionText")]
     [HarmonyPostfix]
     private static void PostHandleDescriptionText(ConsoleScript __instance)
     {
-        if (_candidates.Length == 0
-            || __instance.descriptionText == null)
+        if (!_isInAutocomplete || __instance.descriptionText == null)
             return;
 
         var text = __instance.descriptionText.text;
@@ -121,53 +124,77 @@ public class ConsoleScriptPatch
         var text = __instance.input.text;
         var args = text.Split([' '], StringSplitOptions.None);
 
-        if (Input.GetKeyDown(KeyCode.KeypadEnter)
-            && !string.IsNullOrEmpty(text))
+        if (Input.GetKeyDown(KeyCode.KeypadEnter) && !string.IsNullOrEmpty(text))
         {
             __instance.ExecuteCommand(text);
             return;
         }
 
-        if (args.Length < 2 || string.IsNullOrEmpty(args[0]))
+        if (args.Length == 1 && !string.IsNullOrEmpty(args[0]))
+        {
+            var matchedCmds = ConsoleScript.Search(args[0]);
+            if (matchedCmds == null || matchedCmds.Count == 0)
+            {
+                ClearState();
+                return;
+            }
+
+            _isInAutocomplete = true;
+            var matchedNames = matchedCmds.Select(c => c.name).ToArray();
+            var partial = args[0];
+
+            if (_cmdName != "!" || _lastPartial != partial)
+            {
+                _cmdName = "!";
+                _paramIdx = -1;
+                _candidates = matchedNames;
+                _lastPartial = partial;
+                _index = 0;
+            }
+        }
+        else if (args.Length >= 2 && !string.IsNullOrEmpty(args[0]))
+        {
+            var cmd = ConsoleScript.SearchExact(args[0]);
+            if (cmd?.argAutofill == null)
+            {
+                ClearState();
+                return;
+            }
+
+            var paramIdx = args.Length - 2;
+            if (!cmd.argAutofill.TryGetValue(paramIdx, out var fills))
+            {
+                ClearState();
+                return;
+            }
+
+            _isInAutocomplete = true;
+
+            var partial = args[args.Length - 1];
+            var filteredFills = ConsoleScript.SearchArgumentAutofill(partial, fills);
+
+            if (_cmdName != args[0] || _paramIdx != paramIdx)
+            {
+                _cmdName = args[0];
+                _paramIdx = paramIdx;
+                _candidates = filteredFills.ToArray();
+                _lastPartial = partial;
+                _index = 0;
+            }
+            else if (_lastPartial != partial)
+            {
+                _candidates = filteredFills.ToArray();
+                _lastPartial = partial;
+                ClampIndex();
+            }
+        }
+        else
         {
             ClearState();
             return;
         }
 
-        var cmd = ConsoleScript.SearchExact(args[0]);
-        if (cmd?.argAutofill == null)
-        {
-            ClearState();
-            return;
-        }
-
-        var paramIdx = args.Length - 2;
-        if (!cmd.argAutofill.TryGetValue(paramIdx, out var fills))
-        {
-            ClearState();
-            return;
-        }
-
-        var partial = args[args.Length - 1];
-        var filteredFills = ConsoleScript.SearchArgumentAutofill(partial, fills);
-
-        if (_cmdName != args[0] || _paramIdx != paramIdx)
-        {
-            _cmdName = args[0];
-            _paramIdx = paramIdx;
-            _candidates = filteredFills.ToArray();
-            _lastPartial = partial;
-            _index = 0;
-        }
-        else if (_lastPartial != partial)
-        {
-            _candidates = filteredFills.ToArray();
-            _lastPartial = partial;
-            ClampIndex();
-        }
-
-        if ((Input.GetKey(KeyCode.LeftControl)
-             || Input.GetKey(KeyCode.RightControl))
+        if ((Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
             && Input.GetKeyDown(KeyCode.Z)
             && !string.IsNullOrEmpty(_previousText))
         {
@@ -186,13 +213,13 @@ public class ConsoleScriptPatch
         }
         else if (Input.GetKey(KeyCode.UpArrow))
         {
-            if (!(Time.unscaledTime - _lastUpTime > 0.1f)) return;
+            if (!(Time.unscaledTime - _lastUpTime > Plugin.ConsoleScrollSpeed)) return;
             _lastUpTime = Time.unscaledTime;
             _index = (_index - 1 + _candidates.Length) % _candidates.Length;
         }
         else if (Input.GetKey(KeyCode.DownArrow))
         {
-            if (!(Time.unscaledTime - _lastDownTime > 0.1f)) return;
+            if (!(Time.unscaledTime - _lastDownTime > Plugin.ConsoleScrollSpeed)) return;
             _lastDownTime = Time.unscaledTime;
             _index = (_index + 1) % _candidates.Length;
         }
@@ -208,6 +235,7 @@ public class ConsoleScriptPatch
         _lastUpTime = 0f;
         _lastDownTime = 0f;
         _previousText = "";
+        _isInAutocomplete = false;
     }
 
     private static void ClampIndex()
@@ -220,14 +248,24 @@ public class ConsoleScriptPatch
 
     private static void DoReplace(ConsoleScript instance, string[] args)
     {
-        // 保存当前文本用于撤销
         _previousText = instance.input.text;
 
         var prefix = string.Join(" ", args.Take(args.Length - 1));
         var replacement = _candidates[_index];
-        instance.input.text = $"{prefix} {replacement}";
+        instance.input.text = string.IsNullOrEmpty(prefix)
+            ? replacement + " "
+            : $"{prefix} {replacement}";
         instance.SetCaretToEnd();
 
         _lastPartial = replacement;
+    }
+
+
+    [HarmonyPatch(typeof(TMP_InputField), "KeyPressed")]
+    [HarmonyPrefix]
+    private static bool BlockArrowNavigation(Event evt)
+    {
+        if (!IsAutocomplete()) return true;
+        return evt?.keyCode is not (KeyCode.UpArrow or KeyCode.DownArrow);
     }
 }

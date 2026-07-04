@@ -1,6 +1,6 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Bark.BetterCCL;
 using BepInEx;
 using CUCoreLib.Data;
@@ -12,13 +12,13 @@ using UnityEngine;
 namespace Quantum;
 
 [BepInPlugin(Guid, Name, Version)]
-[BepInDependency("net.cucorelib", "1.0.1")]
-[BepInDependency("org.cncumc.bark", "1.0.0")]
+[BepInDependency("net.cucorelib", "1.0.2")]
+[BepInDependency("org.cncumc.bark", "1.0.2")]
 public class Plugin : BaseUnityPlugin
 {
     public const string Guid = "org.cncumc.quantum";
     public const string Name = "Quantum";
-    public const string Version = "1.1.0";
+    public const string Version = "1.0.0";
     internal new static ManualLogSource Logger;
 
     private const string NameSpace = "quantum";
@@ -45,8 +45,10 @@ public class Plugin : BaseUnityPlugin
     public static bool AmmunitionUi = true;
     public static string BilingualName = "";
     public static KeyCode SortKey = KeyCode.E;
+    public static float ConsoleScrollSpeed = 0.1f;
     public static int MaxVisibleCandidates = 27;
     public static int MaxHistorySize = 100;
+    public static bool NoDemoTips = true;
 
     private readonly Harmony _harmony = new(Guid);
 
@@ -81,33 +83,48 @@ public class Plugin : BaseUnityPlugin
         BetterOptions.Bool(NameSpace, "no_observer", NameSpace, NoObserver, v => NoObserver = v);
 
         // UI
-        BetterOptions.Bool(NameSpace, "ammunition_ui", Setting.SettingCategory.Video, AmmunitionUi, v => AmmunitionUi = v);
-
-        // BilingualName: dropdown — 自动扫描游戏 Lang 目录下所有已加载的语言文件
-        var bilingualChoices = new List<ModDropdownChoice>();
-        var langDir = $"{Application.dataPath}/Lang";
-        if (Directory.Exists(langDir))
-            foreach (var file in Directory.GetFiles(langDir, "*.json"))
-            {
-                var code = Path.GetFileNameWithoutExtension(file);
-                // 注册每种语言的显示名称，供 CCL 自动解析
-                BetterLocale.SetDefault("EN", "option", $"quantum.video.bilingual_name{code}", code);
-                bilingualChoices.Add(new ModDropdownChoice(code, code));
-            }
-        var bilingualArr = bilingualChoices.ToArray();
-        BetterOptions.Dropdown(NameSpace, "bilingual_name", Setting.SettingCategory.Video,
-            0, bilingualArr,
-            i => BilingualName = i > 0 && i < bilingualArr.Length
-                ? bilingualArr[i].Key
-                : "");
-
+        BetterOptions.Bool(NameSpace, "ammunition_ui", Setting.SettingCategory.Video, AmmunitionUi,
+            v => AmmunitionUi = v);
+        RegisterBilingualOption();
         BetterOptions.Keybind(NameSpace, "sort_key", Setting.SettingCategory.Input, SortKey, k => SortKey = k);
-        BetterOptions.Int(NameSpace, "max_visible_candidates", Setting.SettingCategory.Video, MaxVisibleCandidates, 1, 200,
+        BetterOptions.Float(NameSpace, "console_scroll_speed", Setting.SettingCategory.Input,
+            ConsoleScrollSpeed, 0.01f, 0.2f,
+            v => ConsoleScrollSpeed = v,
+            v => (v * 1000f).ToString("F0") + "ms");
+        BetterOptions.Int(NameSpace, "max_visible_candidates", Setting.SettingCategory.Video,
+            MaxVisibleCandidates, 1, 200,
             v => MaxVisibleCandidates = v);
-        BetterOptions.Int(NameSpace, "max_history_size", Setting.SettingCategory.Video, MaxHistorySize, 10, 200,
+        BetterOptions.Int(NameSpace, "max_history_size", Setting.SettingCategory.Video,
+            MaxHistorySize, 10, 500,
             v => MaxHistorySize = v);
+        BetterOptions.Bool(NameSpace, "no_demo_tips", Setting.SettingCategory.Video, NoDemoTips, v => NoDemoTips = v);
 
         BetterLocale.Flush();
         _harmony.PatchAll();
+    }
+
+    private static void RegisterBilingualOption()
+    {
+        var choices = new List<ModDropdownChoice>();
+        var langDir = $"{Application.dataPath}/Lang";
+        try
+        {
+            if (Directory.Exists(langDir))
+                foreach (var file in Directory.GetFiles(langDir, "*.json"))
+                {
+                    var code = Path.GetFileNameWithoutExtension(file);
+                    BetterLocale.SetDefault("EN", "option", $"quantum.video.bilingual_name{code}", code);
+                    choices.Add(new ModDropdownChoice(code, code));
+                }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogWarning($"Failed to scan language directory '{langDir}': {ex.Message}");
+        }
+
+        var arr = choices.ToArray();
+        BetterOptions.Dropdown(NameSpace, "bilingual_name", Setting.SettingCategory.Video,
+            0, arr,
+            i => BilingualName = i > 0 && i < arr.Length ? arr[i].Key : "");
     }
 }
