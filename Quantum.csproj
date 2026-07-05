@@ -29,14 +29,14 @@
     <!-- CUCoreLib (CCL) -->
     <ItemGroup>
         <Reference Include="CUCoreLib">
-            <HintPath>$(PluginsDir)/CUCoreLib.dll</HintPath>
+            <HintPath>$(CUCoreLibDll)</HintPath>
         </Reference>
     </ItemGroup>
-
+    
     <!-- Bark -->
     <ItemGroup>
         <Reference Include="Bark">
-            <HintPath>$(PluginsDir)/Bark/Bark.dll</HintPath>
+            <HintPath>$(BarkDll)</HintPath>
         </Reference>
     </ItemGroup>
 
@@ -45,24 +45,15 @@
         <PackageReference Include="TinyPinyin.NetFramework" Version="1.0.2.2"/>
     </ItemGroup>
 
-    <!-- 游戏 DLL 引用 -->
     <ItemGroup>
-        <!-- 游戏主程序集 (必须) -->
         <Reference Include="Assembly-CSharp">
             <HintPath>$(ManagedDir)/Assembly-CSharp.dll</HintPath>
         </Reference>
-
-        <!-- Unity 引擎核心 (必须) -->
         <Reference Include="UnityEngine">
             <HintPath>$(ManagedDir)/UnityEngine.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine.CoreModule">
             <HintPath>$(ManagedDir)/UnityEngine.CoreModule.dll</HintPath>
-        </Reference>
-
-        <!-- Unity 常用模块 -->
-        <Reference Include="UnityEngine.GridModule">
-            <HintPath>$(ManagedDir)/UnityEngine.GridModule.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine.InputModule">
             <HintPath>$(ManagedDir)/UnityEngine.InputModule.dll</HintPath>
@@ -73,14 +64,8 @@
         <Reference Include="UnityEngine.PhysicsModule">
             <HintPath>$(ManagedDir)/UnityEngine.PhysicsModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.TilemapModule">
-            <HintPath>$(ManagedDir)/UnityEngine.TilemapModule.dll</HintPath>
-        </Reference>
         <Reference Include="UnityEngine.UIModule">
             <HintPath>$(ManagedDir)/UnityEngine.UIModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.UI">
-            <HintPath>$(ManagedDir)/UnityEngine.UI.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine.IMGUIModule">
             <HintPath>$(ManagedDir)/UnityEngine.IMGUIModule.dll</HintPath>
@@ -88,8 +73,6 @@
         <Reference Include="UnityEngine.TextRenderingModule">
             <HintPath>$(ManagedDir)/UnityEngine.TextRenderingModule.dll</HintPath>
         </Reference>
-
-        <!-- URP 渲染管线 -->
         <Reference Include="Unity.RenderPipelines.Core.Runtime">
             <HintPath>$(ManagedDir)/Unity.RenderPipelines.Core.Runtime.dll</HintPath>
         </Reference>
@@ -99,8 +82,10 @@
         <Reference Include="Unity.TextMeshPro">
             <HintPath>$(ManagedDir)/Unity.TextMeshPro.dll</HintPath>
         </Reference>
+        <Reference Include="UnityEngine.UI">
+            <HintPath>$(ManagedDir)/UnityEngine.UI.dll</HintPath>
+        </Reference>
     </ItemGroup>
-
     <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
         <PackageReference
                 Include="Microsoft.NETFramework.ReferenceAssemblies"
@@ -113,8 +98,18 @@
         <RequiredFilesToCopy>
             $(AssemblyName).dll;
         </RequiredFilesToCopy>
-
         <RequiredFoldersToCopy>
         </RequiredFoldersToCopy>
     </PropertyGroup>
+
+    <Target Name="CopyOutputDllsToPluginsFolder" AfterTargets="AfterBuild" Condition="'$(RequiredFilesToCopy)'!=''">
+        <MakeDir Directories="$(BepInExDir)/plugins/$(PluginDirName)" />
+        <CombinePath BasePath="$(OutDir)" Paths="$(RequiredFilesToCopy)">
+            <Output TaskParameter="CombinedPaths" ItemName="RequiredFilesToCopy_Combined" />
+        </CombinePath>
+        <Copy
+                SourceFiles="@(RequiredFilesToCopy_Combined)"
+                DestinationFolder="$(BepInExDir)/plugins/$(PluginDirName)"
+        />
+    </Target>
 </Project>

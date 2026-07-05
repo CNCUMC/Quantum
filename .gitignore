@@ -16,3 +16,4 @@ riderModule.iml
 *.suo
 *.user
 /Releases/
+Directory.Build.props
