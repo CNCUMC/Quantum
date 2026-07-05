@@ -26,7 +26,7 @@ public class ZhCnLangGenerator : ModLangGenBase
         // Config - Info
         Option("quantum.video.ctrl_to_expand", "Ctrl 更多信息", "按下Ctrl才显示更多信息");
         Option("quantum.video.favourited_item_durability_exhaustion_alert", "收藏品耐久警报阈值", "当收藏的物品耐久度低于此比例时发出警报（0 = 关闭）");
-        
+
         // Config - Item - Gun
         QOption("auto_rack", "自动上膛", "如果开启，当有弹药时，枪械将自动拉栓并保持拉栓状态");
         QOption("indestructible_gun", "不毁枪械", "如果开启，枪械将不会损坏");
@@ -34,13 +34,13 @@ public class ZhCnLangGenerator : ModLangGenBase
         QOption("never_jam", "永不卡壳", "如果开启，枪械将不会卡壳");
         QOption("no_casing", "无弹壳", "如果开启，枪械将不会弹出弹壳");
         QOption("recoilless", "无后座力", "如果开启，枪械将没有后坐力");
-        
+
         // Config - Mechanism
         QOption("dont_shit", "不排泄", "如果开启，昏迷时不再排泄");
-        
+
         // Config - Misc
         QOption("no_observer", "无观察者", "如果开启，再无观察者");
-        
+
         // Config - UI
         Option("quantum.video.ammunition_ui", "弹药UI", "在原枪械菜单的上方显示枪械剩余弹量和最大弹量");
         Option("quantum.video.bilingual_name", "双语名称", "设定后会在物品原名旁附加指定语言的翻译（如 EN / zh-CN / zh-TW），留空则只显示原名");
@@ -48,7 +48,7 @@ public class ZhCnLangGenerator : ModLangGenBase
         Option("quantum.input.console_scroll_speed", "控制台滚动速度", "长按上下键切换候选参数的速度（毫秒）");
         Option("quantum.video.max_visible_candidates", "最大候选数", "控制台参数候选列表最多显示的行数");
         Option("quantum.video.max_history_size", "历史记录上限", "控制台历史命令最多保留的条数");
-        Option("quantum.video.no_demo_tips", "隐藏试玩提示", "隐藏试玩版提示面板");
+        Option("quantum.video.no_demo_tips", "隐藏试玩提示", "隐藏试玩版提示文字");
 
         // UI - Sort
         QOther("ui.sort.mode.name", "名称");
@@ -81,7 +81,7 @@ public class ZhCnLangGenerator : ModLangGenBase
     {
         Option($"quantum.quantum.{key}", value, description);
     }
-    
+
     private void QLog(string key, string value)
     {
         Log($"quantum.{key}", value);

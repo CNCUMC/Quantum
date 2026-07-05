@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using HarmonyLib;
+using Quantum.ItemChange.Gun;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -106,7 +107,7 @@ public static class AmmunitionUi
 
     private static void UpdateAmmunitionUi()
     {
-        var realRemainingAmmunition = ItemChange.Gun.GunScriptPatch.HasOne ? _remainingAmmunition + 1 : _remainingAmmunition;
+        var realRemainingAmmunition = GunScriptPatch.HasOne ? _remainingAmmunition + 1 : _remainingAmmunition;
         if (_ammunitionText == null)
             return;
 

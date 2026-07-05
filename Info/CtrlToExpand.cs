@@ -226,9 +226,9 @@ public class CtrlToExpand
 
         return recipeBlocks.Count > 0
             ? TextUtil.White("\n" +
-                                 Locale("hover.info.recipe") +
-                                 "\n" +
-                                 string.Join("\n", recipeBlocks))
+                             Locale("hover.info.recipe") +
+                             "\n" +
+                             string.Join("\n", recipeBlocks))
             : null;
     }
 

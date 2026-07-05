@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using Bark.BetterCCL;
 using BepInEx;
-using CUCoreLib.Data;
 using BepInEx.Logging;
+using CUCoreLib.Data;
 using HarmonyLib;
 using Quantum.Lang;
 using UnityEngine;
@@ -19,9 +19,9 @@ public class Plugin : BaseUnityPlugin
     public const string Guid = "org.cncumc.quantum";
     public const string Name = "Quantum";
     public const string Version = "1.0.0";
-    internal new static ManualLogSource Logger;
 
-    private const string Ns = "quantum";
+    private const string NameSpace = "quantum";
+    internal new static ManualLogSource Logger;
 
     // Info
     public static bool CtrlToExpand = true;
@@ -43,7 +43,7 @@ public class Plugin : BaseUnityPlugin
 
     // UI
     public static bool AmmunitionUi = true;
-    public static string BilingualName = "";
+    public static string BilingualName = "EN";
     public static KeyCode SortKey = KeyCode.E;
     public static float ConsoleScrollSpeed = 0.1f;
     public static int MaxVisibleCandidates = 27;
@@ -92,26 +92,36 @@ public class Plugin : BaseUnityPlugin
         _harmony.PatchAll();
     }
 
-    // ── 注册辅助方法 ──
+    private static void BoolQ(string key, bool val, Action<bool> set)
+    {
+        BetterOptions.Bool(NameSpace, key, Name, val, set);
+    }
 
-    private static void BoolQ(string key, bool val, Action<bool> set) =>
-        BetterOptions.Bool(Ns, key, Ns, val, set);
+    private static void BoolV(string key, bool val, Action<bool> set)
+    {
+        BetterOptions.Bool(NameSpace, key, Setting.SettingCategory.Video, val, set);
+    }
 
-    private static void BoolV(string key, bool val, Action<bool> set) =>
-        BetterOptions.Bool(Ns, key, Setting.SettingCategory.Video, val, set);
+    private static void FloatV(string key, float val, float min, float max, Action<float> set, Func<float, string> fmt)
+    {
+        BetterOptions.Float(NameSpace, key, Setting.SettingCategory.Video, val, min, max, set, fmt);
+    }
 
-    private static void FloatV(string key, float val, float min, float max, Action<float> set, Func<float, string> fmt) =>
-        BetterOptions.Float(Ns, key, Setting.SettingCategory.Video, val, min, max, set, fmt);
+    private static void FloatI(string key, float val, float min, float max, Action<float> set, Func<float, string> fmt)
+    {
+        BetterOptions.Float(NameSpace, key, Setting.SettingCategory.Input, val, min, max, set, fmt);
+    }
 
-    private static void FloatI(string key, float val, float min, float max, Action<float> set, Func<float, string> fmt) =>
-        BetterOptions.Float(Ns, key, Setting.SettingCategory.Input, val, min, max, set, fmt);
+    private static void IntV(string key, int val, int min, int max, Action<int> set)
+    {
+        BetterOptions.Int(NameSpace, key, Setting.SettingCategory.Video, val, min, max, set);
+    }
 
-    private static void IntV(string key, int val, int min, int max, Action<int> set) =>
-        BetterOptions.Int(Ns, key, Setting.SettingCategory.Video, val, min, max, set);
+    private static void KeyI(string key, KeyCode val, Action<KeyCode> set)
+    {
+        BetterOptions.Keybind(NameSpace, key, Setting.SettingCategory.Input, val, set);
+    }
 
-    private static void KeyI(string key, KeyCode val, Action<KeyCode> set) =>
-        BetterOptions.Keybind(Ns, key, Setting.SettingCategory.Input, val, set);
-    
     private static void RegisterBilingualOption()
     {
         var choices = new List<ModDropdownChoice>();
@@ -132,8 +142,11 @@ public class Plugin : BaseUnityPlugin
         }
 
         var arr = choices.ToArray();
-        BetterOptions.Dropdown(Ns, "bilingual_name", Setting.SettingCategory.Video,
-            0, arr, 
-            i => BilingualName = i > 0 && i < arr.Length ? arr[i].Key : "");
+        var defaultIndex = Math.Max(0, Array.FindIndex(arr, c => c.Key == "EN"));
+        BetterOptions.Dropdown(NameSpace, "bilingual_name", Setting.SettingCategory.Video,
+            defaultIndex, arr,
+            i => BilingualName = i >= 0 && i < arr.Length
+                ? arr[i].Key
+                : "EN");
     }
 }

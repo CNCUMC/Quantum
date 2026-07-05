@@ -25,7 +25,10 @@ public static class ConsoleScriptPatch
     private static int MaxHistorySize => Plugin.MaxHistorySize;
     private static int MaxVisible => Plugin.MaxVisibleCandidates;
 
-    public static bool IsAutocomplete() => _isInAutocomplete;
+    public static bool IsAutocomplete()
+    {
+        return _isInAutocomplete;
+    }
 
     [HarmonyPatch(nameof(ConsoleScript.TryFinishCommandPart))]
     [HarmonyPrefix]

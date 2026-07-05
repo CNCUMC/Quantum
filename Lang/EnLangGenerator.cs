@@ -26,7 +26,7 @@ public class EnLangGenerator : ModLangGenBase
         // Config - Info
         Option("quantum.video.ctrl_to_expand", "Ctrl for more information", "Press Ctrl to show more information");
         Option("quantum.video.favourited_item_durability_exhaustion_alert", "Favourite Durability Alert Threshold", "Alert when favourited item durability falls below this ratio (0 = disabled)");
-        
+
         // Config - Item - Gun
         QOption("auto_rack", "Auto Rack", "If true, guns will automatically rack and stay racked when ammo is available");
         QOption("indestructible_gun", "Indestructible Gun", "If true, guns will not be destroyed");
@@ -34,13 +34,13 @@ public class EnLangGenerator : ModLangGenBase
         QOption("never_jam", "Never Jam", "If true, guns will never jam");
         QOption("no_casing", "No Shell Case", "If true, guns will not eject the cartridge casing");
         QOption("recoilless", "Recoilless", "If true, guns will not have recoil");
-        
+
         // Config - Mechanism
         QOption("dont_shit", "Don't Shit", "If true, you won't shit yourself when unconscious");
-        
+
         // Config - Misc
         QOption("no_observer", "No Observer", "If true, the world will not have observers");
-        
+
         // Config - UI
         Option("quantum.video.ammunition_ui", "Ammunition UI", "Display your ammunition in real time!");
         Option("quantum.video.bilingual_name", "Bilingual Name", "Appends a translation in the specified language (e.g. EN / zh-CN / zh-TW) to item names; leave empty for original only");
@@ -48,7 +48,7 @@ public class EnLangGenerator : ModLangGenBase
         Option("quantum.input.console_scroll_speed", "Console Scroll Speed", "Candidate switching speed when holding Up/Down (ms)");
         Option("quantum.video.max_visible_candidates", "Max Candidates", "Maximum number of candidate lines displayed in console autocomplete");
         Option("quantum.video.max_history_size", "History Size", "Maximum number of executed commands kept in console history");
-        Option("quantum.video.no_demo_tips", "No Demo Tips", "Hides the demo-version tips panel");
+        Option("quantum.video.no_demo_tips", "No Demo Tips", "Hides the demo-version tips text");
 
         // UI - Sort
         QOther("ui.sort.mode.name", "Name");
@@ -71,7 +71,7 @@ public class EnLangGenerator : ModLangGenBase
         // Log - ItemPatch
         QLog("item_patch.durability_exhaustion_alert", "{0} durability dropped to {1}%");
     }
-    
+
     private void QOther(string key, string value)
     {
         Other($"quantum.{key}", value);
@@ -81,7 +81,7 @@ public class EnLangGenerator : ModLangGenBase
     {
         Option($"quantum.quantum.{key}", value, description);
     }
-    
+
     private void QLog(string key, string value)
     {
         Log($"quantum.{key}", value);
