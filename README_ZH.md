@@ -7,7 +7,7 @@
 [GitHub](https://github.com/CNCUMC/Quantum) | [NexusMods](https://www.nexusmods.com/scavprototype/mods/365)
 
 _《[Casualties Unknown](https://store.steampowered.com/app/3624440/Casualties_Unknown_Demo/)》的便捷功能模组 —
-合成搜索、容器整理、枪械修改和玩法调整，全部可在游戏内 **Quantum** 设置标签页中配置。_
+合成搜索、容器整理、枪械修改和玩法调整，全部可在游戏内设置菜单中配置。_
 
 ---
 
@@ -47,7 +47,13 @@ _《[Casualties Unknown](https://store.steampowered.com/app/3624440/Casualties_U
 
 ## 设置
 
-所有选项位于游戏设置菜单的 **Quantum** 标签页（由 [CUCoreLib](https://github.com/CNCUMC/CUCoreLib) 驱动），修改即时生效。
+所有选项位于游戏设置菜单中（由 [CUCoreLib](https://github.com/CNCUMC/CUCoreLib) 驱动）：
+
+- **Quantum** 标签页 — 枪械修改、玩法调整、UI 开关
+- **Video** 标签页 — 信息显示、候选数量、试玩提示
+- **Input** 标签页 — 整理按键、控制台滚动速度
+
+修改即时生效。
 
 ## 本地化
 

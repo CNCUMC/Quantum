@@ -7,8 +7,8 @@
 [GitHub](https://github.com/CNCUMC/Quantum) | [NexusMods](https://www.nexusmods.com/scavprototype/mods/365)
 
 _A quality-of-life mod for [Casualties Unknown](https://store.steampowered.com/app/3624440/Casualties_Unknown_Demo/) —
-crafting search, container sorting, gun modifiers, and gameplay tweaks, all configurable from the in-game **Quantum**
-settings tab._
+crafting search, container sorting, gun modifiers, and gameplay tweaks, all configurable from the in-game settings
+menu._
 
 ---
 
@@ -48,8 +48,13 @@ settings tab._
 
 ## Settings
 
-All options are in the **Quantum** tab of the game's settings menu (powered
-by [CUCoreLib](https://github.com/CNCUMC/CUCoreLib)). Changes apply immediately.
+All options are in the game's settings menu (powered by [CUCoreLib](https://github.com/CNCUMC/CUCoreLib)):
+
+- **Quantum** tab — gun modifiers, gameplay tweaks, UI toggles
+- **Video** tab — info display, candidate limits, demo tips
+- **Input** tab — sort key, console scroll speed
+
+Changes apply immediately.
 
 ## Localization
 
