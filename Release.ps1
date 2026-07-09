@@ -46,8 +46,8 @@
 param(
     [string]$ModNamespace = "Quantum",
     [string]$ModDisplayName = "Quantum",
-    [string]$ModVersion = "1.1.0",
-    [int]$NexusModId = 0,
+    [string]$ModVersion = "1.0.0",
+    [int]$NexusModId = 365,
     [string]$Configuration = "Release",
     [string]$NexusApiKey = $env:NEXUS_API_KEY,
     [string]$GamePath,
