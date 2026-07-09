@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Bark.BetterCCL;
+using Bark.Tool;
 using BepInEx;
 using BepInEx.Logging;
 using CUCoreLib.Data;
@@ -13,7 +14,7 @@ namespace Quantum;
 
 [BepInPlugin(Guid, Name, Version)]
 [BepInDependency("net.cucorelib", "1.0.2")]
-[BepInDependency("org.cncumc.bark", "1.0.2")]
+[BepInDependency("org.cncumc.bark", "1.0.1")]
 public class Plugin : BaseUnityPlugin
 {
     public const string Guid = "org.cncumc.quantum";
@@ -90,6 +91,8 @@ public class Plugin : BaseUnityPlugin
 
         BetterLocale.Flush();
         _harmony.PatchAll();
+        
+        UpdateUtil.Check("CNCUMC/Quantum", Name, Version, Logger);
     }
 
     private static void BoolQ(string key, bool val, Action<bool> set)
