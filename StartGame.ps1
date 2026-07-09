@@ -112,6 +112,17 @@ catch
     exit 1
 }
 
+# 复制依赖 DLL（从项目 BepInEx/plugins/ 目录）
+$localPluginsDir = Join-Path $PSScriptRoot "BepInEx/plugins"
+if (Test-Path $localPluginsDir -PathType Container)
+{
+    Get-ChildItem $localPluginsDir -File -Recurse -Filter "*.dll" | ForEach-Object {
+        $destDep = Join-Path $pluginPath $_.Name
+        Copy-Item $_.FullName $destDep -Force
+        Write-ColoredMessage "正在复制依赖 DLL ""$($_.Name)"" 到 ""$destDep""。" Cyan
+    }
+}
+
 try
 {
     $destDocPath = [System.IO.Path]::Combine($bepInExPath, "plugins", $targetModFolder)
