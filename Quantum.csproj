@@ -48,6 +48,9 @@
         <Reference Include="Assembly-CSharp">
             <HintPath>$(ManagedDir)/Assembly-CSharp.dll</HintPath>
         </Reference>
+        <Reference Include="TinyPinyin">
+          <HintPath>BepInEx\plugins\TinyPinyin.dll</HintPath>
+        </Reference>
         <Reference Include="UnityEngine">
             <HintPath>$(ManagedDir)/UnityEngine.dll</HintPath>
         </Reference>

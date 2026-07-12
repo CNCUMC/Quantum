@@ -13,7 +13,7 @@ namespace Quantum.ItemChange;
 [HarmonyPatch(typeof(Item))]
 public static class ItemDescriptionPatch
 {
-    private const string LocaleKeyPre = "item.";
+    private const string LocaleKeyPre = "item_description_patch.";
 
     private static readonly Dictionary<string, Dictionary<string, string>> LangCache = new();
 
@@ -51,7 +51,7 @@ public static class ItemDescriptionPatch
         // 双语名称：在物品原名后附加指定语言的翻译
         var bilingualCode = Plugin.BilingualName?.Trim();
         if (!string.IsNullOrEmpty(bilingualCode)
-            && !string.Equals(bilingualCode, global::Locale.currentLangName, StringComparison.OrdinalIgnoreCase))
+            && !string.Equals(bilingualCode, Locale.currentLangName, StringComparison.OrdinalIgnoreCase))
         {
             var secondName = GetItemNameInLang(id, bilingualCode);
             if (!string.IsNullOrEmpty(secondName) && !info.fullName.Contains(secondName))
@@ -62,7 +62,7 @@ public static class ItemDescriptionPatch
             return string.IsNullOrEmpty(result.Trim())
                 ? null
                 : result.TrimEnd('\n');
-        result += Locale(id);
+        result += LocaleOther(id);
         result += "\n";
 
         return string.IsNullOrEmpty(result.Trim())
@@ -74,7 +74,9 @@ public static class ItemDescriptionPatch
     {
         // 尝试从缓存获取
         if (LangCache.TryGetValue(langCode, out var mainDict))
-            return mainDict?.TryGetValue(itemId, out var name) == true ? name : null;
+            return mainDict?.TryGetValue(itemId, out var name) == true
+                ? name
+                : null;
 
         // 加载语言文件
         var path = $"{Application.dataPath}/Lang/{langCode}.json";
@@ -89,7 +91,7 @@ public static class ItemDescriptionPatch
             var json = File.ReadAllText(path);
             var obj = JObject.Parse(json);
             mainDict = obj["main"]?.ToObject<Dictionary<string, string>>();
-            LangCache[langCode] = mainDict; // 可能�?null（JSON 中无 main 字段时）
+            LangCache[langCode] = mainDict;
         }
         catch
         {
@@ -97,7 +99,9 @@ public static class ItemDescriptionPatch
             return null;
         }
 
-        return mainDict?.TryGetValue(itemId, out var result) == true ? result : null;
+        return mainDict?.TryGetValue(itemId, out var result) == true 
+            ? result
+            : null;
     }
 
     private static string AppendIfMissing(string current, string addition)
@@ -112,7 +116,7 @@ public static class ItemDescriptionPatch
             : $"{current.TrimEnd()}\n\n{addition}";
     }
 
-    private static string Locale(string key, params object[] args)
+    private static string LocaleOther(string key, params object[] args)
     {
         return BetterLocale.GetOther($"{LocaleKeyPre}{key}", args);
     }

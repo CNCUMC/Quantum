@@ -13,7 +13,7 @@ namespace Quantum.Patch;
 [HarmonyPatch(typeof(PlayerCamera))]
 public static class PlayerCameraPatch
 {
-    private const string LocaleKeyPre = "log.player_camera_patch.";
+    private const string LocaleKeyPre = "player_camera_patch.";
 
     private static readonly Dictionary<string, string> PinyinCache = new();
     private static bool _pinyinInitialized;
@@ -199,14 +199,14 @@ public static class PlayerCameraPatch
 
         return true;
     }
-
-    private static string Locale(string key, params object[] args)
+    
+    private static string LocaleLog(string key, params object[] args)
     {
-        return BetterLocale.GetOther(key, args);
+        return BetterLocale.GetLog(key, args);
     }
 
     private static void Warning(string text, params object[] args)
     {
-        LogUtil.Warning(Locale(LocaleKeyPre + text, args), Plugin.Logger);
+        LogUtil.Warning(LocaleLog(LocaleKeyPre + text, args), Plugin.Logger);
     }
 }

@@ -39,6 +39,7 @@ public class Plugin : BaseUnityPlugin
 
     // Mechanism
     public static bool DontShit;
+    public static bool DontBiteLightbulb;
 
     // Misc
     public static bool NoObserver;
@@ -59,34 +60,40 @@ public class Plugin : BaseUnityPlugin
         new ZhCnLangGenerator().Initialize(Logger);
         new EnLangGenerator().Initialize(Logger);
 
-        // Info (Video tab)
-        BoolV("ctrl_to_expand", CtrlToExpand, v => CtrlToExpand = v);
-        FloatV("favourited_item_durability_exhaustion_alert", FavouritedItemDurabilityExhaustionAlert, 0f, 1f,
+        // Info
+        BoolVideo("ctrl_to_expand", CtrlToExpand, v => CtrlToExpand = v);
+        FloatVideo("favourited_item_durability_exhaustion_alert", FavouritedItemDurabilityExhaustionAlert, 0f, 1f,
             v => FavouritedItemDurabilityExhaustionAlert = v,
             v => Mathf.FloorToInt(v * 100f) + "%");
 
-        // Gun / Mechanism / Misc (Quantum tab)
-        BoolQ("auto_rack", AutoRack, v => AutoRack = v);
-        BoolQ("indestructible_gun", IndestructibleGun, v => IndestructibleGun = v);
-        BoolQ("infinite_ammunition", InfiniteAmmunition, v => InfiniteAmmunition = v);
-        BoolQ("never_jam", NeverJam, v => NeverJam = v);
-        BoolQ("no_casing", NoCasing, v => NoCasing = v);
-        BoolQ("recoilless", Recoilless, v => Recoilless = v);
-        BoolQ("dont_shit", DontShit, v => DontShit = v);
-        BoolQ("no_observer", NoObserver, v => NoObserver = v);
+        // Item
+        // Gun
+        BoolQuantum("auto_rack", AutoRack, v => AutoRack = v);
+        BoolQuantum("indestructible_gun", IndestructibleGun, v => IndestructibleGun = v);
+        BoolQuantum("infinite_ammunition", InfiniteAmmunition, v => InfiniteAmmunition = v);
+        BoolQuantum("never_jam", NeverJam, v => NeverJam = v);
+        BoolQuantum("no_casing", NoCasing, v => NoCasing = v);
+        BoolQuantum("recoilless", Recoilless, v => Recoilless = v);
+        
+        // Mechanism
+        BoolQuantum("dont_shit", DontShit, v => DontShit = v);
+        BoolQuantum("dont_bite_lightbulb", DontBiteLightbulb, v => DontBiteLightbulb = v);
+        
+        // Misc
+        BoolQuantum("no_observer", NoObserver, v => NoObserver = v);
 
         // UI
-        BoolV("ammunition_ui", AmmunitionUi, v => AmmunitionUi = v);
+        BoolVideo("ammunition_ui", AmmunitionUi, v => AmmunitionUi = v);
         RegisterBilingualOption();
-        KeyI("sort_key", SortKey, k => SortKey = k);
-        FloatI("console_scroll_speed", ConsoleScrollSpeed, 0.01f, 0.2f,
+        KeyInput("sort_key", SortKey, k => SortKey = k);
+        FloatInput("console_scroll_speed", ConsoleScrollSpeed, 0.01f, 0.2f,
             v => ConsoleScrollSpeed = v,
             v => (v * 1000f).ToString("F0") + "ms");
-        IntV("max_visible_candidates", MaxVisibleCandidates, 1, 200,
+        IntVideo("max_visible_candidates", MaxVisibleCandidates, 1, 200,
             v => MaxVisibleCandidates = v);
-        IntV("max_history_size", MaxHistorySize, 10, 500,
+        IntVideo("max_history_size", MaxHistorySize, 10, 500,
             v => MaxHistorySize = v);
-        BoolV("no_demo_tips", NoDemoTips, v => NoDemoTips = v);
+        BoolVideo("no_demo_tips", NoDemoTips, v => NoDemoTips = v);
 
         BetterLocale.Flush();
         _harmony.PatchAll();
@@ -94,32 +101,32 @@ public class Plugin : BaseUnityPlugin
         UpdateUtil.Check("CNCUMC/Quantum", Name, Version, Logger);
     }
 
-    private static void BoolQ(string key, bool val, Action<bool> set)
+    private static void BoolQuantum(string key, bool val, Action<bool> set)
     {
         BetterOptions.Bool(NameSpace, key, Name, val, set);
     }
 
-    private static void BoolV(string key, bool val, Action<bool> set)
+    private static void BoolVideo(string key, bool val, Action<bool> set)
     {
         BetterOptions.Bool(NameSpace, key, Setting.SettingCategory.Video, val, set);
     }
 
-    private static void FloatV(string key, float val, float min, float max, Action<float> set, Func<float, string> fmt)
+    private static void FloatVideo(string key, float val, float min, float max, Action<float> set, Func<float, string> fmt)
     {
         BetterOptions.Float(NameSpace, key, Setting.SettingCategory.Video, val, min, max, set, fmt);
     }
 
-    private static void FloatI(string key, float val, float min, float max, Action<float> set, Func<float, string> fmt)
+    private static void FloatInput(string key, float val, float min, float max, Action<float> set, Func<float, string> fmt)
     {
         BetterOptions.Float(NameSpace, key, Setting.SettingCategory.Input, val, min, max, set, fmt);
     }
 
-    private static void IntV(string key, int val, int min, int max, Action<int> set)
+    private static void IntVideo(string key, int val, int min, int max, Action<int> set)
     {
         BetterOptions.Int(NameSpace, key, Setting.SettingCategory.Video, val, min, max, set);
     }
 
-    private static void KeyI(string key, KeyCode val, Action<KeyCode> set)
+    private static void KeyInput(string key, KeyCode val, Action<KeyCode> set)
     {
         BetterOptions.Keybind(NameSpace, key, Setting.SettingCategory.Input, val, set);
     }

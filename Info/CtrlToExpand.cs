@@ -30,7 +30,7 @@ public class CtrlToExpand
 
         // Shift 按住时原版"按住Shift展开"消失，加上"松开Shift"替代
         var hint =
-            $"<color=#a2e8af><sprite index=2 tint=1><i>{Locale("key.shift_to_expand.down")}</i></color>\n";
+            $"<color=#a2e8af><sprite index=2 tint=1><i>{LocaleOther("key.shift_to_expand.down")}</i></color>\n";
         extraInfo = hint + extraInfo;
 
         if (string.IsNullOrEmpty(description))
@@ -54,7 +54,7 @@ public class CtrlToExpand
         if (BetterLocale.HasKeyOther($"hover.{item.id}"))
         {
             result += "\n";
-            result += Locale($"hover.{item.id}");
+            result += LocaleOther($"hover.{item.id}");
             result += "\n\n";
         }
 
@@ -63,8 +63,8 @@ public class CtrlToExpand
         var showRecipe = !needCtrl || ctrlHeld;
 
         var ctrlHint = ctrlHeld
-            ? Locale("key.ctrl_to_expand.down")
-            : Locale("key.ctrl_to_expand.up");
+            ? LocaleOther("key.ctrl_to_expand.down")
+            : LocaleOther("key.ctrl_to_expand.up");
         if (needCtrl) result += $"<color=#a2e8af><sprite index=2 tint=1><i>{ctrlHint}</i></color>\n";
 
         if (showRecipe && !string.IsNullOrEmpty(recipeInfo))
@@ -72,25 +72,25 @@ public class CtrlToExpand
 
         // 技术标志（始终显示）
         result += info.usable
-            ? TextUtil.Green("? " + Locale("hover.info.usable.true"))
-            : TextUtil.Red("X  " + Locale("hover.info.usable.false"));
+            ? TextUtil.Green("? " + LocaleOther("hover.info.usable.true"))
+            : TextUtil.Red("X  " + LocaleOther("hover.info.usable.false"));
         result += "\n";
 
         result += info.usableOnLimb
-            ? TextUtil.Green("? " + Locale("hover.info.usable_on_limb.true"))
-            : TextUtil.Red("X  " + Locale("hover.info.usable_on_limb.false"));
+            ? TextUtil.Green("? " + LocaleOther("hover.info.usable_on_limb.true"))
+            : TextUtil.Red("X  " + LocaleOther("hover.info.usable_on_limb.false"));
         result += "\n";
 
         result += info.autoAttack
-            ? Locale("hover.info.auto_attack") + "\n"
+            ? LocaleOther("hover.info.auto_attack") + "\n"
             : null;
 
         result += info.usableWithLMB
-            ? Locale("hover.info.usable_with_lrb") + "\n"
+            ? LocaleOther("hover.info.usable_with_lrb") + "\n"
             : null;
 
         result += info.ignoreDepression
-            ? TextUtil.Color(Locale("hover.info.ignore_depression"), "#FFFB91") + "\n"
+            ? TextUtil.Color(LocaleOther("hover.info.ignore_depression"), "#FFFB91") + "\n"
             : null;
 
         return string.IsNullOrEmpty(result.Trim())
@@ -138,17 +138,17 @@ public class CtrlToExpand
                 if (!ri.specific)
                 {
                     if (ri.isLiquid)
-                        nameLine = global::Locale.GetOther("craftanyliquid");
+                        nameLine = Locale.GetOther("craftanyliquid");
                     else if (ri.quality is { id: "hammering" or "cutting" })
-                        nameLine = global::Locale.GetOther("craftanytool");
+                        nameLine = Locale.GetOther("craftanytool");
                     else
-                        nameLine = global::Locale.GetOther("craftanyitem");
+                        nameLine = Locale.GetOther("craftanyitem");
                 }
                 else
                 {
                     nameLine = ri.isLiquid
-                        ? global::Locale.GetOther(ri.specificId)
-                        : global::Locale.GetItem(ri.specificId);
+                        ? Locale.GetOther(ri.specificId)
+                        : Locale.GetItem(ri.specificId);
                 }
 
                 if (count > 1)
@@ -162,7 +162,7 @@ public class CtrlToExpand
                     {
                         case false when ri.quality != null:
                         {
-                            var q = global::Locale.GetOther("craftliquidquality")
+                            var q = Locale.GetOther("craftliquidquality")
                                 .Replace("<1>", ri.quality.amount.ToString("0.#"))
                                 .Replace("<2>", ri.quality.LocaleName);
                             constraints.Add(q);
@@ -170,7 +170,7 @@ public class CtrlToExpand
                         }
                         case true when ri.minimumCondition > 0f:
                         {
-                            var m = global::Locale.GetOther("craftml")
+                            var m = Locale.GetOther("craftml")
                                 .Replace("<>", ri.minimumCondition.ToString("0.#"));
                             constraints.Add(m);
                             break;
@@ -181,7 +181,7 @@ public class CtrlToExpand
                 {
                     if (!ri.specific && ri.quality != null)
                     {
-                        var q = global::Locale.GetOther("craftitemquality")
+                        var q = Locale.GetOther("craftitemquality")
                             .Replace("<1>", ri.quality.amount.ToString("0.#"))
                             .Replace("<2>", ri.quality.LocaleName);
                         constraints.Add(q);
@@ -194,8 +194,8 @@ public class CtrlToExpand
                                     Math.Abs(kvp.Key.amount - ri.quality.amount) < 0.001f);
                             if (example.Value != null)
                             {
-                                var ex = global::Locale.GetOther("craftexample")
-                                    .Replace("<>", global::Locale.GetItem(example.Value));
+                                var ex = Locale.GetOther("craftexample")
+                                    .Replace("<>", Locale.GetItem(example.Value));
                                 constraints.Add(ex);
                             }
                         }
@@ -203,7 +203,7 @@ public class CtrlToExpand
 
                     if (ri.minimumCondition > 0f)
                     {
-                        var c = global::Locale.GetOther("craftcondition")
+                        var c = Locale.GetOther("craftcondition")
                             .Replace("<>",
                                 PlayerCamera.ConditionToColorCode(ri.minimumCondition) +
                                 (ri.minimumCondition * 100f).ToString("0.#") +
@@ -226,7 +226,7 @@ public class CtrlToExpand
 
         return recipeBlocks.Count > 0
             ? TextUtil.White("\n" +
-                             Locale("hover.info.recipe") +
+                             LocaleOther("hover.info.recipe") +
                              "\n" +
                              string.Join("\n", recipeBlocks))
             : null;
@@ -256,7 +256,7 @@ public class CtrlToExpand
         return list ?? [];
     }
 
-    private static string Locale(string key, params object[] args)
+    private static string LocaleOther(string key, params object[] args)
     {
         return BetterLocale.GetOther(key, args);
     }
