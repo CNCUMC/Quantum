@@ -135,6 +135,10 @@ public static class AmmunitionUi
             _ammunitionText.color = Color.black;
             _ammunitionText.text = "\u221e";
         }
+        
+        _ammunitionText.alpha = HiddenHud.Hidden 
+            ? 0f
+            : 1f;
     }
 
     private static void SyncVisibility(GameObject gunMenu)
