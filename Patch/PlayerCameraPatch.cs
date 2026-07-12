@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Bark.BetterCCL;
 using Bark.Tool;
@@ -12,7 +11,6 @@ using Object = UnityEngine.Object;
 namespace Quantum.Patch;
 
 [HarmonyPatch(typeof(PlayerCamera))]
-[SuppressMessage("ReSharper", "InconsistentNaming")]
 public static class PlayerCameraPatch
 {
     private const string LocaleKeyPre = "log.player_camera_patch.";

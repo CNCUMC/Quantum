@@ -1,11 +1,9 @@
-using System.Diagnostics.CodeAnalysis;
 using HarmonyLib;
 using Quantum.UI;
 
 namespace Quantum.ItemChange.Gun;
 
 [HarmonyPatch(typeof(GunScript))]
-[SuppressMessage("ReSharper", "InconsistentNaming")]
 public static class GunScriptPatch
 {
     internal static bool HasOne;

@@ -14,12 +14,12 @@ namespace Quantum;
 
 [BepInPlugin(Guid, Name, Version)]
 [BepInDependency("net.cucorelib", "1.0.2")]
-[BepInDependency("org.cncumc.bark", "1.0.1")]
+[BepInDependency("org.cncumc.bark", "1.0.3")]
 public class Plugin : BaseUnityPlugin
 {
     public const string Guid = "org.cncumc.quantum";
     public const string Name = "Quantum";
-    public const string Version = "1.0.0";
+    public const string Version = "1.0.1";
 
     private const string NameSpace = "quantum";
     internal new static ManualLogSource Logger;

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using HarmonyLib;
@@ -9,7 +8,6 @@ using UnityEngine;
 namespace Quantum.Patch;
 
 [HarmonyPatch(typeof(ConsoleScript))]
-[SuppressMessage("ReSharper", "InconsistentNaming")]
 public static class ConsoleScriptPatch
 {
     private static string[] _candidates = [];
