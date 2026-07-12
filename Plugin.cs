@@ -38,8 +38,8 @@ public class Plugin : BaseUnityPlugin
     public static bool Recoilless;
 
     // Mechanism
-    public static bool DontShit;
     public static bool DontBiteLightbulb;
+    public static bool DontShit;
 
     // Misc
     public static bool NoObserver;
@@ -47,11 +47,12 @@ public class Plugin : BaseUnityPlugin
     // UI
     public static bool AmmunitionUi = true;
     public static string BilingualName = "EN";
-    public static KeyCode SortKey = KeyCode.E;
     public static float ConsoleScrollSpeed = 0.01f;
+    public static KeyCode HiddenHud = KeyCode.F1;
     public static int MaxVisibleCandidates = 27;
     public static int MaxHistorySize = 100;
     public static bool NoDemoTips = true;
+    public static KeyCode SortKey = KeyCode.E;
 
     public void Awake()
     {
@@ -85,14 +86,12 @@ public class Plugin : BaseUnityPlugin
         // UI
         VideoBool("ammunition_ui", AmmunitionUi, v => AmmunitionUi = v);
         RegisterBilingualOption();
-        InputKeybind("sort_key", SortKey, k => SortKey = k);
-        InputFloat("console_scroll_speed", ConsoleScrollSpeed, 0.00001f, 0.1f, v => ConsoleScrollSpeed = v,
-            v => (v * 1000f).ToString("F2") + "\nms");
-        VideoFloat("max_visible_candidates", MaxVisibleCandidates, 1f, 50f,
-            v => MaxVisibleCandidates = Convert.ToInt32(v), v => v.ToString("F0"));
-        VideoFloat("max_history_size", MaxHistorySize, 1f, 500f, v => MaxHistorySize = Convert.ToInt32(v),
-            v => v.ToString("F0"));
+        InputFloat("console_scroll_speed", ConsoleScrollSpeed, 0.0001f, 0.01f, v => ConsoleScrollSpeed = v, v => (v * 1000f).ToString("F1") + "ms");
+        InputKeybind("hidden_hud", HiddenHud, k => HiddenHud = k);
+        VideoFloat("max_visible_candidates", MaxVisibleCandidates, 1f, 50f, v => MaxVisibleCandidates = Convert.ToInt32(v), v => v.ToString("F0"));
+        VideoFloat("max_history_size", MaxHistorySize, 1f, 500f, v => MaxHistorySize = Convert.ToInt32(v), v => v.ToString("F0"));
         VideoBool("no_demo_tips", NoDemoTips, v => NoDemoTips = v);
+        InputKeybind("sort_key", SortKey, k => SortKey = k);
 
         BetterLocale.Flush();
         _harmony.PatchAll();
