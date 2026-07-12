@@ -86,7 +86,8 @@ public class Plugin : BaseUnityPlugin
         // UI
         VideoBool("ammunition_ui", AmmunitionUi, v => AmmunitionUi = v);
         RegisterBilingualOption();
-        InputFloat("console_scroll_speed", ConsoleScrollSpeed, 0.0001f, 0.01f, v => ConsoleScrollSpeed = v, v => (v * 1000f).ToString("F1") + "ms");
+        InputFloat("console_scroll_speed", ConsoleScrollSpeed, 0.0001f, 0.01f, v => ConsoleScrollSpeed = v,
+            v => (v * 1000f).ToString("F1") + "ms");
         InputKeybind("hidden_hud", HiddenHud, k => HiddenHud = k);
         VideoFloat("max_visible_candidates", MaxVisibleCandidates, 1f, 50f, v => MaxVisibleCandidates = Convert.ToInt32(v), v => v.ToString("F0"));
         VideoFloat("max_history_size", MaxHistorySize, 1f, 500f, v => MaxHistorySize = Convert.ToInt32(v), v => v.ToString("F0"));
