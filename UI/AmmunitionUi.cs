@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Bark.Tool;
 using HarmonyLib;
 using Quantum.ItemChange.Gun;
 using TMPro;
@@ -31,21 +32,26 @@ public static class AmmunitionUi
     {
         if (!Plugin.AmmunitionUi) return;
 
-        var handSlot = __instance.body.handSlot;
-        if (!__instance.body.HoldingItem(handSlot))
+        var handSlot = InventoryUtil.GetHandSlot();
+        if (InventoryUtil.IsSlotEmpty(handSlot))
         {
             Destroy();
             return;
         }
 
-        var item = __instance.body.GetItem(handSlot);
-        if (!item.Stats.HasTag("gun"))
+        var item = InventoryUtil.GetItemInHand();
+        if (item == null || item.Stats == null || !item.Stats.HasTag("gun"))
         {
             Destroy();
             return;
         }
 
         var component = item.GetComponent<GunScript>();
+        if (component == null)
+        {
+            Destroy();
+            return;
+        }
 
         _remainingAmmunition = component.roundsInMag;
         _maximumAmmunition = component.magCapacity;

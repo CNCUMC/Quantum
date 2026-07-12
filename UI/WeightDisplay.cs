@@ -11,7 +11,7 @@ public static class WeightDisplay
     [HarmonyPostfix]
     private static void HandleRadialMenuPostfix(PlayerCamera __instance)
     {
-        if (__instance.weightText == null || __instance.body == null)
+        if (!__instance.weightText || !__instance.body)
             return;
 
         var totalValue = InventoryUtil.GetAllItemInfosThorough().Sum(info => info.value);

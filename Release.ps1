@@ -46,7 +46,7 @@
 param(
     [string]$ModNamespace = "Quantum",
     [string]$ModDisplayName = "Quantum",
-    [string]$ModVersion = "1.0.0",
+    [string]$ModVersion = "1.0.1",
     [int]$NexusModId = 365,
     [string]$Configuration = "Release",
     [string]$NexusApiKey = $env:NEXUS_API_KEY,

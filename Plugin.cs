@@ -23,6 +23,7 @@ public class Plugin : BaseUnityPlugin
 
     private const string NameSpace = "quantum";
     internal new static ManualLogSource Logger;
+    private readonly Harmony _harmony = new(Guid);
 
     // Info
     public static bool CtrlToExpand = true;
@@ -37,7 +38,7 @@ public class Plugin : BaseUnityPlugin
     public static bool Recoilless;
 
     // Mechanism
-    public static bool DontShit = true;
+    public static bool DontShit;
 
     // Misc
     public static bool NoObserver;
@@ -50,8 +51,6 @@ public class Plugin : BaseUnityPlugin
     public static int MaxVisibleCandidates = 27;
     public static int MaxHistorySize = 100;
     public static bool NoDemoTips = true;
-
-    private readonly Harmony _harmony = new(Guid);
 
     public void Awake()
     {

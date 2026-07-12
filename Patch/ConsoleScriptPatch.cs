@@ -130,73 +130,78 @@ public static class ConsoleScriptPatch
             return;
         }
 
-        if (args.Length == 1 && !string.IsNullOrEmpty(args[0]))
+        switch (args.Length)
         {
-            var matchedCmds = ConsoleScript.Search(args[0]);
-            if (matchedCmds == null || matchedCmds.Count == 0)
+            case 1 when !string.IsNullOrEmpty(args[0]):
             {
+                var matchedCommands = ConsoleScript.Search(args[0]);
+                if (matchedCommands == null || matchedCommands.Count == 0)
+                {
+                    ClearState();
+                    return;
+                }
+
+                _isInAutocomplete = true;
+                var matchedNames = matchedCommands.Select(c => c.name).ToArray();
+                var partial = args[0];
+
+                if (_cmdName != "!" || _lastPartial != partial)
+                {
+                    _cmdName = "!";
+                    _paramIdx = -1;
+                    _candidates = matchedNames;
+                    _lastPartial = partial;
+                    _index = 0;
+                }
+
+                break;
+            }
+            case >= 2 when !string.IsNullOrEmpty(args[0]):
+            {
+                var cmd = ConsoleScript.SearchExact(args[0]);
+                if (cmd?.argAutofill == null)
+                {
+                    ClearState();
+                    return;
+                }
+
+                var paramIdx = args.Length - 2;
+                if (!cmd.argAutofill.TryGetValue(paramIdx, out var fills))
+                {
+                    ClearState();
+                    return;
+                }
+
+                _isInAutocomplete = true;
+
+                var partial = args[args.Length - 1];
+                var filteredFills = ConsoleScript.SearchArgumentAutofill(partial, fills);
+                // 追加模糊点匹配：输入 "xX" 匹配 "xxx.XXX"
+                var fuzzyMatches = fills
+                    .Where(f => FuzzyDotMatch(f, partial))
+                    .Except(filteredFills);
+                filteredFills = filteredFills.Concat(fuzzyMatches).ToList();
+
+                if (_cmdName != args[0] || _paramIdx != paramIdx)
+                {
+                    _cmdName = args[0];
+                    _paramIdx = paramIdx;
+                    _candidates = filteredFills.ToArray();
+                    _lastPartial = partial;
+                    _index = 0;
+                }
+                else if (_lastPartial != partial)
+                {
+                    _candidates = filteredFills.ToArray();
+                    _lastPartial = partial;
+                    ClampIndex();
+                }
+
+                break;
+            }
+            default:
                 ClearState();
                 return;
-            }
-
-            _isInAutocomplete = true;
-            var matchedNames = matchedCmds.Select(c => c.name).ToArray();
-            var partial = args[0];
-
-            if (_cmdName != "!" || _lastPartial != partial)
-            {
-                _cmdName = "!";
-                _paramIdx = -1;
-                _candidates = matchedNames;
-                _lastPartial = partial;
-                _index = 0;
-            }
-        }
-        else if (args.Length >= 2 && !string.IsNullOrEmpty(args[0]))
-        {
-            var cmd = ConsoleScript.SearchExact(args[0]);
-            if (cmd?.argAutofill == null)
-            {
-                ClearState();
-                return;
-            }
-
-            var paramIdx = args.Length - 2;
-            if (!cmd.argAutofill.TryGetValue(paramIdx, out var fills))
-            {
-                ClearState();
-                return;
-            }
-
-            _isInAutocomplete = true;
-
-            var partial = args[args.Length - 1];
-            var filteredFills = ConsoleScript.SearchArgumentAutofill(partial, fills);
-            // 追加模糊点匹配：输入 "xX" 匹配 "xxx.XXX"
-            var fuzzyMatches = fills
-                .Where(f => FuzzyDotMatch(f, partial))
-                .Except(filteredFills);
-            filteredFills = filteredFills.Concat(fuzzyMatches).ToList();
-
-            if (_cmdName != args[0] || _paramIdx != paramIdx)
-            {
-                _cmdName = args[0];
-                _paramIdx = paramIdx;
-                _candidates = filteredFills.ToArray();
-                _lastPartial = partial;
-                _index = 0;
-            }
-            else if (_lastPartial != partial)
-            {
-                _candidates = filteredFills.ToArray();
-                _lastPartial = partial;
-                ClampIndex();
-            }
-        }
-        else
-        {
-            ClearState();
-            return;
         }
 
         if ((Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
