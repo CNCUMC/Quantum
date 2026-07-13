@@ -1,6 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
+using Bark.BetterCCL;
 using Bark.Tool;
+using BepInEx.Bootstrap;
 using HarmonyLib;
+using Unity.Profiling;
 using UnityEngine;
 
 namespace Quantum.UI;
@@ -8,6 +12,7 @@ namespace Quantum.UI;
 [HarmonyPatch(typeof(PlayerCamera))]
 public static class DebugScreen
 {
+    private const string LocaleKeyPre = "debug_screen.";
     public static bool Hidden = true;
 
     private static float _currentX;
@@ -16,6 +21,28 @@ public static class DebugScreen
     private static MonoBehaviour _guiHelper;
     private static readonly List<string> _leftText = [];
     private static readonly List<string> _rightText = [];
+    
+    private static readonly Assembly _bepInExAssembly = typeof(BepInEx.Paths).Assembly;
+
+    private static void BuildText()
+    {
+        LeftHead();
+        Profiler();
+    }
+    
+    private static void LeftHead()
+    {
+        AddLeftText($"Casualties Unknown Demo v{Application.version}");
+        AddLeftText($"BepInEx v{_bepInExAssembly.GetName().Version}");
+        AddLeftTextLocale("loading_mod_list", Chainloader.PluginInfos.Count);
+        AddLeftLine();
+    }
+    
+    private static void Profiler()
+    {
+        AddLeftTextLocale("profiler.memory", ProfilerRecorder.StartNew(ProfilerCategory.Memory, "Used Memory").CurrentValue);
+        AddLeftLine();
+    }
 
     [HarmonyPatch("Update")]
     [HarmonyPostfix]
@@ -43,7 +70,7 @@ public static class DebugScreen
             if (Hidden && _currentX <= -PanelWidth + 1f) return;
 
             GUI.skin.font = TextUtil.Unifont;
-            
+
             var height = Screen.height;
 
             GUI.color = new Color(0f, 0f, 0f, 0.7f);
@@ -69,6 +96,26 @@ public static class DebugScreen
     {
         _rightText.Add(text);
     }
+    
+    public static void AddLeftLine()
+    {
+        AddLeftText("");
+    }
+
+    public static void AddRightLine()
+    {
+        AddRightText("");
+    }
+
+    private static void AddLeftTextLocale(string text, params object[] args)
+    {
+        _leftText.Add(LocaleOther(text, args));
+    }
+    
+    private static void AddRightTextLocale(string text, params object[] args)
+    {
+        _rightText.Add(LocaleOther(text, args));
+    }
 
     private static void RefreshText()
     {
@@ -76,13 +123,9 @@ public static class DebugScreen
         _rightText.Clear();
         BuildText();
     }
-
-    private static void BuildText()
+    
+    private static string LocaleOther(string key, params object[] args)
     {
-        for (var i = 0; i < 10; i++)
-        {
-            AddLeftText("Left测试!");
-            AddRightText("Right测试!");
-        }
+        return BetterLocale.GetOther(LocaleKeyPre + key, args);
     }
 }

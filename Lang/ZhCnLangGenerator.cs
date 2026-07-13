@@ -65,7 +65,11 @@ public class ZhCnLangGenerator : ModLangGenBase
         Other("key.shift_to_expand.down", "松开Shift折叠");
         Other("key.ctrl_to_expand.up", "按住Ctrl展开更多信息");
         Other("key.ctrl_to_expand.down", "松开Ctrl折叠更多信息");
-
+                
+        // DebugScreen
+        Other("debug_screen.loading_mod_list", "加载模组列表: {0}");
+        Other("debug_screen.profiler.memory", "已使用内存: {0}");
+        
         // Log
         // PlayerCameraPatch
         Log("player_camera_patch.pinyin.library.not_found", "TinyPinyin 库未加载 — 拼音搜索已禁用");

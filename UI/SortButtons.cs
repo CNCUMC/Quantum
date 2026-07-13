@@ -170,18 +170,18 @@ public static class SortButtons
         AddOrderClickEvent(_orderButton, camera);
 
         AddTooltip(_sortButton,
-            Locale("ui.sort.mode_tip"),
-            Locale("ui.sort.mode_desc", GetSortModeLabel(_currentSortMode)));
+            LocaleOther("ui.sort.mode_tip"),
+            LocaleOther("ui.sort.mode_desc", GetSortModeLabel(_currentSortMode)));
 
         AddTooltip(_executeButton,
-            Locale("ui.sort.execute_tip"),
-            Locale("ui.sort.execute_desc"));
+            LocaleOther("ui.sort.execute_tip"),
+            LocaleOther("ui.sort.execute_desc"));
 
         AddTooltip(_orderButton,
-            Locale("ui.sort.order_tip"),
+            LocaleOther("ui.sort.order_tip"),
             _currentSortAscending
-                ? Locale("ui.sort.ascending")
-                : Locale("ui.sort.descending"));
+                ? LocaleOther("ui.sort.ascending")
+                : LocaleOther("ui.sort.descending"));
     }
 
     private static void DestroySortButtons()
@@ -354,10 +354,10 @@ public static class SortButtons
                     : "\u2193";
 
             AddTooltip(_orderButton,
-                Locale("ui.sort.order_tip"),
+                LocaleOther("ui.sort.order_tip"),
                 _currentSortAscending
-                    ? Locale("ui.sort.ascending")
-                    : Locale("ui.sort.descending"));
+                    ? LocaleOther("ui.sort.ascending")
+                    : LocaleOther("ui.sort.descending"));
 
             camera.PlayUISound(PlayerCamera.UISoundType.Click);
         });
@@ -368,9 +368,9 @@ public static class SortButtons
     {
         return mode switch
         {
-            SortMode.Name => Locale("ui.sort.mode.name"),
-            SortMode.Value => Locale("ui.sort.mode.value"),
-            SortMode.Weight => Locale("ui.sort.mode.weight"),
+            SortMode.Name => LocaleOther("ui.sort.mode.name"),
+            SortMode.Value => LocaleOther("ui.sort.mode.value"),
+            SortMode.Weight => LocaleOther("ui.sort.mode.weight"),
             _ => "?"
         };
     }
@@ -387,38 +387,38 @@ public static class SortButtons
         }
 
         AddTooltip(_sortButton,
-            Locale("ui.sort.mode_tip"),
-            Locale("ui.sort.mode_desc", GetSortModeLabel(_currentSortMode)));
+            LocaleOther("ui.sort.mode_tip"),
+            LocaleOther("ui.sort.mode_desc", GetSortModeLabel(_currentSortMode)));
     }
 
     private static void UpdateOrderButtonText()
     {
         AddTooltip(_orderButton,
-            Locale("ui.sort.order_tip"),
+            LocaleOther("ui.sort.order_tip"),
             _currentSortAscending
-                ? Locale("ui.sort.ascending")
-                : Locale("ui.sort.descending"));
+                ? LocaleOther("ui.sort.ascending")
+                : LocaleOther("ui.sort.descending"));
     }
 
     private static void ShowSortNotification(bool noChange)
     {
         var modeLabel = _currentSortMode switch
         {
-            SortMode.Name => Locale("ui.sort.mode.name"),
-            SortMode.Value => Locale("ui.sort.mode.value"),
-            SortMode.Weight => Locale("ui.sort.mode.weight"),
+            SortMode.Name => LocaleOther("ui.sort.mode.name"),
+            SortMode.Value => LocaleOther("ui.sort.mode.value"),
+            SortMode.Weight => LocaleOther("ui.sort.mode.weight"),
             _ => ""
         };
         var orderLabel = _currentSortAscending
-            ? Locale("ui.sort.ascending")
-            : Locale("ui.sort.descending");
+            ? LocaleOther("ui.sort.ascending")
+            : LocaleOther("ui.sort.descending");
 
         Alert(noChange
-            ? Locale("ui.sort.no_change")
-            : Locale("ui.sort.completed", modeLabel, orderLabel));
+            ? LocaleOther("ui.sort.no_change")
+            : LocaleOther("ui.sort.completed", modeLabel, orderLabel));
     }
 
-    private static string Locale(string key, params object[] args)
+    private static string LocaleOther(string key, params object[] args)
     {
         return BetterLocale.GetOther(key, args);
     }
