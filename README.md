@@ -30,6 +30,7 @@ menu._
 | **Don't Shit**           | No defecation while unconscious                                                              |
 | **Tab / Esc Close All**  | One key closes all open UI panels (crafting, wound view, trade)                              |
 | **Hide Demo Tips**       | Hides the demo-version tips panel                                                            |
+| **Debug Screen (F3)**    | Slide-out panels with game info, profiler, world data, and system info. Configurable speed.  |
 
 ## Requirements
 
@@ -42,9 +43,8 @@ menu._
 1. Install BepInEx 5.x for Casualties Unknown.
 2. Install [CUCoreLib](https://github.com/jimmyking9999999/CUCoreLib) — place `CUCoreLib.dll` into `BepInEx/plugins/`.
 3. Install [Bark](https://github.com/CNCUMC/Bark) — place `Bark.dll` into `BepInEx/plugins/Bark/`.
-4. Download `Quantum`.
-5. Extract to your game directory into `BepInEx/plugins/Quantum/`.
-6. Launch the game. The **Quantum** tab appears in Settings.
+4. Install `Quantum`.
+5. Launch the game. The **Quantum** tab appears in Settings.
 
 ## Settings
 
@@ -52,35 +52,8 @@ All options are in the game's settings menu (powered by [CUCoreLib](https://gith
 
 - **Quantum** tab — gun modifiers, gameplay tweaks, UI toggles
 - **Video** tab — info display, candidate limits, demo tips
-- **Input** tab — sort key, console scroll speed
-
-Changes apply immediately.
-
-## Localization
-
-English and Simplified Chinese are built in. To add more languages:
-
-1. Run `createLocale` in the in-game console to generate `EN.json` in `BepInEx/config/CUCoreLib/Locales/`.
-2. Copy `EN.json` → `{languageCode}.json`, translate the values, and restart.
-
-## Project Structure
-
-```
-Quantum/
-├── Plugin.cs                      # Entry point + CCL settings registration
-├── Info/                          # Ctrl expand, durability alert
-├── ItemChange/                    # Item description + bilingual names
-│   └── Gun/                       # Gun modifier patches
-├── Lang/                          # Localization generators (EN / zh-CN)
-├── Mechanism/                     # Don't Shit
-├── Misc/                          # No Observer
-├── Patch/                         # Console autocomplete, pinyin search
-├── UI/                            # Ammo HUD, sort buttons, weight, input handling
-├── BepInEx/plugins/               # TinyPinyin.dll dependency
-├── README.md / README_ZH.md       # Documentation
-└── CHANGELOG.md / CHANGELOG_ZH.md
-```
+- **Input** tab — sort key, console scroll speed, debug screen speed
 
 ## License
 
-MIT
+LGPL v3

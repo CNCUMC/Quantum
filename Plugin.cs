@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Bark.BetterCCL;
 using Bark.Tool;
 using BepInEx;
@@ -9,7 +8,6 @@ using BepInEx.Logging;
 using CUCoreLib.Data;
 using HarmonyLib;
 using Quantum.Lang;
-using TMPro;
 using UnityEngine;
 
 namespace Quantum;
@@ -21,7 +19,7 @@ public class Plugin : BaseUnityPlugin
 {
     public const string Guid = "org.cncumc.quantum";
     public const string Name = "Quantum";
-    public const string Version = "1.0.1";
+    public const string Version = "1.1.0";
 
     private const string NameSpace = "quantum";
     internal new static ManualLogSource Logger;
