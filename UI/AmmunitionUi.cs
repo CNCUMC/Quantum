@@ -113,7 +113,9 @@ public static class AmmunitionUi
 
     private static void UpdateAmmunitionUi()
     {
-        var realRemainingAmmunition = GunScriptPatch.HasOne ? _remainingAmmunition + 1 : _remainingAmmunition;
+        var realRemainingAmmunition = GunScriptPatch.HasOne
+            ? _remainingAmmunition + 1
+            : _remainingAmmunition;
         if (_ammunitionText == null)
             return;
 
@@ -135,8 +137,8 @@ public static class AmmunitionUi
             _ammunitionText.color = Color.black;
             _ammunitionText.text = "\u221e";
         }
-        
-        _ammunitionText.alpha = HiddenHud.Hidden 
+
+        _ammunitionText.alpha = HiddenHud.Hidden
             ? 0f
             : 1f;
     }

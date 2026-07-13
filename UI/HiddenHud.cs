@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using HarmonyLib;
+﻿using HarmonyLib;
 using UnityEngine;
 
 namespace Quantum.UI;
@@ -24,13 +22,13 @@ public static class HiddenHud
         // 遍历所有 Canvas（包括子对象）
         foreach (var canvas in camera.GetComponentsInChildren<Canvas>(true))
         {
-            var cg = canvas.GetComponent<CanvasGroup>();
-            if (cg == null) cg = canvas.gameObject.AddComponent<CanvasGroup>();
+            var canvasGroup = canvas.GetComponent<CanvasGroup>();
+            if (canvasGroup == null) canvasGroup = canvas.gameObject.AddComponent<CanvasGroup>();
 
-            cg.alpha = Hidden 
+            canvasGroup.alpha = Hidden 
                 ? 0f
                 : 1f;
-            cg.blocksRaycasts = !Hidden;
+            canvasGroup.blocksRaycasts = !Hidden;
         }
     }
 }
