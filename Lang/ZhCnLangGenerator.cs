@@ -30,13 +30,13 @@ public class ZhCnLangGenerator : ModLangGenBase
         // UI
         Option("quantum.video.ammunition_ui", "弹药UI", "在原枪械菜单的上方显示枪械剩余弹量和最大弹量");
         Option("quantum.video.bilingual_name", "双语名称", "设定后会在物品原名旁附加指定语言的翻译（如 EN / zh-CN / zh-TW），留空则只显示原名");
+        Option("quantum.input.console_parameter_switching_speed", "控制台参数切换速度", "控制台中长按上下键切换候选参数的速度（毫秒）");
+        Option("quantum.video.debug_screen_speed", "调试屏幕滑动速度", "调试屏幕滑动的速度（毫秒）");
         Option("quantum.input.sort_key", "整理按键", "按下整理容器物品");
-        Option("quantum.input.console_scroll_speed", "控制台滚动速度", "长按上下键切换候选参数的速度（毫秒）");
-        Option("quantum.video.debug_screen_speed", "调试屏幕速度", "调试屏幕滑动的速度");
         Option("quantum.video.max_visible_candidates", "最大候选数", "控制台参数候选列表最多显示的行数");
         Option("quantum.video.max_history_size", "历史记录上限", "控制台历史命令最多保留的条数");
         Option("quantum.video.no_demo_tips", "隐藏试玩提示", "隐藏试玩版提示文字");
-
+        
         // Other
         // Sort
         Other("ui.sort.mode.name", "名称");

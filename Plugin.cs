@@ -60,7 +60,7 @@ public class Plugin : BaseUnityPlugin
     // UI
     public static bool AmmunitionUi = true;
     public static string BilingualName = "EN";
-    public static float ConsoleScrollSpeed = 0.01f;
+    public static float ConsoleParameterSwitchingSpeed = 0.01f;
     public static KeyCode DebugScreen = KeyCode.F3;
     public static float DebugScreenSpeed = 5f;
     public static KeyCode HiddenHud = KeyCode.F1;
@@ -101,7 +101,7 @@ public class Plugin : BaseUnityPlugin
         // UI
         VideoBool("ammunition_ui", AmmunitionUi, v => AmmunitionUi = v);
         RegisterBilingualOption();
-        InputFloat("console_scroll_speed", ConsoleScrollSpeed, 0.0001f, 0.01f, v => ConsoleScrollSpeed = v,
+        InputFloat("console_parameter_switching_speed", ConsoleParameterSwitchingSpeed, 0.0001f, 0.01f, v => ConsoleParameterSwitchingSpeed = v,
             v => (v * 1000f).ToString("F1") + "ms");
         InputKeybind("debug_screen", DebugScreen, k => DebugScreen = k);
         VideoFloat("debug_screen_speed", DebugScreenSpeed, 1f, 20f,

@@ -223,13 +223,13 @@ public static class ConsoleScriptPatch
         }
         else if (Input.GetKey(KeyCode.UpArrow))
         {
-            if (!(Time.unscaledTime - _lastUpTime > Plugin.ConsoleScrollSpeed)) return;
+            if (!(Time.unscaledTime - _lastUpTime > Plugin.ConsoleParameterSwitchingSpeed)) return;
             _lastUpTime = Time.unscaledTime;
             _index = (_index - 1 + _candidates.Length) % _candidates.Length;
         }
         else if (Input.GetKey(KeyCode.DownArrow))
         {
-            if (!(Time.unscaledTime - _lastDownTime > Plugin.ConsoleScrollSpeed)) return;
+            if (!(Time.unscaledTime - _lastDownTime > Plugin.ConsoleParameterSwitchingSpeed)) return;
             _lastDownTime = Time.unscaledTime;
             _index = (_index + 1) % _candidates.Length;
         }
