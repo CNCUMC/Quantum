@@ -6,7 +6,7 @@
 
 [GitHub](https://github.com/CNCUMC/Quantum) | [NexusMods](https://www.nexusmods.com/scavprototype/mods/365)
 
-_A quality-of-life mod for [Casualties Unknown](https://store.steampowered.com/app/3624440/Casualties_Unknown_Demo/) —
+_A quality-of-life mod for [Casualties Unknown](https://store.steampowered.com/app/4576490/) —
 crafting search, container sorting, gun modifiers, and gameplay tweaks, all configurable from the in-game settings
 menu._
 
@@ -34,21 +34,21 @@ menu._
 ## Requirements
 
 - [BepInEx 5.x](https://github.com/BepInEx/BepInEx)
-- [CUCoreLib](https://github.com/CNCUMC/CUCoreLib) ≥ 1.0.2
-- [Bark](https://github.com/CNCUMC/Bark) ≥ 1.0.2
+- [CUCoreLib](https://github.com/jimmyking9999999/CUCoreLib) ≥ 1.0.2
+- [Bark](https://github.com/CNCUMC/Bark) ≥ 1.0.3
 
 ## Installation
 
 1. Install BepInEx 5.x for Casualties Unknown.
-2. Install [CUCoreLib](https://github.com/CNCUMC/CUCoreLib) — place `CUCoreLib.dll` into `BepInEx/plugins/`.
-3. Install [Bark](https://github.com/CNCUMC/Bark) — place `Bark.dll` into `BepInEx/plugins/`.
-4. Download the latest `Quantum-v*.zip` from [Releases](https://github.com/CNCUMC/Quantum/releases).
-5. Extract to your game directory. `Quantum.dll` and `TinyPinyin.dll` go into `BepInEx/plugins/Quantum/`.
+2. Install [CUCoreLib](https://github.com/jimmyking9999999/CUCoreLib) — place `CUCoreLib.dll` into `BepInEx/plugins/`.
+3. Install [Bark](https://github.com/CNCUMC/Bark) — place `Bark.dll` into `BepInEx/plugins/Bark/`.
+4. Download `Quantum`.
+5. Extract to your game directory into `BepInEx/plugins/Quantum/`.
 6. Launch the game. The **Quantum** tab appears in Settings.
 
 ## Settings
 
-All options are in the game's settings menu (powered by [CUCoreLib](https://github.com/CNCUMC/CUCoreLib)):
+All options are in the game's settings menu (powered by [CUCoreLib](https://github.com/jimmyking9999999/CUCoreLib)):
 
 - **Quantum** tab — gun modifiers, gameplay tweaks, UI toggles
 - **Video** tab — info display, candidate limits, demo tips

@@ -6,7 +6,7 @@
 
 [GitHub](https://github.com/CNCUMC/Quantum) | [NexusMods](https://www.nexusmods.com/scavprototype/mods/365)
 
-_《[Casualties Unknown](https://store.steampowered.com/app/3624440/Casualties_Unknown_Demo/)》的便捷功能模组 —
+_《[Casualties Unknown](https://store.steampowered.com/app/4576490/)》的便捷功能模组 —
 合成搜索、容器整理、枪械修改和玩法调整，全部可在游戏内设置菜单中配置。_
 
 ---
@@ -34,15 +34,15 @@ _《[Casualties Unknown](https://store.steampowered.com/app/3624440/Casualties_U
 
 - [BepInEx 5.x](https://github.com/BepInEx/BepInEx)
 - [CUCoreLib](https://github.com/CNCUMC/CUCoreLib) ≥ 1.0.2
-- [Bark](https://github.com/CNCUMC/Bark) ≥ 1.0.2
+- [Bark](https://github.com/CNCUMC/Bark) ≥ 1.0.3
 
 ## 安装
 
 1. 为 Casualties Unknown 安装 BepInEx 5.x。
-2. 安装 [CUCoreLib](https://github.com/CNCUMC/CUCoreLib) — 将 `CUCoreLib.dll` 放入 `BepInEx/plugins/`。
-3. 安装 [Bark](https://github.com/CNCUMC/Bark) — 将 `Bark.dll` 放入 `BepInEx/plugins/`。
-4. 从 [Releases](https://github.com/CNCUMC/Quantum/releases) 下载最新 `Quantum-v*.zip`。
-5. 解压到游戏目录。`Quantum.dll` 和 `TinyPinyin.dll` 放入 `BepInEx/plugins/Quantum/`。
+2. 安装 [CUCoreLib](https://github.com/jimmyking9999999/CUCoreLib) — 将 `CUCoreLib.dll` 放入 `BepInEx/plugins/`。
+3. 安装 [Bark](https://github.com/CNCUMC/Bark) — 将 `Bark.dll` 放入 `BepInEx/plugins/Baark/`。
+4. 下载 `Quantum`。
+5. 解压到游戏目录放入 `BepInEx/plugins/Quantum/`。
 6. 启动游戏，设置菜单中出现 **Quantum** 标签页。
 
 ## 设置
