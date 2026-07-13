@@ -68,7 +68,6 @@ public class ZhCnLangGenerator : ModLangGenBase
                 
         // DebugScreen
         Other("debug_screen.loading_mods", "加载模组: {0}");
-        Other("debug_screen.profiler.memory", "已使用内存: {0} / {1} MiB");
         Other("debug_screen.profiler.render", "渲染时间: {0}");
         Other("debug_screen.profiler.frame", "帧时间: {0}");
         Other("debug_screen.profiler.fps", "FPS: {0}");

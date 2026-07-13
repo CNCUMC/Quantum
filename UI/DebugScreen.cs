@@ -4,10 +4,7 @@ using Bark.BetterCCL;
 using Bark.Tool;
 using BepInEx;
 using BepInEx.Bootstrap;
-using CUCoreLib.Helpers;
-using CUCoreLib.Networking;
 using HarmonyLib;
-using Unity.Profiling;
 using UnityEngine;
 
 namespace Quantum.UI;
@@ -22,100 +19,64 @@ public static class DebugScreen
     private static float _velocity;
     private const float PanelWidth = 300f;
     private static MonoBehaviour _guiHelper;
-    private static readonly List<string> _leftText = [];
-    private static readonly List<string> _rightText = [];
 
     private static readonly bool MultiplayerRunning = Chainloader.PluginInfos.ContainsKey("KrokoshaCasualtiesMP");
     private static readonly Assembly _bepInExAssembly = typeof(Paths).Assembly;
 
-    private static ProfilerRecorder _memoryRecorder;
-    private static bool _memoryRecorderInit;
+    private static readonly List<DebugInfoGroup> _leftGroups = [];
+    private static readonly List<DebugInfoGroup> _rightGroups = [];
 
     private static void BuildText()
     {
-        LeftHead();
-        Profiler();
-        World();
+        _leftGroups.Clear();
+        _rightGroups.Clear();
 
-        RightHead();
-    }
+        // Left side groups
+        var leftGroup = new DebugInfoGroup();
+        leftGroup.Add(new DebugInfo("game_version", $"Casualties Unknown Demo v{Application.version}"));
+        leftGroup.Add(new DebugInfo("bepinex_version", $"BepInEx v{_bepInExAssembly.GetName().Version}"));
+        leftGroup.Add(new DebugInfo("cucorelib_version", $"CUCoreLib v{CUCoreLib.CUCoreLibPlugin.VERSION}"));
+        leftGroup.Add(new DebugInfo("bark_version", $"Bark v{Bark.Plugin.Version}"));
+        leftGroup.Add(new DebugInfo("quantum_version", $"Quantum v{Plugin.Version}"));
+        if (MultiplayerRunning && Chainloader.PluginInfos.TryGetValue("KrokoshaCasualtiesMP", out var info))
+            leftGroup.Add(new DebugInfo("multiplayer_version", $"KrokoshaCasualtiesMP v{info.Metadata.Version}"));
+        leftGroup.Add(new DebugInfo("mod_count", LocaleOther("loading_mods", Chainloader.PluginInfos.Count)));
+        _leftGroups.Add(leftGroup);
 
-    private static void LeftHead()
-    {
-        if (MultiplayerRunning)
-        {
-            AddLeftLine();
-            AddLeftLine();
-            AddLeftLine();
-            AddLeftText("---------");
-        }
-        AddLeftText($"Casualties Unknown Demo v{Application.version}");
-        AddLeftText($"BepInEx v{_bepInExAssembly.GetName().Version}");
-        AddLeftText($"CUCoreLib v{CUCoreLib.CUCoreLibPlugin.VERSION}");
-        AddLeftText($"Bark v{Bark.Plugin.Version}");
-        AddLeftText($"Quantum v{Plugin.Version}");
-        if (MultiplayerRunning)
-        {
-            Chainloader.PluginInfos.TryGetValue("KrokoshaCasualtiesMP", out var info);
-            AddLeftText($"KrokoshaCasualtiesMP v{info.Metadata.Version}");
-        }
-        AddLeftTextLocale("loading_mods", Chainloader.PluginInfos.Count);
+        // Profiler group
+        var profilerGroup = new DebugInfoGroup();
+        profilerGroup.Add(new DebugInfo("frame_time", LocaleOther("profiler.frame", (Time.unscaledDeltaTime * 1000f).ToString("F2") + " ms")));
+        profilerGroup.Add(new DebugInfo("fps", LocaleOther("profiler.fps", (1f / Time.unscaledDeltaTime).ToString("F0"))));
+        _leftGroups.Add(profilerGroup);
 
-        AddLeftLine();
-    }
-
-    private static void Profiler()
-    {
-        // 内存（已使用 / 总内存）
-        if (!_memoryRecorderInit)
-        {
-            _memoryRecorderInit = true;
-            _memoryRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "Total Allocated Memory");
-        }
-
-        var usedMb = _memoryRecorder.Valid
-            ? _memoryRecorder.CurrentValue / (1024f * 1024f)
-            : 0f;
-        var totalMb = SystemInfo.systemMemorySize;
-        AddLeftTextLocale("profiler.memory", usedMb.ToString("F0"), totalMb.ToString("F0"));
-
-        // 帧时间
-        var frameMs = Time.unscaledDeltaTime * 1000f;
-        AddLeftTextLocale("profiler.frame", frameMs.ToString("F2") + " ms");
-
-        // FPS
-        var fps = 1f / Time.unscaledDeltaTime;
-        AddLeftTextLocale("profiler.fps", fps.ToString("F0"));
-
-        AddLeftLine();
-    }
-
-    private static void World()
-    {
-        AddLeftTextLocale("world.position",
+        // World group
+        var worldGroup = new DebugInfoGroup();
+        worldGroup.Add(new DebugInfo("position", LocaleOther("world.position",
             PlayerUtil.Body.transform.position.x.ToString("F2"),
-            PlayerUtil.Body.transform.position.y.ToString("F2"));
-        AddLeftTextLocale("world.looking_position",
+            PlayerUtil.Body.transform.position.y.ToString("F2"))));
+        worldGroup.Add(new DebugInfo("look_pos", LocaleOther("world.looking_position",
             PlayerUtil.Body.overrideLookPos.x.ToString("F2"),
-            PlayerUtil.Body.overrideLookPos.y.ToString("F2"));
-        TargetBlock();
-        AddLeftTextLocale("world.layer", (WorldUtil.World.biomeDepth + 1).ToString());
+            PlayerUtil.Body.overrideLookPos.y.ToString("F2"))));
+        worldGroup.Add(new DebugInfo("target_block", GetTargetBlockText()));
+        worldGroup.Add(new DebugInfo("layer", LocaleOther("world.layer", (WorldUtil.World.biomeDepth + 1).ToString())));
+        _leftGroups.Add(worldGroup);
 
-        AddLeftLine();
+        // Right side group
+        var rightGroup = new DebugInfoGroup();
+        rightGroup.Add(new DebugInfo("cpu", $"CPU: {SystemInfo.processorType}"));
+        rightGroup.Add(new DebugInfo("gpu", $"GPU: {SystemInfo.graphicsDeviceName} - {SystemInfo.graphicsDeviceType}"));
+        rightGroup.Add(new DebugInfo("sys", $"SYS: {SystemInfo.operatingSystem}"));
+        _rightGroups.Add(rightGroup);
     }
 
-    private static void TargetBlock()
+    private static string GetTargetBlockText()
     {
         var world = WorldUtil.World;
         var body = PlayerUtil.Body;
         if (world == null || body == null)
-        {
-            AddLeftLine();
-            return;
-        }
+            return "";
 
-        // 获取玩家视线位置（优先使用覆盖视线）
-        var lookPos = body.overrideLookTime > 0
+        var lookPos = body.overrideLookTime >= 0
             ? body.overrideLookPos
             : (Vector2)body.targetLookPos;
 
@@ -123,19 +84,9 @@ public static class DebugScreen
         var blockId = world.GetBlock(blockPos);
         var blockInfo = world.GetBlockInfo(blockId);
 
-        if (blockInfo != null && !string.IsNullOrEmpty(blockInfo.name))
-        {
-            AddLeftTextLocale("world.target_block", blockInfo.name, blockId);
-        }
-    }
-
-    private static void RightHead()
-    {
-        AddRightText($"CPU: {SystemInfo.processorType}");
-        AddRightText($"GPU: {SystemInfo.graphicsDeviceName} - {SystemInfo.graphicsDeviceType}");
-        AddRightText($"SYS: {SystemInfo.operatingSystem}");
-
-        AddRightLine();
+        return blockInfo != null && !string.IsNullOrEmpty(blockInfo.name)
+            ? LocaleOther("world.target_block", blockInfo.name, blockId)
+            : "";
     }
 
     [HarmonyPatch("Update")]
@@ -143,20 +94,14 @@ public static class DebugScreen
     public static void UpdatePostfix(PlayerCamera __instance)
     {
         if (_guiHelper == null)
-        {
             _guiHelper = __instance.gameObject.AddComponent<DebugGuiHelper>();
-        }
 
-        var targetX = Hidden
-            ? -PanelWidth
-            : 0f;
+        var targetX = Hidden ? -PanelWidth : 0f;
         _currentX = Mathf.SmoothDamp(_currentX, targetX, ref _velocity, Plugin.DebugScreenSpeed, Mathf.Infinity,
             Time.unscaledDeltaTime);
 
         if (!Hidden)
-        {
-            RefreshText();
-        }
+            BuildText();
     }
 
     private class DebugGuiHelper : MonoBehaviour
@@ -171,55 +116,52 @@ public static class DebugScreen
 
             GUI.color = new Color(0f, 0f, 0f, 0.7f);
             GUI.Box(new Rect(_currentX, 0, PanelWidth, height), "");
-
             GUI.Box(new Rect(Screen.width - PanelWidth - _currentX, 0, PanelWidth, height), "");
 
             GUI.color = Color.white;
-            GUI.Label(new Rect(_currentX + 10f, 10f, PanelWidth - 20f, height - 20f),
-                string.Join("\n", _leftText));
 
-            GUI.Label(new Rect(Screen.width - PanelWidth - _currentX + 10f, 10f, PanelWidth - 20f, height - 20f),
-                string.Join("\n", _rightText));
+            var leftText = BuildPanelText(_leftGroups);
+            var rightText = BuildPanelText(_rightGroups);
+
+            GUI.Label(new Rect(_currentX + 10f, 10f, PanelWidth - 20f, height - 20f), leftText);
+            GUI.Label(new Rect(Screen.width - PanelWidth - _currentX + 10f, 10f, PanelWidth - 20f, height - 20f), rightText);
+        }
+
+        private static string BuildPanelText(List<DebugInfoGroup> groups)
+        {
+            var lines = new List<string>();
+            for (var i = 0; i < groups.Count; i++)
+            {
+                var group = groups[i];
+                foreach (var info in group.Infos)
+                {
+                    lines.Add(info.Text);
+                }
+                if (i < groups.Count - 1)
+                {
+                    lines.Add("");
+                }
+            }
+            return string.Join("\n", lines);
         }
     }
 
-    public static void AddLeftText(string text)
+    public class DebugInfoGroup
     {
-        _leftText.Add(text);
+        public List<DebugInfo> Infos { get; } = [];
+
+        public void Add(DebugInfo info)
+        {
+            Infos.Add(info);
+        }
     }
 
-    public static void AddRightText(string text)
+    public class DebugInfo(string id, string text)
     {
-        _rightText.Add(text);
+        public string Id { get; } = id;
+        public string Text { get; } = text;
     }
-
-    public static void AddLeftLine()
-    {
-        AddLeftText("");
-    }
-
-    public static void AddRightLine()
-    {
-        AddRightText("");
-    }
-
-    private static void AddLeftTextLocale(string text, params object[] args)
-    {
-        _leftText.Add(LocaleOther(text, args));
-    }
-
-    private static void AddRightTextLocale(string text, params object[] args)
-    {
-        _rightText.Add(LocaleOther(text, args));
-    }
-
-    private static void RefreshText()
-    {
-        _leftText.Clear();
-        _rightText.Clear();
-        BuildText();
-    }
-
+    
     private static string LocaleOther(string key, params object[] args)
     {
         return BetterLocale.GetOther(LocaleKeyPre + key, args);

@@ -68,7 +68,6 @@ public class EnLangGenerator : ModLangGenBase
 
         // DebugScreen
         Other("debug_screen.loading_mods", "Loaded Mods: {0}");
-        Other("debug_screen.profiler.memory", "Used Memory: {0} / {1} MiB");
         Other("debug_screen.profiler.render", "Render Time: {0}");
         Other("debug_screen.profiler.frame", "Frame Time: {0}");
         Other("debug_screen.profiler.fps", "FPS: {0}");
