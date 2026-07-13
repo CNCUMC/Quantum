@@ -28,6 +28,8 @@ public static class DebugScreen
         LeftHead();
         Profiler();
         World();
+
+        RightHead();
     }
 
     private static void LeftHead()
@@ -96,6 +98,15 @@ public static class DebugScreen
             AddLeftTextLocale("world.target_block", blockInfo.name);
         }
     }
+    
+    private static void RightHead()
+    {
+        AddRightText($"CPU: {SystemInfo.processorType}");
+        AddRightText($"GPU: {SystemInfo.graphicsDeviceName} - {SystemInfo.graphicsDeviceType}");
+        AddRightText($"SYS: {SystemInfo.operatingSystem}");
+
+        AddRightLine();
+    }
 
     [HarmonyPatch("Update")]
     [HarmonyPostfix]
@@ -106,7 +117,9 @@ public static class DebugScreen
             _guiHelper = __instance.gameObject.AddComponent<DebugGuiHelper>();
         }
 
-        var targetX = Hidden ? -PanelWidth : 0f;
+        var targetX = Hidden
+            ? -PanelWidth
+            : 0f;
         _currentX = Mathf.SmoothDamp(_currentX, targetX, ref _velocity, Plugin.DebugScreenSpeed, Mathf.Infinity,
             Time.unscaledDeltaTime);
 
