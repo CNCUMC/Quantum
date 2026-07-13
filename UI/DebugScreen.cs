@@ -43,11 +43,10 @@ public static class DebugScreen
 
     private static void Profiler()
     {
-        // 内存（已使用 / 总内存）
+        // 托管内存（GC 堆）
         var gcBytes = System.GC.GetTotalMemory(false);
         var gcMb = gcBytes / (1024f * 1024f);
-        var totalMb = SystemInfo.systemMemorySize / 1024f;
-        AddLeftTextLocale("profiler.memory", gcMb.ToString("F1"), totalMb.ToString("F0"));
+        AddLeftTextLocale("profiler.memory", gcMb.ToString("F1"));
 
         // 帧时间
         var frameMs = Time.unscaledDeltaTime * 1000f;
