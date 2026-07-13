@@ -81,7 +81,7 @@ public static class AmmunitionUi
             _ammunitionText = gameObject.AddComponent<TextMeshProUGUI>();
             _ammunitionText.alignment = TextAlignmentOptions.Center;
 
-            _ammunitionText.font = Plugin.Unifont;
+            _ammunitionText.font = TextUtil.TMPUnifont;
         }
 
         var gunMenuPos = GetGunMenuPosition(camera);

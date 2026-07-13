@@ -61,7 +61,6 @@ public static class PlayerCameraPatch
     [HarmonyPostfix]
     public static void UpdatePostfix(PlayerCamera __instance)
     {
-        LogUtil.CheckWorld();
         if (Input.GetKeyDown(Plugin.HiddenHud))
         {
             HiddenHud.Hidden = !HiddenHud.Hidden;

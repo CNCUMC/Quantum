@@ -27,17 +27,6 @@ public class Plugin : BaseUnityPlugin
     internal new static ManualLogSource Logger;
     private readonly Harmony _harmony = new(Guid);
 
-    public static TMP_FontAsset Unifont
-    {
-        get
-        {
-            field = Resources.FindObjectsOfTypeAll<TMP_FontAsset>().FirstOrDefault(f
-                => f.name.Contains("unifont-16.0"));
-            return field;
-        }
-    }
-
-
     // Info
     public static bool CtrlToExpand = true;
     public static float FavouritedItemDurabilityExhaustionAlert = 0.3f;
@@ -62,7 +51,7 @@ public class Plugin : BaseUnityPlugin
     public static string BilingualName = "EN";
     public static float ConsoleParameterSwitchingSpeed = 0.01f;
     public static KeyCode DebugScreen = KeyCode.F3;
-    public static float DebugScreenSpeed = 5f;
+    public static float DebugScreenSpeed = 0.01f;
     public static KeyCode HiddenHud = KeyCode.F1;
     public static int MaxVisibleCandidates = 27;
     public static int MaxHistorySize = 100;
@@ -101,12 +90,13 @@ public class Plugin : BaseUnityPlugin
         // UI
         VideoBool("ammunition_ui", AmmunitionUi, v => AmmunitionUi = v);
         RegisterBilingualOption();
-        InputFloat("console_parameter_switching_speed", ConsoleParameterSwitchingSpeed, 0.0001f, 0.01f, v => ConsoleParameterSwitchingSpeed = v,
+        InputFloat("console_parameter_switching_speed", ConsoleParameterSwitchingSpeed, 0.0001f, 0.01f,
+            v => ConsoleParameterSwitchingSpeed = v,
             v => (v * 1000f).ToString("F1") + "ms");
         InputKeybind("debug_screen", DebugScreen, k => DebugScreen = k);
-        VideoFloat("debug_screen_speed", DebugScreenSpeed, 1f, 20f,
+        VideoFloat("debug_screen_speed", DebugScreenSpeed, 0f, 0.1f,
             v => DebugScreenSpeed = v,
-            v => v.ToString("F1") + "x");
+            v => (v * 1000f).ToString("F1") + "ms");
         InputKeybind("hidden_hud", HiddenHud, k => HiddenHud = k);
         VideoFloat("max_visible_candidates", MaxVisibleCandidates, 1f, 50f,
             v => MaxVisibleCandidates = Convert.ToInt32(v), v => v.ToString("F0"));

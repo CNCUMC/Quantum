@@ -14,6 +14,8 @@ public static class DebugScreen
     private static float _velocity;
     private const float PanelWidth = 300f;
     private static MonoBehaviour _guiHelper;
+    private static readonly List<string> _leftText = [];
+    private static readonly List<string> _rightText = [];
 
     [HarmonyPatch("Update")]
     [HarmonyPostfix]
@@ -25,7 +27,13 @@ public static class DebugScreen
         }
 
         var targetX = Hidden ? -PanelWidth : 0f;
-        _currentX = Mathf.SmoothDamp(_currentX, targetX, ref _velocity, 1f / Plugin.DebugScreenSpeed, Mathf.Infinity, Time.unscaledDeltaTime);
+        _currentX = Mathf.SmoothDamp(_currentX, targetX, ref _velocity, Plugin.DebugScreenSpeed, Mathf.Infinity,
+            Time.unscaledDeltaTime);
+
+        if (!Hidden)
+        {
+            RefreshText();
+        }
     }
 
     private class DebugGuiHelper : MonoBehaviour
@@ -34,72 +42,47 @@ public static class DebugScreen
         {
             if (Hidden && _currentX <= -PanelWidth + 1f) return;
 
+            GUI.skin.font = TextUtil.Unifont;
+            
             var height = Screen.height;
 
-            // 左侧
             GUI.color = new Color(0f, 0f, 0f, 0.7f);
             GUI.Box(new Rect(_currentX, 0, PanelWidth, height), "");
 
-            // 右侧
             GUI.Box(new Rect(Screen.width - PanelWidth - _currentX, 0, PanelWidth, height), "");
 
-            // 左侧
-            GUI.color = Color.green;
-            GUI.Label(new Rect(_currentX + 10f, 10f, PanelWidth - 20f, height - 20f), BuildLeftText());
+            GUI.color = Color.white;
+            GUI.Label(new Rect(_currentX + 10f, 10f, PanelWidth - 20f, height - 20f),
+                string.Join("\n", _leftText));
 
-            // 右侧
-            GUI.Label(new Rect(Screen.width - PanelWidth - _currentX + 10f, 10f, PanelWidth - 20f, height - 20f), BuildRightText());
+            GUI.Label(new Rect(Screen.width - PanelWidth - _currentX + 10f, 10f, PanelWidth - 20f, height - 20f),
+                string.Join("\n", _rightText));
         }
     }
 
-    private static string BuildLeftText()
+    public static void AddLeftText(string text)
     {
-        var body = PlayerUtil.Body;
-        if (body == null) return "No Body";
-
-        var info = new List<string>
-        {
-            "<b>=== Player ===</b>",
-            $"Hunger: {body.hunger:F1}%",
-            $"Thirst: {body.thirst:F1}%",
-            $"Stamina: {body.stamina:F1}%",
-            $"Temperature: {body.temperature:F1}C",
-            $"Conscious: {body.conscious}",
-            "",
-            "<b>=== Limbs ===</b>"
-        };
-
-        foreach (var limb in body.limbs)
-        {
-            info.Add($"{limb.name}: {limb.muscleHealth:F0}%");
-        }
-
-        return string.Join("\n", info);
+        _leftText.Add(text);
     }
 
-    private static string BuildRightText()
+    public static void AddRightText(string text)
     {
-        var camera = PlayerCamera.main;
-        if (camera == null) return "No Camera";
+        _rightText.Add(text);
+    }
 
-        var runTime = WorldGeneration.TotalRunTime();
-        var timeSpan = System.TimeSpan.FromSeconds(runTime);
+    private static void RefreshText()
+    {
+        _leftText.Clear();
+        _rightText.Clear();
+        BuildText();
+    }
 
-        var info = new List<string>
+    private static void BuildText()
+    {
+        for (var i = 0; i < 10; i++)
         {
-            "<b>=== World ===</b>",
-            $"Run Time: {timeSpan:hh\\:mm\\:ss}",
-            "",
-            "<b>=== Performance ===</b>",
-            $"FPS: {(1f / Time.unscaledDeltaTime):F0}",
-            $"Frame Time: {(Time.unscaledDeltaTime * 1000f):F1}ms",
-            "",
-            "<b>=== Position ===</b>",
-            $"X: {camera.transform.position.x:F1}",
-            $"Y: {camera.transform.position.y:F1}",
-            $"Z: {camera.transform.position.z:F1}"
-        };
-
-        return string.Join("\n", info);
+            AddLeftText("Left测试!");
+            AddRightText("Right测试!");
+        }
     }
 }
