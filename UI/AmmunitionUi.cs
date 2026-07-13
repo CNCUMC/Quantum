@@ -15,17 +15,7 @@ public static class AmmunitionUi
     private static GameObject _ammunitionUiObject;
     private static int _remainingAmmunition;
     private static int _maximumAmmunition;
-
-    private static TMP_FontAsset GameFont
-    {
-        get
-        {
-            field = Resources.FindObjectsOfTypeAll<TMP_FontAsset>().FirstOrDefault(f
-                => f.name.Contains("Retro Gaming SDF"));
-            return field;
-        }
-    }
-
+    
     [HarmonyPatch("HandleGunMenu")]
     [HarmonyPostfix]
     private static void HandleGunMenuPostfix(PlayerCamera __instance)
@@ -91,7 +81,7 @@ public static class AmmunitionUi
             _ammunitionText = gameObject.AddComponent<TextMeshProUGUI>();
             _ammunitionText.alignment = TextAlignmentOptions.Center;
 
-            _ammunitionText.font = GameFont;
+            _ammunitionText.font = Plugin.Unifont;
         }
 
         var gunMenuPos = GetGunMenuPosition(camera);

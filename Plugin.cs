@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Bark.BetterCCL;
 using Bark.Tool;
 using BepInEx;
@@ -8,6 +9,7 @@ using BepInEx.Logging;
 using CUCoreLib.Data;
 using HarmonyLib;
 using Quantum.Lang;
+using TMPro;
 using UnityEngine;
 
 namespace Quantum;
@@ -24,6 +26,17 @@ public class Plugin : BaseUnityPlugin
     private const string NameSpace = "quantum";
     internal new static ManualLogSource Logger;
     private readonly Harmony _harmony = new(Guid);
+
+    public static TMP_FontAsset Unifont
+    {
+        get
+        {
+            field = Resources.FindObjectsOfTypeAll<TMP_FontAsset>().FirstOrDefault(f
+                => f.name.Contains("unifont-16.0"));
+            return field;
+        }
+    }
+
 
     // Info
     public static bool CtrlToExpand = true;
@@ -48,6 +61,8 @@ public class Plugin : BaseUnityPlugin
     public static bool AmmunitionUi = true;
     public static string BilingualName = "EN";
     public static float ConsoleScrollSpeed = 0.01f;
+    public static KeyCode DebugScreen = KeyCode.F3;
+    public static float DebugScreenSpeed = 5f;
     public static KeyCode HiddenHud = KeyCode.F1;
     public static int MaxVisibleCandidates = 27;
     public static int MaxHistorySize = 100;
@@ -88,9 +103,15 @@ public class Plugin : BaseUnityPlugin
         RegisterBilingualOption();
         InputFloat("console_scroll_speed", ConsoleScrollSpeed, 0.0001f, 0.01f, v => ConsoleScrollSpeed = v,
             v => (v * 1000f).ToString("F1") + "ms");
+        InputKeybind("debug_screen", DebugScreen, k => DebugScreen = k);
+        VideoFloat("debug_screen_speed", DebugScreenSpeed, 1f, 20f,
+            v => DebugScreenSpeed = v,
+            v => v.ToString("F1") + "x");
         InputKeybind("hidden_hud", HiddenHud, k => HiddenHud = k);
-        VideoFloat("max_visible_candidates", MaxVisibleCandidates, 1f, 50f, v => MaxVisibleCandidates = Convert.ToInt32(v), v => v.ToString("F0"));
-        VideoFloat("max_history_size", MaxHistorySize, 1f, 500f, v => MaxHistorySize = Convert.ToInt32(v), v => v.ToString("F0"));
+        VideoFloat("max_visible_candidates", MaxVisibleCandidates, 1f, 50f,
+            v => MaxVisibleCandidates = Convert.ToInt32(v), v => v.ToString("F0"));
+        VideoFloat("max_history_size", MaxHistorySize, 1f, 500f, v => MaxHistorySize = Convert.ToInt32(v),
+            v => v.ToString("F0"));
         VideoBool("no_demo_tips", NoDemoTips, v => NoDemoTips = v);
         InputKeybind("sort_key", SortKey, k => SortKey = k);
 

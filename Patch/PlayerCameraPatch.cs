@@ -4,6 +4,7 @@ using System.Linq;
 using Bark.BetterCCL;
 using Bark.Tool;
 using HarmonyLib;
+using Quantum.UI;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -53,6 +54,23 @@ public static class PlayerCameraPatch
         catch (Exception ex)
         {
             Warning("pinyin.init_failed", ex.Message);
+        }
+    }
+    
+    [HarmonyPatch("Update")]
+    [HarmonyPostfix]
+    public static void UpdatePostfix(PlayerCamera __instance)
+    {
+        LogUtil.CheckWorld();
+        if (Input.GetKeyDown(Plugin.HiddenHud))
+        {
+            HiddenHud.Hidden = !HiddenHud.Hidden;
+            HiddenHud.ApplyVisibility(__instance);
+        }
+        
+        if (Input.GetKeyDown(Plugin.DebugScreen))
+        {
+            DebugScreen.Hidden = !DebugScreen.Hidden;
         }
     }
 
