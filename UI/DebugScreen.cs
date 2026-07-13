@@ -36,6 +36,9 @@ public static class DebugScreen
     {
         AddLeftText($"Casualties Unknown Demo v{Application.version}");
         AddLeftText($"BepInEx v{_bepInExAssembly.GetName().Version}");
+        AddLeftText($"CUCoreLib v{CUCoreLib.CUCoreLibPlugin.VERSION}");
+        AddLeftText($"Bark v{Bark.Plugin.Version}");
+        AddLeftText($"Quantum v{Plugin.Version}");
         AddLeftTextLocale("loading_mods", Chainloader.PluginInfos.Count);
 
         AddLeftLine();
@@ -43,10 +46,12 @@ public static class DebugScreen
 
     private static void Profiler()
     {
-        // 托管内存（GC 堆）
+        // 内存（GC 托管堆 / 系统总内存）
         var gcBytes = System.GC.GetTotalMemory(false);
         var gcMb = gcBytes / (1024f * 1024f);
-        AddLeftTextLocale("profiler.memory", gcMb.ToString("F1"));
+        // SystemInfo.systemMemorySize 返回 MB，保持单位一致
+        var totalMb = SystemInfo.systemMemorySize;
+        AddLeftTextLocale("profiler.memory", gcMb.ToString("F1"), totalMb.ToString("F0"));
 
         // 帧时间
         var frameMs = Time.unscaledDeltaTime * 1000f;
@@ -94,7 +99,7 @@ public static class DebugScreen
 
         if (blockInfo != null && !string.IsNullOrEmpty(blockInfo.name))
         {
-            AddLeftTextLocale("world.target_block", blockInfo.name);
+            AddLeftTextLocale("world.target_block", blockInfo.name, blockId);
         }
     }
     

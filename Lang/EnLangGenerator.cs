@@ -75,7 +75,7 @@ public class EnLangGenerator : ModLangGenBase
         Other("debug_screen.world.position", "Position: ({0}, {1})");
         Other("debug_screen.world.looking_position", "Look Pos: ({0}, {1})");
         Other("debug_screen.world.layer", "Layer: {0}");
-        Other("debug_screen.world.target_block", "Target Block: {0}");
+        Other("debug_screen.world.target_block", "Target Block: {0} ({1})");
 
         // Log
         // PlayerCameraPatch
