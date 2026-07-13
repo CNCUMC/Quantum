@@ -67,11 +67,14 @@ public class ZhCnLangGenerator : ModLangGenBase
         Other("key.ctrl_to_expand.down", "松开Ctrl折叠更多信息");
                 
         // DebugScreen
-        Other("debug_screen.loading_mod_list", "加载模组列表: {0}");
+        Other("debug_screen.loading_mods", "加载模组: {0}");
         Other("debug_screen.profiler.memory", "已使用内存: {0} / {1} MiB");
         Other("debug_screen.profiler.render", "渲染时间: {0}");
         Other("debug_screen.profiler.frame", "帧时间: {0}");
         Other("debug_screen.profiler.fps", "FPS: {0}");
+        Other("debug_screen.world.position", "坐标: ({0}, {1})");
+        Other("debug_screen.world.looking_position", "看着的坐标: ({0}, {1})");
+        Other("debug_screen.world.layer", "当前层级: {0}");
 
         // Log
         // PlayerCameraPatch

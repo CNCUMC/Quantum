@@ -27,13 +27,16 @@ public static class DebugScreen
     {
         LeftHead();
         Profiler();
+        World();
+        TargetBlock();
     }
 
     private static void LeftHead()
     {
         AddLeftText($"Casualties Unknown Demo v{Application.version}");
         AddLeftText($"BepInEx v{_bepInExAssembly.GetName().Version}");
-        AddLeftTextLocale("loading_mod_list", Chainloader.PluginInfos.Count);
+        AddLeftTextLocale("loading_mods", Chainloader.PluginInfos.Count);
+
         AddLeftLine();
     }
 
@@ -54,6 +57,43 @@ public static class DebugScreen
         AddLeftTextLocale("profiler.fps", fps.ToString("F0"));
 
         AddLeftLine();
+    }
+
+    private static void World()
+    {
+        AddLeftTextLocale("world.position",
+            PlayerUtil.Body.transform.position.x.ToString("F2"),
+            PlayerUtil.Body.transform.position.y.ToString("F2"));
+        AddLeftTextLocale("world.looking_position",
+            PlayerUtil.Body.overrideLookPos.x.ToString("F2"),
+            PlayerUtil.Body.overrideLookPos.y.ToString("F2"));
+        AddLeftTextLocale("world.layer", (WorldUtil.World.biomeDepth + 1).ToString());
+
+        AddLeftLine();
+    }
+
+    private static void TargetBlock()
+    {
+        var world = WorldUtil.World;
+        if (world == null)
+        {
+            AddLeftTextLocale("target_block", "N/A");
+            return;
+        }
+
+        var mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        var blockPos = world.WorldToBlockPos(mouseWorldPos);
+        var blockId = world.GetBlock(blockPos);
+        var blockInfo = world.GetBlockInfo(blockId);
+
+        if (blockInfo != null && !string.IsNullOrEmpty(blockInfo.name))
+        {
+            AddLeftTextLocale("target_block", blockInfo.name);
+        }
+        else
+        {
+            AddLeftTextLocale("target_block", "Air");
+        }
     }
 
     [HarmonyPatch("Update")]
