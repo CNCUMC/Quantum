@@ -90,9 +90,9 @@ public class Plugin : BaseUnityPlugin
         // UI
         VideoBool("ammunition_ui", AmmunitionUi, v => AmmunitionUi = v);
         RegisterBilingualOption();
-        InputFloat("console_parameter_switching_speed", ConsoleParameterSwitchingSpeed, 0.0001f, 0.01f,
+        InputFloat("console_parameter_switching_speed", ConsoleParameterSwitchingSpeed, 0.001f, 0.1f,
             v => ConsoleParameterSwitchingSpeed = v,
-            v => (v * 1000f).ToString("F1") + "ms");
+            v => (v * 1000f).ToString("F0") + "ms");
         InputKeybind("debug_screen", DebugScreen, k => DebugScreen = k);
         VideoFloat("debug_screen_speed", DebugScreenSpeed, 0f, 0.1f,
             v => DebugScreenSpeed = v,

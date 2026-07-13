@@ -2,7 +2,10 @@
 using System.Reflection;
 using Bark.BetterCCL;
 using Bark.Tool;
+using BepInEx;
 using BepInEx.Bootstrap;
+using CUCoreLib.Helpers;
+using CUCoreLib.Networking;
 using HarmonyLib;
 using Unity.Profiling;
 using UnityEngine;
@@ -22,7 +25,8 @@ public static class DebugScreen
     private static readonly List<string> _leftText = [];
     private static readonly List<string> _rightText = [];
 
-    private static readonly Assembly _bepInExAssembly = typeof(BepInEx.Paths).Assembly;
+    private static readonly bool MultiplayerRunning = Chainloader.PluginInfos.ContainsKey("KrokoshaCasualtiesMP");
+    private static readonly Assembly _bepInExAssembly = typeof(Paths).Assembly;
 
     private static ProfilerRecorder _memoryRecorder;
     private static bool _memoryRecorderInit;
@@ -38,11 +42,25 @@ public static class DebugScreen
 
     private static void LeftHead()
     {
+        if (MultiplayerRunning)
+        {
+            AddLeftLine();
+            AddLeftLine();
+            AddLeftLine();
+            AddLeftLine();
+            AddLeftLine();
+            AddLeftText("---------");
+        }
         AddLeftText($"Casualties Unknown Demo v{Application.version}");
         AddLeftText($"BepInEx v{_bepInExAssembly.GetName().Version}");
         AddLeftText($"CUCoreLib v{CUCoreLib.CUCoreLibPlugin.VERSION}");
         AddLeftText($"Bark v{Bark.Plugin.Version}");
         AddLeftText($"Quantum v{Plugin.Version}");
+        if (MultiplayerRunning)
+        {
+            Chainloader.PluginInfos.TryGetValue("KrokoshaCasualtiesMP", out var info);
+            AddLeftText($"KrokoshaCasualtiesMP v{info.Metadata.Version}");
+        }
         AddLeftTextLocale("loading_mods", Chainloader.PluginInfos.Count);
 
         AddLeftLine();
