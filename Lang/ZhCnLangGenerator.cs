@@ -75,6 +75,7 @@ public class ZhCnLangGenerator : ModLangGenBase
         Other("debug_screen.world.position", "坐标: ({0}, {1})");
         Other("debug_screen.world.looking_position", "看着的坐标: ({0}, {1})");
         Other("debug_screen.world.layer", "当前层级: {0}");
+        Other("debug_screen.world.target_block", "目标方块: {0}");
 
         // Log
         // PlayerCameraPatch

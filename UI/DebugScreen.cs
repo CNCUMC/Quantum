@@ -28,7 +28,6 @@ public static class DebugScreen
         LeftHead();
         Profiler();
         World();
-        TargetBlock();
     }
 
     private static void LeftHead()
@@ -67,6 +66,7 @@ public static class DebugScreen
         AddLeftTextLocale("world.looking_position",
             PlayerUtil.Body.overrideLookPos.x.ToString("F2"),
             PlayerUtil.Body.overrideLookPos.y.ToString("F2"));
+        TargetBlock();
         AddLeftTextLocale("world.layer", (WorldUtil.World.biomeDepth + 1).ToString());
 
         AddLeftLine();
@@ -75,24 +75,25 @@ public static class DebugScreen
     private static void TargetBlock()
     {
         var world = WorldUtil.World;
-        if (world == null)
+        var body = PlayerUtil.Body;
+        if (world == null || body == null)
         {
-            AddLeftTextLocale("target_block", "N/A");
+            AddLeftLine();
             return;
         }
 
-        var mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        var blockPos = world.WorldToBlockPos(mouseWorldPos);
+        // 获取玩家视线位置（优先使用覆盖视线）
+        var lookPos = body.overrideLookTime > 0
+            ? body.overrideLookPos
+            : (Vector2)body.targetLookPos;
+
+        var blockPos = world.WorldToBlockPos(lookPos);
         var blockId = world.GetBlock(blockPos);
         var blockInfo = world.GetBlockInfo(blockId);
 
         if (blockInfo != null && !string.IsNullOrEmpty(blockInfo.name))
         {
-            AddLeftTextLocale("target_block", blockInfo.name);
-        }
-        else
-        {
-            AddLeftTextLocale("target_block", "Air");
+            AddLeftTextLocale("world.target_block", blockInfo.name);
         }
     }
 

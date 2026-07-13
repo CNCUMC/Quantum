@@ -67,11 +67,15 @@ public class EnLangGenerator : ModLangGenBase
         Other("key.ctrl_to_expand.down", "Release Ctrl to Fold More Info");
 
         // DebugScreen
-        Other("debug_screen.loading_mod_list", "Loaded Mods: {0}");
+        Other("debug_screen.loading_mods", "Loaded Mods: {0}");
         Other("debug_screen.profiler.memory", "Used Memory: {0} / {1} MiB");
         Other("debug_screen.profiler.render", "Render Time: {0}");
         Other("debug_screen.profiler.frame", "Frame Time: {0}");
         Other("debug_screen.profiler.fps", "FPS: {0}");
+        Other("debug_screen.world.position", "Position: ({0}, {1})");
+        Other("debug_screen.world.looking_position", "Look Pos: ({0}, {1})");
+        Other("debug_screen.world.layer", "Layer: {0}");
+        Other("debug_screen.world.target_block", "Target Block: {0}");
 
         // Log
         // PlayerCameraPatch
