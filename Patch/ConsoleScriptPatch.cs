@@ -176,7 +176,6 @@ public static class ConsoleScriptPatch
 
                 var partial = args[args.Length - 1];
                 var filteredFills = ConsoleScript.SearchArgumentAutofill(partial, fills);
-                // 追加模糊点匹配：输入 "xX" 匹配 "xxx.XXX"
                 var fuzzyMatches = fills
                     .Where(f => FuzzyDotMatch(f, partial))
                     .Except(filteredFills);
@@ -223,15 +222,51 @@ public static class ConsoleScriptPatch
         }
         else if (Input.GetKey(KeyCode.UpArrow))
         {
-            if (!(Time.unscaledTime - _lastUpTime > Plugin.ConsoleParameterSwitchingSpeed)) return;
-            _lastUpTime = Time.unscaledTime;
-            _index = (_index - 1 + _candidates.Length) % _candidates.Length;
+            // 加速逻辑：Shift*2，Ctrl+Shift*5，Ctrl无效果
+            var shift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+            var ctrl = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
+            var speed = ctrl && shift
+                ? Plugin.ConsoleParameterSwitchingSpeed * 0.2f  // 5倍速
+                : shift
+                    ? Plugin.ConsoleParameterSwitchingSpeed * 0.5f  // 2倍速
+                    : Plugin.ConsoleParameterSwitchingSpeed;       // 正常
+
+            if (speed <= 0f)
+            {
+                if (Input.GetKeyDown(KeyCode.UpArrow))
+                {
+                    _index = (_index - 1 + _candidates.Length) % _candidates.Length;
+                }
+            }
+            else if (Time.unscaledTime - _lastUpTime > speed)
+            {
+                _lastUpTime = Time.unscaledTime;
+                _index = (_index - 1 + _candidates.Length) % _candidates.Length;
+            }
         }
         else if (Input.GetKey(KeyCode.DownArrow))
         {
-            if (!(Time.unscaledTime - _lastDownTime > Plugin.ConsoleParameterSwitchingSpeed)) return;
-            _lastDownTime = Time.unscaledTime;
-            _index = (_index + 1) % _candidates.Length;
+            // 加速逻辑：Shift*2，Ctrl+Shift*5，Ctrl无效果
+            var shift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+            var ctrl = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
+            var speed = ctrl && shift
+                ? Plugin.ConsoleParameterSwitchingSpeed * 0.2f  // 5倍速
+                : shift
+                    ? Plugin.ConsoleParameterSwitchingSpeed * 0.5f  // 2倍速
+                    : Plugin.ConsoleParameterSwitchingSpeed;       // 正常
+
+            if (speed <= 0f)
+            {
+                if (Input.GetKeyDown(KeyCode.DownArrow))
+                {
+                    _index = (_index + 1) % _candidates.Length;
+                }
+            }
+            else if (Time.unscaledTime - _lastDownTime > speed)
+            {
+                _lastDownTime = Time.unscaledTime;
+                _index = (_index + 1) % _candidates.Length;
+            }
         }
     }
 

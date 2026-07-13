@@ -47,8 +47,6 @@ public static class DebugScreen
             AddLeftLine();
             AddLeftLine();
             AddLeftLine();
-            AddLeftLine();
-            AddLeftLine();
             AddLeftText("---------");
         }
         AddLeftText($"Casualties Unknown Demo v{Application.version}");
