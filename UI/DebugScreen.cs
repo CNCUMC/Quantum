@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Bark.BetterCCL;
 using Bark.Tool;
@@ -23,50 +24,47 @@ public static class DebugScreen
     private static readonly bool MultiplayerRunning = Chainloader.PluginInfos.ContainsKey("KrokoshaCasualtiesMP");
     private static readonly Assembly _bepInExAssembly = typeof(Paths).Assembly;
 
-    private static readonly List<DebugInfoGroup> _leftGroups = [];
-    private static readonly List<DebugInfoGroup> _rightGroups = [];
+    private static readonly List<DebugInfoGroup> _groups = [];
 
     private static void BuildText()
     {
-        _leftGroups.Clear();
-        _rightGroups.Clear();
+        _groups.Clear();
 
-        // Left side groups
-        var leftGroup = new DebugInfoGroup();
-        leftGroup.Add(new DebugInfo("game_version", $"Casualties Unknown Demo v{Application.version}"));
-        leftGroup.Add(new DebugInfo("bepinex_version", $"BepInEx v{_bepInExAssembly.GetName().Version}"));
-        leftGroup.Add(new DebugInfo("cucorelib_version", $"CUCoreLib v{CUCoreLib.CUCoreLibPlugin.VERSION}"));
-        leftGroup.Add(new DebugInfo("bark_version", $"Bark v{Bark.Plugin.Version}"));
-        leftGroup.Add(new DebugInfo("quantum_version", $"Quantum v{Plugin.Version}"));
-        if (MultiplayerRunning && Chainloader.PluginInfos.TryGetValue("KrokoshaCasualtiesMP", out var info))
-            leftGroup.Add(new DebugInfo("multiplayer_version", $"KrokoshaCasualtiesMP v{info.Metadata.Version}"));
-        leftGroup.Add(new DebugInfo("mod_count", LocaleOther("loading_mods", Chainloader.PluginInfos.Count)));
-        _leftGroups.Add(leftGroup);
+        var versionGroup = new DebugInfoGroup("version", Side.Left);
+        versionGroup.Add(new DebugInfo("game_version", $"Casualties Unknown Demo v{Application.version}"));
+        versionGroup.Add(new DebugInfo("bepinex_version", $"BepInEx v{_bepInExAssembly.GetName().Version}"));
+        versionGroup.Add(new DebugInfo("cucorelib_version", $"CUCoreLib v{CUCoreLib.CUCoreLibPlugin.VERSION}"));
+        versionGroup.Add(new DebugInfo("bark_version", $"Bark v{Bark.Plugin.Version}"));
+        versionGroup.Add(new DebugInfo("quantum_version", $"Quantum v{Plugin.Version}"));
+        if (MultiplayerRunning && Chainloader.PluginInfos.TryGetValue("KrokoshaCasualtiesMP", out var mpInfo))
+            versionGroup.Add(new DebugInfo("mp_version", $"KrokoshaCasualtiesMP v{mpInfo.Metadata.Version}"));
+        versionGroup.Add(new DebugInfo("mod_count", LocaleOther("loading_mods", Chainloader.PluginInfos.Count)));
+        _groups.Add(versionGroup);
 
-        // Profiler group
-        var profilerGroup = new DebugInfoGroup();
-        profilerGroup.Add(new DebugInfo("frame_time", LocaleOther("profiler.frame", (Time.unscaledDeltaTime * 1000f).ToString("F2") + " ms")));
-        profilerGroup.Add(new DebugInfo("fps", LocaleOther("profiler.fps", (1f / Time.unscaledDeltaTime).ToString("F0"))));
-        _leftGroups.Add(profilerGroup);
+        var profilerGroup = new DebugInfoGroup("profiler", Side.Left);
+        profilerGroup.Add(new DebugInfo("frame_time",
+            LocaleOther("profiler.frame", (Time.unscaledDeltaTime * 1000f).ToString("F2") + " ms")));
+        profilerGroup.Add(new DebugInfo("fps",
+            LocaleOther("profiler.fps", (1f / Time.unscaledDeltaTime).ToString("F0"))));
+        _groups.Add(profilerGroup);
 
-        // World group
-        var worldGroup = new DebugInfoGroup();
+        var worldGroup = new DebugInfoGroup("world", Side.Left);
         worldGroup.Add(new DebugInfo("position", LocaleOther("world.position",
             PlayerUtil.Body.transform.position.x.ToString("F2"),
             PlayerUtil.Body.transform.position.y.ToString("F2"))));
-        worldGroup.Add(new DebugInfo("look_pos", LocaleOther("world.looking_position",
+        worldGroup.Add(new DebugInfo("looking_position", LocaleOther("world.looking_position",
             PlayerUtil.Body.overrideLookPos.x.ToString("F2"),
             PlayerUtil.Body.overrideLookPos.y.ToString("F2"))));
         worldGroup.Add(new DebugInfo("target_block", GetTargetBlockText()));
         worldGroup.Add(new DebugInfo("layer", LocaleOther("world.layer", (WorldUtil.World.biomeDepth + 1).ToString())));
-        _leftGroups.Add(worldGroup);
+        _groups.Add(worldGroup);
 
-        // Right side group
-        var rightGroup = new DebugInfoGroup();
-        rightGroup.Add(new DebugInfo("cpu", $"CPU: {SystemInfo.processorType}"));
-        rightGroup.Add(new DebugInfo("gpu", $"GPU: {SystemInfo.graphicsDeviceName} - {SystemInfo.graphicsDeviceType}"));
-        rightGroup.Add(new DebugInfo("sys", $"SYS: {SystemInfo.operatingSystem}"));
-        _rightGroups.Add(rightGroup);
+        var systemGroup = new DebugInfoGroup("system", Side.Right);
+        systemGroup.Add(new DebugInfo("cpu", $"CPU: {SystemInfo.processorType}"));
+        systemGroup.Add(new DebugInfo("gpu",
+            $"GPU: {SystemInfo.graphicsDeviceName} - {SystemInfo.graphicsDeviceType}"));
+        systemGroup.Add(new DebugInfo("sys", $"SYS: {SystemInfo.operatingSystem}"));
+        _groups.Add(systemGroup);
     }
 
     private static string GetTargetBlockText()
@@ -111,7 +109,6 @@ public static class DebugScreen
             if (Hidden && _currentX <= -PanelWidth + 1f) return;
 
             GUI.skin.font = TextUtil.Unifont;
-
             var height = Screen.height;
 
             GUI.color = new Color(0f, 0f, 0f, 0.7f);
@@ -120,50 +117,65 @@ public static class DebugScreen
 
             GUI.color = Color.white;
 
-            var leftText = BuildPanelText(_leftGroups);
-            var rightText = BuildPanelText(_rightGroups);
-
-            GUI.Label(new Rect(_currentX + 10f, 10f, PanelWidth - 20f, height - 20f), leftText);
-            GUI.Label(new Rect(Screen.width - PanelWidth - _currentX + 10f, 10f, PanelWidth - 20f, height - 20f), rightText);
+            GUI.Label(new Rect(_currentX + 10f, 10f, PanelWidth - 20f, height - 20f), BuildPanelText(Side.Left));
+            GUI.Label(new Rect(Screen.width - PanelWidth - _currentX + 10f, 10f, PanelWidth - 20f, height - 20f),
+                BuildPanelText(Side.Right));
         }
 
-        private static string BuildPanelText(List<DebugInfoGroup> groups)
+        private static string BuildPanelText(Side side)
         {
             var lines = new List<string>();
-            for (var i = 0; i < groups.Count; i++)
+            foreach (var group in _groups)
             {
-                var group = groups[i];
-                foreach (var info in group.Infos)
-                {
-                    lines.Add(info.Text);
-                }
-                if (i < groups.Count - 1)
-                {
-                    lines.Add("");
-                }
+                var matchedInfos = group.Infos.Where(info => (info.InfoSide ?? group.GroupSide) == side).ToList();
+                if (matchedInfos.Count == 0) continue;
+
+                lines.AddRange(matchedInfos.Select(info => info.Text));
+                lines.Add("");
             }
+            if (lines.Count > 0 && lines[lines.Count - 1] == "")
+                lines.RemoveAt(lines.Count - 1);
             return string.Join("\n", lines);
         }
     }
 
-    public class DebugInfoGroup
+    public enum Side
     {
+        Left,
+        Right
+    }
+
+    public class DebugInfoGroup(string id, Side groupSide)
+    {
+        public string Id { get; } = id;
+        public Side GroupSide { get; set; } = groupSide;
         public List<DebugInfo> Infos { get; } = [];
 
-        public void Add(DebugInfo info)
+        public void Add(DebugInfo info) => Infos.Add(info);
+
+        public void TurnLeft() => Turn(Side.Left);
+        public void TurnRight() => Turn(Side.Right);
+
+        public void Turn(Side side)
         {
-            Infos.Add(info);
+            GroupSide = side;
+            foreach (var info in Infos)
+                info.Turn(side);
         }
     }
 
-    public class DebugInfo(string id, string text)
+    public class DebugInfo(string id, string text, Side? infoSide = null)
     {
         public string Id { get; } = id;
         public string Text { get; } = text;
+        public Side? InfoSide { get; set; } = infoSide;
+
+        public void TurnLeft() => Turn(Side.Left);
+        public void TurnRight() => Turn(Side.Right);
+
+        public void Turn(Side side) => InfoSide = side;
     }
-    
-    private static string LocaleOther(string key, params object[] args)
-    {
-        return BetterLocale.GetOther(LocaleKeyPre + key, args);
-    }
+
+    private static string LocaleOther(string key, params object[] args) =>
+        BetterLocale.GetOther(LocaleKeyPre + key, args);
 }
