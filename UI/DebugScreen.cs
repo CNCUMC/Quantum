@@ -4,6 +4,7 @@ using Bark.BetterCCL;
 using Bark.Tool;
 using BepInEx.Bootstrap;
 using HarmonyLib;
+using Unity.Profiling;
 using UnityEngine;
 
 namespace Quantum.UI;
@@ -22,6 +23,9 @@ public static class DebugScreen
     private static readonly List<string> _rightText = [];
 
     private static readonly Assembly _bepInExAssembly = typeof(BepInEx.Paths).Assembly;
+
+    private static ProfilerRecorder _memoryRecorder;
+    private static bool _memoryRecorderInit;
 
     private static void BuildText()
     {
@@ -46,12 +50,18 @@ public static class DebugScreen
 
     private static void Profiler()
     {
-        // 内存（GC 托管堆 / 系统总内存）
-        var gcBytes = System.GC.GetTotalMemory(false);
-        var gcMb = gcBytes / (1024f * 1024f);
-        // SystemInfo.systemMemorySize 返回 MB，保持单位一致
+        // 内存（已使用 / 总内存）
+        if (!_memoryRecorderInit)
+        {
+            _memoryRecorderInit = true;
+            _memoryRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "Total Allocated Memory");
+        }
+
+        var usedMb = _memoryRecorder.Valid
+            ? _memoryRecorder.CurrentValue / (1024f * 1024f)
+            : 0f;
         var totalMb = SystemInfo.systemMemorySize;
-        AddLeftTextLocale("profiler.memory", gcMb.ToString("F1"), totalMb.ToString("F0"));
+        AddLeftTextLocale("profiler.memory", usedMb.ToString("F0"), totalMb.ToString("F0"));
 
         // 帧时间
         var frameMs = Time.unscaledDeltaTime * 1000f;
@@ -102,7 +112,7 @@ public static class DebugScreen
             AddLeftTextLocale("world.target_block", blockInfo.name, blockId);
         }
     }
-    
+
     private static void RightHead()
     {
         AddRightText($"CPU: {SystemInfo.processorType}");
