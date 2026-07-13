@@ -4,7 +4,6 @@ using Bark.BetterCCL;
 using Bark.Tool;
 using BepInEx.Bootstrap;
 using HarmonyLib;
-using Unity.Profiling;
 using UnityEngine;
 
 namespace Quantum.UI;
@@ -21,7 +20,7 @@ public static class DebugScreen
     private static MonoBehaviour _guiHelper;
     private static readonly List<string> _leftText = [];
     private static readonly List<string> _rightText = [];
-    
+
     private static readonly Assembly _bepInExAssembly = typeof(BepInEx.Paths).Assembly;
 
     private static void BuildText()
@@ -29,7 +28,7 @@ public static class DebugScreen
         LeftHead();
         Profiler();
     }
-    
+
     private static void LeftHead()
     {
         AddLeftText($"Casualties Unknown Demo v{Application.version}");
@@ -37,10 +36,23 @@ public static class DebugScreen
         AddLeftTextLocale("loading_mod_list", Chainloader.PluginInfos.Count);
         AddLeftLine();
     }
-    
+
     private static void Profiler()
     {
-        AddLeftTextLocale("profiler.memory", ProfilerRecorder.StartNew(ProfilerCategory.Memory, "Used Memory").CurrentValue);
+        // 内存（已使用 / 总内存）
+        var gcBytes = System.GC.GetTotalMemory(false);
+        var gcMb = gcBytes / (1024f * 1024f);
+        var totalMb = SystemInfo.systemMemorySize / 1024f;
+        AddLeftTextLocale("profiler.memory", gcMb.ToString("F1"), totalMb.ToString("F0"));
+
+        // 帧时间
+        var frameMs = Time.unscaledDeltaTime * 1000f;
+        AddLeftTextLocale("profiler.frame", frameMs.ToString("F2") + " ms");
+
+        // FPS
+        var fps = 1f / Time.unscaledDeltaTime;
+        AddLeftTextLocale("profiler.fps", fps.ToString("F0"));
+
         AddLeftLine();
     }
 
@@ -96,7 +108,7 @@ public static class DebugScreen
     {
         _rightText.Add(text);
     }
-    
+
     public static void AddLeftLine()
     {
         AddLeftText("");
@@ -111,7 +123,7 @@ public static class DebugScreen
     {
         _leftText.Add(LocaleOther(text, args));
     }
-    
+
     private static void AddRightTextLocale(string text, params object[] args)
     {
         _rightText.Add(LocaleOther(text, args));
@@ -123,7 +135,7 @@ public static class DebugScreen
         _rightText.Clear();
         BuildText();
     }
-    
+
     private static string LocaleOther(string key, params object[] args)
     {
         return BetterLocale.GetOther(LocaleKeyPre + key, args);
