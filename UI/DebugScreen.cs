@@ -15,6 +15,7 @@ public static class DebugScreen
 {
     private const string LocaleKeyPre = "debug_screen.";
     public static bool Hidden = true;
+    public static bool ShowFpsGraph = true;
 
     private static float _currentX;
     private static float _velocity;
@@ -25,6 +26,11 @@ public static class DebugScreen
     private static readonly Assembly _bepInExAssembly = typeof(Paths).Assembly;
 
     private static readonly List<DebugInfoGroup> _groups = [];
+
+    private static readonly Queue<float> _frameTimes = new();
+    private const int MaxFrameRecords = 120;
+    private const float GraphMaxMs = 50f;
+    private static Texture2D _graphTexture;
 
     private static void BuildText()
     {
@@ -94,7 +100,18 @@ public static class DebugScreen
         if (_guiHelper == null)
             _guiHelper = __instance.gameObject.AddComponent<DebugGuiHelper>();
 
-        var targetX = Hidden ? -PanelWidth : 0f;
+        _frameTimes.Enqueue(Time.unscaledDeltaTime * 1000f);
+        if (_frameTimes.Count > MaxFrameRecords)
+            _frameTimes.Dequeue();
+
+        if (Input.GetKeyDown(KeyCode.F3) && Input.GetKey(KeyCode.F))
+        {
+            ShowFpsGraph = !ShowFpsGraph;
+        }
+
+        var targetX = Hidden 
+            ? -PanelWidth
+            : 0f;
         _currentX = Mathf.SmoothDamp(_currentX, targetX, ref _velocity, Plugin.DebugScreenSpeed, Mathf.Infinity,
             Time.unscaledDeltaTime);
 
@@ -120,22 +137,74 @@ public static class DebugScreen
             GUI.Label(new Rect(_currentX + 10f, 10f, PanelWidth - 20f, height - 20f), BuildPanelText(Side.Left));
             GUI.Label(new Rect(Screen.width - PanelWidth - _currentX + 10f, 10f, PanelWidth - 20f, height - 20f),
                 BuildPanelText(Side.Right));
+
+            if (ShowFpsGraph)
+            {
+                DrawFpsGraph();
+            }
         }
 
         private static string BuildPanelText(Side side)
         {
             var lines = new List<string>();
-            foreach (var group in _groups)
+            foreach (var matchedInfos in _groups
+                         .Select(group =>
+                             group.Infos.Where(info => (info.InfoSide ?? group.GroupSide) == side).ToList())
+                         .Where(matchedInfos => matchedInfos.Count != 0))
             {
-                var matchedInfos = group.Infos.Where(info => (info.InfoSide ?? group.GroupSide) == side).ToList();
-                if (matchedInfos.Count == 0) continue;
-
                 lines.AddRange(matchedInfos.Select(info => info.Text));
                 lines.Add("");
             }
+
             if (lines.Count > 0 && lines[lines.Count - 1] == "")
                 lines.RemoveAt(lines.Count - 1);
             return string.Join("\n", lines);
+        }
+
+        private static void DrawFpsGraph()
+        {
+            if (!_graphTexture)
+            {
+                _graphTexture = new Texture2D(MaxFrameRecords, 100)
+                {
+                    filterMode = FilterMode.Point
+                };
+            }
+
+            var bgColor = new Color(0.1f, 0.1f, 0.1f, 0.8f);
+            for (var x = 0; x < MaxFrameRecords; x++)
+            for (var y = 0; y < 100; y++)
+                _graphTexture.SetPixel(x, y, bgColor);
+
+            var y60 = Mathf.Clamp(Mathf.RoundToInt(100f - (16.67f / GraphMaxMs) * 100f), 0, 99);
+            var y30 = Mathf.Clamp(Mathf.RoundToInt(100f - (33.33f / GraphMaxMs) * 100f), 0, 99);
+            for (var x = 0; x < MaxFrameRecords; x++)
+            {
+                _graphTexture.SetPixel(x, y60, new Color(0f, 1f, 0f, 0.5f));
+                _graphTexture.SetPixel(x, y30, new Color(1f, 1f, 0f, 0.5f));
+            }
+
+            var times = _frameTimes.ToArray();
+            for (var i = 0; i < times.Length && i < MaxFrameRecords; i++)
+            {
+                var y = Mathf.Clamp(Mathf.RoundToInt(100f - (times[i] / GraphMaxMs) * 100f), 0, 99);
+                var c = times[i] <= 16.67f
+                    ? Color.green
+                    : times[i] <= 33.33f
+                        ? Color.yellow
+                        : Color.red;
+                _graphTexture.SetPixel(MaxFrameRecords - times.Length + i, y, c);
+            }
+
+            _graphTexture.Apply();
+
+            // Draw graph aligned with right panel (full width)
+            var graphX = Screen.width - PanelWidth - _currentX;
+            var graphRect = new Rect(graphX, Screen.height - 180f, PanelWidth, 150f);
+            GUI.DrawTexture(graphRect, _graphTexture);
+
+            GUI.Label(new Rect(graphX + 10f, Screen.height - 200f, PanelWidth - 20f, 20f),
+                $"FPS (60={16.67f}ms, 30={33.33f}ms)");
         }
     }
 
@@ -162,6 +231,8 @@ public static class DebugScreen
             foreach (var info in Infos)
                 info.Turn(side);
         }
+        
+
     }
 
     public class DebugInfo(string id, string text, Side? infoSide = null)

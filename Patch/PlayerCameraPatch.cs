@@ -71,6 +71,12 @@ public static class PlayerCameraPatch
         {
             DebugScreen.Hidden = !DebugScreen.Hidden;
         }
+
+        if (Input.GetKey(Plugin.DebugScreen) && Input.GetKeyDown(Plugin.DebugScreenFpsGraph))
+        {
+            DebugScreen.ShowFpsGraph = !DebugScreen.ShowFpsGraph;
+        }
+
     }
 
     [HarmonyPatch("RefreshRecipeList")]

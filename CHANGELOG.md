@@ -18,7 +18,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/), and this
   - Uses Unifont font for IMGUI rendering
   - Group-based architecture with `DebugInfoGroup` and `DebugInfo` classes
   - `TurnLeft()` / `TurnRight()` methods for runtime side switching
-  - `DebugInfo.Side` overrides group side when set, inherits when null
+  - `DebugInfo.InfoSide` overrides group side when set, inherits when null
+
+- **FPS Graph** (F3+F): Real-time frame time chart
+  - Shows recent 120 frames
+  - Reference lines: green 16.67ms (60 FPS), yellow 33.33ms (30 FPS)
+  - Color-coded: green (<16.67ms), yellow (16.67-33.33ms), red (>33.33ms)
+  - Aligned with right panel, full width
 
 - **Console Parameter Switching**: Hold Up/Down to cycle through autocomplete candidates
   - Configurable speed (0~100ms, default 50ms)

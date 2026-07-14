@@ -31,6 +31,9 @@ public class EnLangGenerator : ModLangGenBase
         Option("quantum.video.ammunition_ui", "Ammunition UI", "Display your ammunition in real time!");
         Option("quantum.video.bilingual_name", "Bilingual Name", "Appends a translation in the specified language (e.g. EN / zh-CN / zh-TW) to item names; leave empty for original only");
         Option("quantum.input.console_parameter_switching_speed", "Console Parameter Switching Speed", "The speed of switching candidate parameters by long pressing the up and down keys in the console (ms)");
+        Option("quantum.input.debug_screen", "Debug Screen", "Display debug info");
+        Option("quantum.input.debug_screen_fps_graph", "Debug Screen FPS Graph", "Display FPS graph in Debug Screen");
+        Option("quantum.input.hidden_hud", "Hidden HUD", "Hidden all HUD");
         Option("quantum.video.debug_screen_speed", "Debug Screen Speed", "Speed of debug screen slide animation (ms)");
         Option("quantum.video.max_visible_candidates", "Max Candidates", "Maximum number of candidate lines displayed in console autocomplete");
         Option("quantum.video.max_history_size", "History Size", "Maximum number of executed commands kept in console history");

@@ -49,6 +49,7 @@ public class Plugin : BaseUnityPlugin
     public static string BilingualName = "EN";
     public static float ConsoleParameterSwitchingSpeed = 0.05f;
     public static KeyCode DebugScreen = KeyCode.F3;
+    public static KeyCode DebugScreenFpsGraph = KeyCode.F;
     public static float DebugScreenSpeed = 0.01f;
     public static KeyCode HiddenHud = KeyCode.F1;
     public static int MaxVisibleCandidates = 27;
@@ -94,6 +95,7 @@ public class Plugin : BaseUnityPlugin
                 ? "0" 
                 : (v * 1000f).ToString("F0") + "ms");
         InputKeybind("debug_screen", DebugScreen, k => DebugScreen = k);
+        InputKeybind("debug_screen_fps_graph", DebugScreenFpsGraph, k => DebugScreenFpsGraph = k);
         VideoFloat("debug_screen_speed", DebugScreenSpeed, 0f, 0.1f,
             v => DebugScreenSpeed = v,
             v => (v * 1000f).ToString("F1") + "ms");
