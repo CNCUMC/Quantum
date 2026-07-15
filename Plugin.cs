@@ -14,14 +14,14 @@ namespace Quantum;
 
 [BepInPlugin(Guid, Name, Version)]
 [BepInDependency("net.cucorelib", "1.0.2")]
-[BepInDependency("org.cncumc.bark", "1.0.3")]
+[BepInDependency("org.cncumc.bark", "1.1.0")]
 public class Plugin : BaseUnityPlugin
 {
     public const string Guid = "org.cncumc.quantum";
     public const string Name = "Quantum";
     public const string Version = "1.1.0";
 
-    private const string NameSpace = "quantum";
+    internal const string NameSpace = "quantum";
     internal new static ManualLogSource Logger;
     private readonly Harmony _harmony = new(Guid);
 
@@ -155,7 +155,7 @@ public class Plugin : BaseUnityPlugin
                 foreach (var file in Directory.GetFiles(langDir, "*.json"))
                 {
                     var code = Path.GetFileNameWithoutExtension(file);
-                    BetterLocale.SetDefault("EN", "option", $"quantum.video.bilingual_name{code}", code);
+                    BetterLocale.SetDefault("EN", "option", $"video.bilingual_name{code}", code);
                     choices.Add(new ModDropdownChoice(code, code));
                 }
         }

@@ -5,7 +5,8 @@ namespace Quantum.Lang;
 public class EnLangGenerator : ModLangGenBase
 {
     protected override string LanguageCode => "EN";
-
+    protected override string NameSpace => Plugin.NameSpace;
+    
     protected override void BuildLocaleData()
     {
         // Info
