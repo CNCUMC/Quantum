@@ -79,6 +79,10 @@ internal class LangGenerator : ModLangGenMultiBase
             "无观察者", "如果开启，再无观察者",
             "無觀察者", "如果開啟，再無觀察者",
             "Нет обогревателя", "Если вкл, обогреватель(observer) не появляется");
+        Option("quantum.auto_sandbox",
+            "Auto Sandbox", "Automatically skip tutorial course selection and enter sandbox directly",
+            "自动沙盒", "跳过教程课程选择，直接进入沙盒模式",
+            "自動沙盒", "跳過教程課程選擇，直接進入沙箱模式");
 
         // UI
         Option("video.ammunition_ui",

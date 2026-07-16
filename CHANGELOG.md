@@ -35,7 +35,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/), and this
 
 - **Settings Menu**: ESC to close, Tab / Shift+Tab to switch tabs
 
-- **ESC Close**: Console, Credits screen, Run Settings screen
+- **Auto Sandbox**: Skip tutorial course selection and enter sandbox mode directly
 
 ### Changed
 

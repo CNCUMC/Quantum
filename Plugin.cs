@@ -41,6 +41,7 @@ public class Plugin : BaseUnityPlugin
 
     // Misc
     public static bool NoObserver;
+    public static bool AutoSandbox;
 
     // UI
     public static bool AmmunitionUi = true;
@@ -83,6 +84,7 @@ public class Plugin : BaseUnityPlugin
 
         // Misc
         QuantumBool("no_observer", NoObserver, v => NoObserver = v);
+        QuantumBool("auto_sandbox", AutoSandbox, v => AutoSandbox = v);
 
         // UI
         VideoBool("ammunition_ui", AmmunitionUi, v => AmmunitionUi = v);
