@@ -119,7 +119,7 @@ if (Test-Path $localPluginsDir -PathType Container)
     Get-ChildItem $localPluginsDir -File -Recurse -Filter "*.dll" | ForEach-Object {
         $destDep = Join-Path $pluginPath $_.Name
         Copy-Item $_.FullName $destDep -Force
-        Write-ColoredMessage "正在复制依赖 DLL ""$($_.Name)"" 到 ""$destDep""。" Cyan
+        Write-ColoredMessage "正在复制依赖 DLL ""$( $_.Name )"" 到 ""$destDep""。" Cyan
     }
 }
 

@@ -5,6 +5,7 @@ using Bark.BetterCCL;
 using Bark.Tool;
 using BepInEx;
 using BepInEx.Bootstrap;
+using CUCoreLib;
 using HarmonyLib;
 using UnityEngine;
 
@@ -13,13 +14,21 @@ namespace Quantum.UI;
 [HarmonyPatch(typeof(PlayerCamera))]
 public static class DebugScreen
 {
-    private const string LocaleKeyPre = "debug_screen.";
+    public enum Side
+    {
+        Left,
+        Right
+    }
+
+    private const string LocaleKeyPre = "debug_screen";
+    private const float PanelWidth = 300f;
+    private const int MaxFrameRecords = 120;
+    private const float GraphMaxMs = 50f;
     public static bool Hidden = true;
     public static bool ShowFpsGraph = true;
 
     private static float _currentX;
     private static float _velocity;
-    private const float PanelWidth = 300f;
     private static MonoBehaviour _guiHelper;
 
     private static readonly bool MultiplayerRunning = Chainloader.PluginInfos.ContainsKey("KrokoshaCasualtiesMP");
@@ -28,8 +37,6 @@ public static class DebugScreen
     private static readonly List<DebugInfoGroup> _groups = [];
 
     private static readonly Queue<float> _frameTimes = new();
-    private const int MaxFrameRecords = 120;
-    private const float GraphMaxMs = 50f;
     private static Texture2D _graphTexture;
 
     private static void BuildText()
@@ -39,7 +46,7 @@ public static class DebugScreen
         var versionGroup = new DebugInfoGroup("version", Side.Left);
         versionGroup.Add(new DebugInfo("game_version", $"Casualties Unknown Demo v{Application.version}"));
         versionGroup.Add(new DebugInfo("bepinex_version", $"BepInEx v{_bepInExAssembly.GetName().Version}"));
-        versionGroup.Add(new DebugInfo("cucorelib_version", $"CUCoreLib v{CUCoreLib.CUCoreLibPlugin.VERSION}"));
+        versionGroup.Add(new DebugInfo("cucorelib_version", $"CUCoreLib v{CUCoreLibPlugin.VERSION}"));
         versionGroup.Add(new DebugInfo("bark_version", $"Bark v{Bark.Plugin.Version}"));
         versionGroup.Add(new DebugInfo("quantum_version", $"Quantum v{Plugin.Version}"));
         if (MultiplayerRunning && Chainloader.PluginInfos.TryGetValue("KrokoshaCasualtiesMP", out var mpInfo))
@@ -104,12 +111,9 @@ public static class DebugScreen
         if (_frameTimes.Count > MaxFrameRecords)
             _frameTimes.Dequeue();
 
-        if (Input.GetKeyDown(KeyCode.F3) && Input.GetKey(KeyCode.F))
-        {
-            ShowFpsGraph = !ShowFpsGraph;
-        }
+        if (Input.GetKeyDown(KeyCode.F3) && Input.GetKey(KeyCode.F)) ShowFpsGraph = !ShowFpsGraph;
 
-        var targetX = Hidden 
+        var targetX = Hidden
             ? -PanelWidth
             : 0f;
         _currentX = Mathf.SmoothDamp(_currentX, targetX, ref _velocity, Plugin.DebugScreenSpeed, Mathf.Infinity,
@@ -138,10 +142,7 @@ public static class DebugScreen
             GUI.Label(new Rect(Screen.width - PanelWidth - _currentX + 10f, 10f, PanelWidth - 20f, height - 20f),
                 BuildPanelText(Side.Right));
 
-            if (ShowFpsGraph)
-            {
-                DrawFpsGraph();
-            }
+            if (ShowFpsGraph) DrawFpsGraph();
         }
 
         private static string BuildPanelText(Side side)
@@ -164,20 +165,18 @@ public static class DebugScreen
         private static void DrawFpsGraph()
         {
             if (!_graphTexture)
-            {
                 _graphTexture = new Texture2D(MaxFrameRecords, 100)
                 {
                     filterMode = FilterMode.Point
                 };
-            }
 
             var bgColor = new Color(0.1f, 0.1f, 0.1f, 0.8f);
             for (var x = 0; x < MaxFrameRecords; x++)
             for (var y = 0; y < 100; y++)
                 _graphTexture.SetPixel(x, y, bgColor);
 
-            var y60 = Mathf.Clamp(Mathf.RoundToInt(100f - (16.67f / GraphMaxMs) * 100f), 0, 99);
-            var y30 = Mathf.Clamp(Mathf.RoundToInt(100f - (33.33f / GraphMaxMs) * 100f), 0, 99);
+            var y60 = Mathf.Clamp(Mathf.RoundToInt(100f - 16.67f / GraphMaxMs * 100f), 0, 99);
+            var y30 = Mathf.Clamp(Mathf.RoundToInt(100f - 33.33f / GraphMaxMs * 100f), 0, 99);
             for (var x = 0; x < MaxFrameRecords; x++)
             {
                 _graphTexture.SetPixel(x, y60, new Color(0f, 1f, 0f, 0.5f));
@@ -187,7 +186,7 @@ public static class DebugScreen
             var times = _frameTimes.ToArray();
             for (var i = 0; i < times.Length && i < MaxFrameRecords; i++)
             {
-                var y = Mathf.Clamp(Mathf.RoundToInt(100f - (times[i] / GraphMaxMs) * 100f), 0, 99);
+                var y = Mathf.Clamp(Mathf.RoundToInt(100f - times[i] / GraphMaxMs * 100f), 0, 99);
                 var c = times[i] <= 16.67f
                     ? Color.green
                     : times[i] <= 33.33f
@@ -208,22 +207,26 @@ public static class DebugScreen
         }
     }
 
-    public enum Side
-    {
-        Left,
-        Right
-    }
-
     public class DebugInfoGroup(string id, Side groupSide)
     {
         public string Id { get; } = id;
         public Side GroupSide { get; set; } = groupSide;
         public List<DebugInfo> Infos { get; } = [];
 
-        public void Add(DebugInfo info) => Infos.Add(info);
+        public void Add(DebugInfo info)
+        {
+            Infos.Add(info);
+        }
 
-        public void TurnLeft() => Turn(Side.Left);
-        public void TurnRight() => Turn(Side.Right);
+        public void TurnLeft()
+        {
+            Turn(Side.Left);
+        }
+
+        public void TurnRight()
+        {
+            Turn(Side.Right);
+        }
 
         public void Turn(Side side)
         {
@@ -231,8 +234,6 @@ public static class DebugScreen
             foreach (var info in Infos)
                 info.Turn(side);
         }
-        
-
     }
 
     public class DebugInfo(string id, string text, Side? infoSide = null)
@@ -241,12 +242,24 @@ public static class DebugScreen
         public string Text { get; } = text;
         public Side? InfoSide { get; set; } = infoSide;
 
-        public void TurnLeft() => Turn(Side.Left);
-        public void TurnRight() => Turn(Side.Right);
+        public void TurnLeft()
+        {
+            Turn(Side.Left);
+        }
 
-        public void Turn(Side side) => InfoSide = side;
+        public void TurnRight()
+        {
+            Turn(Side.Right);
+        }
+
+        public void Turn(Side side)
+        {
+            InfoSide = side;
+        }
     }
-
-    private static string LocaleOther(string key, params object[] args) =>
-        BetterLocale.GetOther(LocaleKeyPre + key, args);
+    
+    private static string LocaleOther(string key, params object[] args)
+    {
+        return BetterLocale.GetOther($"{Plugin.NameSpace}.{LocaleKeyPre}.{key}", args);
+    }
 }

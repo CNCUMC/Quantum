@@ -14,7 +14,7 @@ namespace Quantum.Patch;
 [HarmonyPatch(typeof(PlayerCamera))]
 public static class PlayerCameraPatch
 {
-    private const string LocaleKeyPre = "player_camera_patch.";
+    private const string LocaleKeyPre = "player_camera_patch";
 
     private static readonly Dictionary<string, string> PinyinCache = new();
     private static bool _pinyinInitialized;
@@ -56,7 +56,7 @@ public static class PlayerCameraPatch
             Warning("pinyin.init_failed", ex.Message);
         }
     }
-    
+
     [HarmonyPatch("Update")]
     [HarmonyPostfix]
     public static void UpdatePostfix(PlayerCamera __instance)
@@ -66,17 +66,11 @@ public static class PlayerCameraPatch
             HiddenHud.Hidden = !HiddenHud.Hidden;
             HiddenHud.ApplyVisibility(__instance);
         }
-        
-        if (Input.GetKeyDown(Plugin.DebugScreen))
-        {
-            DebugScreen.Hidden = !DebugScreen.Hidden;
-        }
+
+        if (Input.GetKeyDown(Plugin.DebugScreen)) DebugScreen.Hidden = !DebugScreen.Hidden;
 
         if (Input.GetKey(Plugin.DebugScreen) && Input.GetKeyDown(Plugin.DebugScreenFpsGraph))
-        {
             DebugScreen.ShowFpsGraph = !DebugScreen.ShowFpsGraph;
-        }
-
     }
 
     [HarmonyPatch("RefreshRecipeList")]
@@ -222,10 +216,10 @@ public static class PlayerCameraPatch
 
         return true;
     }
-    
+
     private static string LocaleLog(string key, params object[] args)
     {
-        return BetterLocale.GetLog(key, args);
+        return BetterLocale.GetLog($"{Plugin.NameSpace}.{LocaleKeyPre}.{key}", args);
     }
 
     private static void Warning(string text, params object[] args)

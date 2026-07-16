@@ -13,7 +13,7 @@ namespace Quantum.ItemChange;
 [HarmonyPatch(typeof(Item))]
 public static class ItemDescriptionPatch
 {
-    private const string LocaleKeyPre = "item_description_patch.";
+    private const string LocaleKeyPre = "item_description_patch";
 
     private static readonly Dictionary<string, Dictionary<string, string>> LangCache = new();
 
@@ -99,7 +99,7 @@ public static class ItemDescriptionPatch
             return null;
         }
 
-        return mainDict?.TryGetValue(itemId, out var result) == true 
+        return mainDict?.TryGetValue(itemId, out var result) == true
             ? result
             : null;
     }
@@ -118,6 +118,6 @@ public static class ItemDescriptionPatch
 
     private static string LocaleOther(string key, params object[] args)
     {
-        return BetterLocale.GetOther($"{LocaleKeyPre}{key}", args);
+        return BetterLocale.GetOther($"{Plugin.NameSpace}.{LocaleKeyPre}.{key}", args);
     }
 }

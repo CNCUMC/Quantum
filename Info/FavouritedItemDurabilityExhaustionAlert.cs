@@ -13,7 +13,7 @@ public static class FavouritedItemDurabilityExhaustionAlert
 {
     private const double DurabilityCheckInterval = 2.0;
 
-    private const string LogLocaleKeyPre = "favourited_item_durability_exhaustion_alert.";
+    private const string LocaleKeyPre = "favourited_item_durability_exhaustion_alert";
 
     // item.id -> 上次提醒时的耐久百分比 (0-100)，每下降 >=5% 提醒一次
     private static readonly Dictionary<string, int> AlertedItemPercents = [];
@@ -79,11 +79,11 @@ public static class FavouritedItemDurabilityExhaustionAlert
 
     private static void LogAlert(string text, params object[] args)
     {
-        CUCoreUtils.ShowAlert(LocaleOther(LogLocaleKeyPre + text, args));
+        CUCoreUtils.ShowAlert(LocaleOther($"{Plugin.NameSpace}.{LocaleKeyPre}.{text}", args));
     }
-    
+
     private static string LocaleOther(string key, params object[] args)
     {
-        return BetterLocale.GetOther(key, args);
+        return BetterLocale.GetOther($"{Plugin.NameSpace}.{LocaleKeyPre}.{key}", args);
     }
 }

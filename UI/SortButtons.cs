@@ -14,6 +14,7 @@ namespace Quantum.UI;
 [HarmonyPatch(typeof(PlayerCamera))]
 public static class SortButtons
 {
+    private const string LocaleKeyPre = "sort_buttons";
     private static SortMode _currentSortMode;
     private static bool _currentSortAscending = true;
     private static GameObject _sortButton;
@@ -170,18 +171,18 @@ public static class SortButtons
         AddOrderClickEvent(_orderButton, camera);
 
         AddTooltip(_sortButton,
-            LocaleOther("ui.sort.mode_tip"),
-            LocaleOther("ui.sort.mode_desc", GetSortModeLabel(_currentSortMode)));
+            LocaleOther("mode_tip"),
+            LocaleOther("mode_desc", GetSortModeLabel(_currentSortMode)));
 
         AddTooltip(_executeButton,
-            LocaleOther("ui.sort.execute_tip"),
-            LocaleOther("ui.sort.execute_desc"));
+            LocaleOther("execute_tip"),
+            LocaleOther("execute_desc"));
 
         AddTooltip(_orderButton,
-            LocaleOther("ui.sort.order_tip"),
+            LocaleOther("direction"),
             _currentSortAscending
-                ? LocaleOther("ui.sort.ascending")
-                : LocaleOther("ui.sort.descending"));
+                ? LocaleOther("ascending")
+                : LocaleOther("descending"));
     }
 
     private static void DestroySortButtons()
@@ -354,10 +355,10 @@ public static class SortButtons
                     : "\u2193";
 
             AddTooltip(_orderButton,
-                LocaleOther("ui.sort.order_tip"),
+                LocaleOther("direction"),
                 _currentSortAscending
-                    ? LocaleOther("ui.sort.ascending")
-                    : LocaleOther("ui.sort.descending"));
+                    ? LocaleOther("ascending")
+                    : LocaleOther("descending"));
 
             camera.PlayUISound(PlayerCamera.UISoundType.Click);
         });
@@ -368,9 +369,9 @@ public static class SortButtons
     {
         return mode switch
         {
-            SortMode.Name => LocaleOther("ui.sort.mode.name"),
-            SortMode.Value => LocaleOther("ui.sort.mode.value"),
-            SortMode.Weight => LocaleOther("ui.sort.mode.weight"),
+            SortMode.Name => LocaleOther("mode.name"),
+            SortMode.Value => LocaleOther("mode.value"),
+            SortMode.Weight => LocaleOther("mode.weight"),
             _ => "?"
         };
     }
@@ -387,40 +388,35 @@ public static class SortButtons
         }
 
         AddTooltip(_sortButton,
-            LocaleOther("ui.sort.mode_tip"),
-            LocaleOther("ui.sort.mode_desc", GetSortModeLabel(_currentSortMode)));
+            LocaleOther("mode_tip"),
+            LocaleOther("mode_desc", GetSortModeLabel(_currentSortMode)));
     }
 
     private static void UpdateOrderButtonText()
     {
         AddTooltip(_orderButton,
-            LocaleOther("ui.sort.order_tip"),
+            LocaleOther("direction"),
             _currentSortAscending
-                ? LocaleOther("ui.sort.ascending")
-                : LocaleOther("ui.sort.descending"));
+                ? LocaleOther("ascending")
+                : LocaleOther("descending"));
     }
 
     private static void ShowSortNotification(bool noChange)
     {
         var modeLabel = _currentSortMode switch
         {
-            SortMode.Name => LocaleOther("ui.sort.mode.name"),
-            SortMode.Value => LocaleOther("ui.sort.mode.value"),
-            SortMode.Weight => LocaleOther("ui.sort.mode.weight"),
+            SortMode.Name => LocaleOther("mode.name"),
+            SortMode.Value => LocaleOther("mode.value"),
+            SortMode.Weight => LocaleOther("mode.weight"),
             _ => ""
         };
         var orderLabel = _currentSortAscending
-            ? LocaleOther("ui.sort.ascending")
-            : LocaleOther("ui.sort.descending");
+            ? LocaleOther("ascending")
+            : LocaleOther("descending");
 
         Alert(noChange
-            ? LocaleOther("ui.sort.no_change")
-            : LocaleOther("ui.sort.completed", modeLabel, orderLabel));
-    }
-
-    private static string LocaleOther(string key, params object[] args)
-    {
-        return BetterLocale.GetOther(key, args);
+            ? LocaleOther("no_change")
+            : LocaleOther("completed", modeLabel, orderLabel));
     }
 
     private static void Alert(string text)
@@ -433,5 +429,10 @@ public static class SortButtons
         Name,
         Value,
         Weight
+    }
+
+    private static string LocaleOther(string key, params object[] args)
+    {
+        return BetterLocale.GetOther($"{Plugin.NameSpace}.{LocaleKeyPre}.{key}", args);
     }
 }

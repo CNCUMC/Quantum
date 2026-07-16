@@ -15,6 +15,7 @@ public class DontShit
             __result = EmptyCoroutine();
             return false;
         }
+
         __result = null;
         return true;
     }

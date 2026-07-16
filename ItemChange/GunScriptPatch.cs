@@ -1,7 +1,7 @@
 using HarmonyLib;
 using Quantum.UI;
 
-namespace Quantum.ItemChange.Gun;
+namespace Quantum.ItemChange;
 
 [HarmonyPatch(typeof(GunScript))]
 public static class GunScriptPatch

@@ -22,7 +22,6 @@ public class Plugin : BaseUnityPlugin
 
     internal const string NameSpace = "quantum";
     internal new static ManualLogSource Logger;
-    private readonly Harmony _harmony = new(Guid);
 
     // Info
     public static bool CtrlToExpand = true;
@@ -55,6 +54,7 @@ public class Plugin : BaseUnityPlugin
     public static int MaxHistorySize = 100;
     public static bool NoDemoTips = true;
     public static KeyCode SortKey = KeyCode.E;
+    private readonly Harmony _harmony = new(Guid);
 
     public void Awake()
     {
@@ -89,8 +89,8 @@ public class Plugin : BaseUnityPlugin
         RegisterBilingualOption();
         InputFloat("console_parameter_switching_speed", ConsoleParameterSwitchingSpeed, 0f, 0.1f,
             v => ConsoleParameterSwitchingSpeed = v,
-            v => v <= 0f 
-                ? "0" 
+            v => v <= 0f
+                ? "0"
                 : (v * 1000f).ToString("F0") + "ms");
         InputKeybind("debug_screen", DebugScreen, k => DebugScreen = k);
         InputKeybind("debug_screen_fps_graph", DebugScreenFpsGraph, k => DebugScreenFpsGraph = k);

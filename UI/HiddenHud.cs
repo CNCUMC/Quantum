@@ -16,7 +16,7 @@ public static class HiddenHud
             var canvasGroup = canvas.GetComponent<CanvasGroup>();
             if (canvasGroup == null) canvasGroup = canvas.gameObject.AddComponent<CanvasGroup>();
 
-            canvasGroup.alpha = Hidden 
+            canvasGroup.alpha = Hidden
                 ? 0f
                 : 1f;
             canvasGroup.blocksRaycasts = !Hidden;

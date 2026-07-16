@@ -11,6 +11,7 @@ namespace Quantum.Info;
 [HarmonyPatch(typeof(PlayerCamera))]
 public class CtrlToExpand
 {
+    private const string LocaleKeyPre = "ctrl_to_expand";
     private static readonly Dictionary<string, List<Recipe>> ProductToRecipes = new();
 
     [HarmonyPatch("ItemHoverDescription")]
@@ -258,6 +259,6 @@ public class CtrlToExpand
 
     private static string LocaleOther(string key, params object[] args)
     {
-        return BetterLocale.GetOther(key, args);
+        return BetterLocale.GetOther($"{Plugin.NameSpace}.{LocaleKeyPre}.{key}", args);
     }
 }

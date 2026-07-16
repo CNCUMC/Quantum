@@ -226,17 +226,14 @@ public static class ConsoleScriptPatch
             var shift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
             var ctrl = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
             var speed = ctrl && shift
-                ? Plugin.ConsoleParameterSwitchingSpeed * 0.2f  // 5倍速
+                ? Plugin.ConsoleParameterSwitchingSpeed * 0.2f // 5倍速
                 : shift
-                    ? Plugin.ConsoleParameterSwitchingSpeed * 0.5f  // 2倍速
-                    : Plugin.ConsoleParameterSwitchingSpeed;       // 正常
+                    ? Plugin.ConsoleParameterSwitchingSpeed * 0.5f // 2倍速
+                    : Plugin.ConsoleParameterSwitchingSpeed; // 正常
 
             if (speed <= 0f)
             {
-                if (Input.GetKeyDown(KeyCode.UpArrow))
-                {
-                    _index = (_index - 1 + _candidates.Length) % _candidates.Length;
-                }
+                if (Input.GetKeyDown(KeyCode.UpArrow)) _index = (_index - 1 + _candidates.Length) % _candidates.Length;
             }
             else if (Time.unscaledTime - _lastUpTime > speed)
             {
@@ -250,17 +247,14 @@ public static class ConsoleScriptPatch
             var shift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
             var ctrl = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
             var speed = ctrl && shift
-                ? Plugin.ConsoleParameterSwitchingSpeed * 0.2f  // 5倍速
+                ? Plugin.ConsoleParameterSwitchingSpeed * 0.2f // 5倍速
                 : shift
-                    ? Plugin.ConsoleParameterSwitchingSpeed * 0.5f  // 2倍速
-                    : Plugin.ConsoleParameterSwitchingSpeed;       // 正常
+                    ? Plugin.ConsoleParameterSwitchingSpeed * 0.5f // 2倍速
+                    : Plugin.ConsoleParameterSwitchingSpeed; // 正常
 
             if (speed <= 0f)
             {
-                if (Input.GetKeyDown(KeyCode.DownArrow))
-                {
-                    _index = (_index + 1) % _candidates.Length;
-                }
+                if (Input.GetKeyDown(KeyCode.DownArrow)) _index = (_index + 1) % _candidates.Length;
             }
             else if (Time.unscaledTime - _lastDownTime > speed)
             {

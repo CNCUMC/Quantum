@@ -1,7 +1,6 @@
-﻿using System.Linq;
-using Bark.Tool;
+﻿using Bark.Tool;
 using HarmonyLib;
-using Quantum.ItemChange.Gun;
+using Quantum.ItemChange;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,7 +14,7 @@ public static class AmmunitionUi
     private static GameObject _ammunitionUiObject;
     private static int _remainingAmmunition;
     private static int _maximumAmmunition;
-    
+
     [HarmonyPatch("HandleGunMenu")]
     [HarmonyPostfix]
     private static void HandleGunMenuPostfix(PlayerCamera __instance)
