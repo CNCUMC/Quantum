@@ -7,7 +7,6 @@ using BepInEx;
 using BepInEx.Logging;
 using CUCoreLib.Data;
 using HarmonyLib;
-using Quantum.Lang;
 using UnityEngine;
 
 namespace Quantum;
@@ -61,8 +60,7 @@ public class Plugin : BaseUnityPlugin
     {
         Logger = base.Logger;
 
-        new ZhCnLangGenerator().Initialize(Logger);
-        new EnLangGenerator().Initialize(Logger);
+        new LangGenerator().Initialize(Logger);
 
         // Info
         VideoBool("ctrl_to_expand", CtrlToExpand, v => CtrlToExpand = v);
@@ -155,7 +153,7 @@ public class Plugin : BaseUnityPlugin
                 foreach (var file in Directory.GetFiles(langDir, "*.json"))
                 {
                     var code = Path.GetFileNameWithoutExtension(file);
-                    BetterLocale.SetDefault("EN", "option", $"video.bilingual_name{code}", code);
+                    BetterLocale.SetDefault("EN", NameSpace, "option", $"video.bilingual_name{code}", code);
                     choices.Add(new ModDropdownChoice(code, code));
                 }
         }
