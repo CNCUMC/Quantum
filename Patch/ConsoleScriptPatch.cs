@@ -116,7 +116,7 @@ public static class ConsoleScriptPatch
 
     [HarmonyPatch("Update")]
     [HarmonyPostfix]
-    private static void PostUpdate(ConsoleScript __instance)
+    private static void UpdatePostfix(ConsoleScript __instance)
     {
         if (!__instance.active || __instance.input == null)
             return;
@@ -127,6 +127,12 @@ public static class ConsoleScriptPatch
         if (Input.GetKeyDown(KeyCode.KeypadEnter) && !string.IsNullOrEmpty(text))
         {
             __instance.ExecuteCommand(text);
+            return;
+        }
+        
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            __instance.active = false;
             return;
         }
 

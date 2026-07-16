@@ -2,8 +2,7 @@
 
 All notable changes to this project are documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres
-to [Semantic Versioning](https://semver.org/).
+The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
@@ -33,6 +32,10 @@ to [Semantic Versioning](https://semver.org/).
     - Shift = 2x speed
     - Ctrl+Shift = 5x speed
     - Ctrl = no effect
+
+- **Settings Menu**: ESC to close, Tab / Shift+Tab to switch tabs
+
+- **ESC Close**: Console, Credits screen, Run Settings screen
 
 ### Changed
 
