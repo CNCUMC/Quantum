@@ -82,7 +82,8 @@ internal class LangGenerator : ModLangGenMultiBase
         Option("quantum.auto_sandbox",
             "Auto Sandbox", "Automatically skip tutorial course selection and enter sandbox directly",
             "自动沙盒", "跳过教程课程选择，直接进入沙盒模式",
-            "自動沙盒", "跳過教程課程選擇，直接進入沙箱模式");
+            "自動沙盒", "跳過教程課程選擇，直接進入沙箱模式",
+            "Автоматическая песочница", "Пропустите курс выбора, перейдите прямо в режим песочницы");
 
         // UI
         Option("video.ammunition_ui",
