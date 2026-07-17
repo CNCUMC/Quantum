@@ -10,9 +10,13 @@ _A quality-of-life mod for [Casualties Unknown](https://store.steampowered.com/a
 crafting search, container sorting, gun modifiers, and gameplay tweaks, all configurable from the in-game settings
 menu._
 
-**_This mod supports Russian (thanks @Crescia1949!)_**
+**This mod supports Russian (thanks @Crescia1949!)**
 
-**_Этот мод поддерживает русский язык (спасибо @Crescia1949!)_**
+_He is not a native speaker of Russian. If you have any suggestions, please report them promptly in the `NexusMods post` or `GitHub issues`._
+
+**Этот мод поддерживает русский язык (спасибо @Crescia1949!)**
+
+_Он не является носителем русского языка. Если у вас есть какие-либо предложения, пожалуйста, незамедлительно сообщите о них в разделе `NexusMods post` или `GitHub issues`._
 
 ---
 
@@ -56,7 +60,7 @@ menu._
 
 ## Settings
 
-All options are in the game's settings menu (powered by [CUCoreLib](https://github.com/jimmyking9999999/CUCoreLib)):
+All options are in the game's settings menu (powered by [CUCoreLib](https://github.com/jimmyking9999999/CUCoreLib) & [Bark](https://github.com/CNCUMC/Bark)):
 
 - **Quantum** tab — gun modifiers, gameplay tweaks, UI toggles
 - **Video** tab — info display, candidate limits, demo tips
