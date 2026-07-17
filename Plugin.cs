@@ -19,10 +19,10 @@ public class Plugin : BaseUnityPlugin
     public const string Guid = "org.cncumc.quantum";
     public const string Name = "Quantum";
     public const string Version = "1.1.0";
-
     internal const string NameSpace = "quantum";
     internal new static ManualLogSource Logger;
-
+    private readonly Harmony _harmony = new(Guid);
+    
     // Info
     public static bool CtrlToExpand = true;
     public static float FavouritedItemDurabilityExhaustionAlert = 0.3f;
@@ -43,7 +43,7 @@ public class Plugin : BaseUnityPlugin
     public static bool NoObserver;
     public static bool AutoSandbox;
 
-    // UI
+    // Video
     public static bool AmmunitionUi = true;
     public static string BilingualName = "EN";
     public static float ConsoleParameterSwitchingSpeed = 0.05f;
@@ -55,7 +55,10 @@ public class Plugin : BaseUnityPlugin
     public static int MaxHistorySize = 100;
     public static bool NoDemoTips = true;
     public static KeyCode SortKey = KeyCode.E;
-    private readonly Harmony _harmony = new(Guid);
+    public static KeyCode ZoomKey = KeyCode.Backslash;
+    public static float ZoomMultiplier = 1f;
+    public static float ZoomSensitivity = 0.5f;
+    public static bool SmoothZoom = true;
 
     public void Awake()
     {
@@ -86,7 +89,7 @@ public class Plugin : BaseUnityPlugin
         QuantumBool("no_observer", NoObserver, v => NoObserver = v);
         QuantumBool("auto_sandbox", AutoSandbox, v => AutoSandbox = v);
 
-        // UI
+        // Video
         VideoBool("ammunition_ui", AmmunitionUi, v => AmmunitionUi = v);
         RegisterBilingualOption();
         InputFloat("console_parameter_switching_speed", ConsoleParameterSwitchingSpeed, 0f, 0.1f,
@@ -106,6 +109,11 @@ public class Plugin : BaseUnityPlugin
             v => v.ToString("F0"));
         VideoBool("no_demo_tips", NoDemoTips, v => NoDemoTips = v);
         InputKeybind("sort_key", SortKey, k => SortKey = k);
+        InputKeybind("zoom_key", ZoomKey, k => ZoomKey = k);
+        VideoFloat("zoom_sensitivity", ZoomSensitivity, 0.1f, 2f,
+            v => ZoomSensitivity = v,
+            v => v.ToString("F1"));
+        VideoBool("smooth_zoom", SmoothZoom, v => SmoothZoom = v);
 
         BetterLocale.Flush();
         _harmony.PatchAll();
@@ -133,11 +141,6 @@ public class Plugin : BaseUnityPlugin
         Func<float, string> fmt)
     {
         BetterOptions.Float(NameSpace, key, Setting.SettingCategory.Input, value, min, max, set, fmt);
-    }
-
-    private static void VideoInt(string key, int value, int min, int max, Action<int> set)
-    {
-        BetterOptions.Int(NameSpace, key, Setting.SettingCategory.Video, value, min, max, set);
     }
 
     private static void InputKeybind(string key, KeyCode value, Action<KeyCode> set)

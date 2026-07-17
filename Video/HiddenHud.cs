@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using UnityEngine;
 
-namespace Quantum.UI;
+namespace Quantum.Video;
 
 [HarmonyPatch(typeof(PlayerCamera))]
 public static class HiddenHud

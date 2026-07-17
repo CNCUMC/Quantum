@@ -4,7 +4,7 @@ using System.Linq;
 using Bark.BetterCCL;
 using Bark.Tool;
 using HarmonyLib;
-using Quantum.UI;
+using Quantum.Video;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;

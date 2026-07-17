@@ -9,7 +9,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
-namespace Quantum.UI;
+namespace Quantum.Video;
 
 [HarmonyPatch(typeof(PlayerCamera))]
 public static class SortButtons

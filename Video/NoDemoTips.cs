@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using UnityEngine;
 
-namespace Quantum.UI;
+namespace Quantum.Video;
 
 [HarmonyPatch(typeof(GlobalDark))]
 public static class NoDemoTips

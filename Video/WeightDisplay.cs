@@ -2,7 +2,7 @@ using System.Linq;
 using Bark.Tool;
 using HarmonyLib;
 
-namespace Quantum.UI;
+namespace Quantum.Video;
 
 [HarmonyPatch(typeof(PlayerCamera))]
 public static class WeightDisplay

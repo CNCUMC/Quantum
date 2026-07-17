@@ -48,6 +48,9 @@
         <Reference Include="Assembly-CSharp">
             <HintPath>$(ManagedDir)/Assembly-CSharp.dll</HintPath>
         </Reference>
+        <Reference Include="CUZoomPlus">
+          <HintPath>..\..\..\Downloads\CUZoomPlus.dll</HintPath>
+        </Reference>
         <Reference Include="TinyPinyin">
           <HintPath>BepInEx\plugins\TinyPinyin.dll</HintPath>
         </Reference>
