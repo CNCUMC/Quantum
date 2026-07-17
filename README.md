@@ -10,6 +10,10 @@ _A quality-of-life mod for [Casualties Unknown](https://store.steampowered.com/a
 crafting search, container sorting, gun modifiers, and gameplay tweaks, all configurable from the in-game settings
 menu._
 
+**_This mod supports Russian (thanks @Crescia1949!)_**
+
+**_Этот мод поддерживает русский язык (спасибо @Crescia1949!)_**
+
 ---
 
 ## Features
