@@ -14,29 +14,33 @@ menu._
 
 ## Features
 
-| Feature                  | Description                                                                                  |
-|--------------------------|----------------------------------------------------------------------------------------------|
-| **Ctrl + Shift Hover**   | Expanded item info panel (recipes, usable flags, ignore depression)                          |
-| **Pinyin Recipe Search** | Search crafting recipes by pinyin initials (`bd` → 绷带) or full pinyin                        |
-| **Container Sort**       | Sort inventory by name / value / weight (ascending / descending) with sort buttons           |
-| **Total Value Display**  | Shows total item value next to weight in the inventory bar                                   |
-| **Ammunition HUD**       | Real-time current / max ammo display above the gun menu (auto-hides in menus / pause)        |
-| **Gun Modifiers**        | Auto rack, indestructible gun, infinite ammo, never jam, no casing, recoilless               |
-| **Durability Alert**     | Alerts every 5% durability drop for favourited items                                         |
-| **Bilingual Item Names** | Appends a translation from any installed language to item names                              |
-| **Console Enhancements** | Tab auto-complete with scrollable candidates, Up/Down navigation, Ctrl+Z undo, history limit |
-| **Fuzzy Dot Match**      | Type `xX` to match `xxx.XXX` in parameter autocomplete                                       |
-| **No Observer**          | Disables observers entirely                                                                  |
-| **Don't Shit**           | No defecation while unconscious                                                              |
-| **Tab / Esc Close All**  | One key closes all open UI panels (crafting, wound view, trade)                              |
-| **Hide Demo Tips**       | Hides the demo-version tips panel                                                            |
-| **Debug Screen (F3)**    | Slide-out panels with game info, profiler, world data, and system info. Configurable speed.  |
+| Feature                         | Description                                                                                         |
+|---------------------------------|-----------------------------------------------------------------------------------------------------|
+| **Ctrl + Shift Hover**          | Expanded item info panel (recipes, usable flags, ignore depression)                                 |
+| **Pinyin Recipe Search**        | Search crafting recipes by pinyin initials (`bd` → 绷带) or full pinyin                               |
+| **Container Sort**              | Sort inventory by name / value / weight (ascending / descending) with sort buttons                  |
+| **Total Value Display**         | Shows total item value next to weight in the inventory bar                                          |
+| **Ammunition HUD**              | Real-time current / max ammo display above the gun menu (auto-hides in menus / pause)               |
+| **Gun Modifiers**               | Auto rack, indestructible gun, infinite ammo, never jam, no casing, recoilless                      |
+| **Durability Alert**            | Alerts every 5% durability drop for favourited items                                                |
+| **Bilingual Item Names**        | Appends a translation from any installed language to item names                                     |
+| **Console Enhancements**        | Tab auto-complete with scrollable candidates, Up/Down navigation, Ctrl+Z undo, history limit        |
+| **Console Parameter Switching** | Hold Up/Down to cycle through autocomplete candidates (configurable speed, Shift 2x, Ctrl+Shift 5x) |
+| **Fuzzy Dot Match**             | Type `xX` to match `xxx.XXX` in parameter autocomplete                                              |
+| **No Observer**                 | Disables observers entirely                                                                         |
+| **Don't Shit**                  | No defecation while unconscious                                                                     |
+| **Tab / Esc Close All**         | One key closes all open UI panels (crafting, wound view, trade)                                     |
+| **Settings Menu**               | ESC to close, Tab / Shift+Tab to switch tabs (including CUCoreLib custom tabs)                      |
+| **Hide Demo Tips**              | Hides the demo-version tips panel                                                                   |
+| **Debug Screen (F3)**           | Slide-out panels with game info, profiler, world data, and system info. Configurable speed.         |
+| **FPS Graph (F3+F)**            | Real-time frame time chart (120 frames, color-coded, 60/30 FPS reference lines)                     |
+| **Auto Sandbox**                | Skip tutorial course selection and enter sandbox mode directly                                      |
 
 ## Requirements
 
 - [BepInEx 5.x](https://github.com/BepInEx/BepInEx)
-- [CUCoreLib](https://github.com/jimmyking9999999/CUCoreLib) ≥ 1.0.2
-- [Bark](https://github.com/CNCUMC/Bark) ≥ 1.0.3
+- [CUCoreLib](https://github.com/jimmyking9999999/CUCoreLib) ≥ 1.0.3
+- [Bark](https://github.com/CNCUMC/Bark) ≥ 1.1.1
 
 ## Installation
 

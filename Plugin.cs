@@ -12,8 +12,8 @@ using UnityEngine;
 namespace Quantum;
 
 [BepInPlugin(Guid, Name, Version)]
-[BepInDependency("net.cucorelib", "1.0.2")]
-[BepInDependency("org.cncumc.bark", "1.1.0")]
+[BepInDependency("net.cucorelib", "1.0.3")]
+[BepInDependency("org.cncumc.bark", "1.1.1")]
 public class Plugin : BaseUnityPlugin
 {
     public const string Guid = "org.cncumc.quantum";
@@ -161,7 +161,7 @@ public class Plugin : BaseUnityPlugin
         }
         catch (Exception ex)
         {
-            Logger.LogWarning($"Failed to scan language directory '{langDir}': {ex.Message}");
+            LogUtil.Warning($"Failed to scan language directory '{langDir}': {ex.Message}", Logger);
         }
 
         var arr = choices.ToArray();
