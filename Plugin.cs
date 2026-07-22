@@ -18,7 +18,7 @@ public class Plugin : BaseUnityPlugin
 {
     public const string Guid = "org.cncumc.quantum";
     public const string Name = "Quantum";
-    public const string Version = "1.1.0";
+    public const string Version = "1.1.1";
     internal const string NameSpace = "quantum";
     internal new static ManualLogSource Logger;
     private readonly Harmony _harmony = new(Guid);
@@ -66,12 +66,6 @@ public class Plugin : BaseUnityPlugin
 
         new LangGenerator().Initialize(Logger);
 
-        // Info
-        VideoBool("ctrl_to_expand", CtrlToExpand, v => CtrlToExpand = v);
-        VideoFloat("favourited_item_durability_exhaustion_alert", FavouritedItemDurabilityExhaustionAlert, 0f, 1f,
-            v => FavouritedItemDurabilityExhaustionAlert = v,
-            v => Mathf.FloorToInt(v * 100f) + "%");
-
         // Item
         // Gun
         QuantumBool("auto_rack", AutoRack, v => AutoRack = v);
@@ -88,10 +82,8 @@ public class Plugin : BaseUnityPlugin
         // Misc
         QuantumBool("no_observer", NoObserver, v => NoObserver = v);
         QuantumBool("auto_sandbox", AutoSandbox, v => AutoSandbox = v);
-
-        // Video
-        VideoBool("ammunition_ui", AmmunitionUi, v => AmmunitionUi = v);
-        RegisterBilingualOption();
+        
+        // Input
         InputFloat("console_parameter_switching_speed", ConsoleParameterSwitchingSpeed, 0f, 0.1f,
             v => ConsoleParameterSwitchingSpeed = v,
             v => v <= 0f
@@ -99,6 +91,16 @@ public class Plugin : BaseUnityPlugin
                 : (v * 1000f).ToString("F0") + "ms");
         InputKeybind("debug_screen", DebugScreen, k => DebugScreen = k);
         InputKeybind("debug_screen_fps_graph", DebugScreenFpsGraph, k => DebugScreenFpsGraph = k);
+        InputKeybind("sort_key", SortKey, k => SortKey = k);
+        InputKeybind("zoom_key", ZoomKey, k => ZoomKey = k);
+
+        // Video
+        VideoBool("ctrl_to_expand", CtrlToExpand, v => CtrlToExpand = v);
+        VideoFloat("favourited_item_durability_exhaustion_alert", FavouritedItemDurabilityExhaustionAlert, 0f, 1f,
+            v => FavouritedItemDurabilityExhaustionAlert = v,
+            v => Mathf.FloorToInt(v * 100f) + "%");
+        VideoBool("ammunition_ui", AmmunitionUi, v => AmmunitionUi = v);
+        RegisterBilingualOption();
         VideoFloat("debug_screen_speed", DebugScreenSpeed, 0f, 0.1f,
             v => DebugScreenSpeed = v,
             v => (v * 1000f).ToString("F1") + "ms");
@@ -108,8 +110,6 @@ public class Plugin : BaseUnityPlugin
         VideoFloat("max_history_size", MaxHistorySize, 1f, 500f, v => MaxHistorySize = Convert.ToInt32(v),
             v => v.ToString("F0"));
         VideoBool("no_demo_tips", NoDemoTips, v => NoDemoTips = v);
-        InputKeybind("sort_key", SortKey, k => SortKey = k);
-        InputKeybind("zoom_key", ZoomKey, k => ZoomKey = k);
         VideoFloat("zoom_sensitivity", ZoomSensitivity, 0.1f, 2f,
             v => ZoomSensitivity = v,
             v => v.ToString("F1"));

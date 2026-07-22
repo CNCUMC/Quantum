@@ -6,7 +6,7 @@ using CUCoreLib.Helpers;
 using HarmonyLib;
 using UnityEngine;
 
-namespace Quantum.Info;
+namespace Quantum.Video;
 
 [HarmonyPatch(typeof(Item))]
 public static class FavouritedItemDurabilityExhaustionAlert

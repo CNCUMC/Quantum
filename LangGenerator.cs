@@ -17,19 +17,8 @@ internal class LangGenerator : ModLangGenMultiBase
 
     protected override void BuildLocaleData()
     {
-        Option("video.ctrl_to_expand",
-            "Ctrl for more information", "Press Ctrl to show more information",
-            "Ctrl 更多信息", "按下Ctrl才显示更多信息",
-            "Ctrl 更多資訊", "按下Ctrl才顯示更多資訊",
-            "Ctrl: подробнее", "Зажмите Ctrl для доп информации");
-        Option("video.favourited_item_durability_exhaustion_alert",
-            "Favourite Durability Alert Threshold",
-            "Alert when favourited item durability falls below this ratio (0 = disabled)",
-            "收藏品耐久警报阈值", "当收藏的物品耐久度低于此比例时发出警报（0 = 关闭）",
-            "收藏品耐久警報閾值", "當收藏的物品耐久度低於此比例時發出警報（0 = 關閉）",
-            "Порог износа избранного", "Оповещать при износе ниже порога (0 = отключил)");
-
-        // Config - Item - Gun
+        // Item
+        // Gun
         Option("quantum.auto_rack",
             "Auto Rack", "If true, guns will automatically rack and stay racked when ammo is available",
             "自动上膛", "如果开启，当有弹药时，枪械将自动拉栓并保持拉栓状态",
@@ -78,26 +67,15 @@ internal class LangGenerator : ModLangGenMultiBase
             "No Observer", "If true, the world will not have observers",
             "无观察者", "如果开启，再无观察者",
             "無觀察者", "如果開啟，再無觀察者",
-            "Нет обогревателя", "Если вкл, обогреватель(observer) не появляется");
+            "Нет наблюдателей", "Если вкл, наблюдатели(observer) не появляется");
         Option("quantum.auto_sandbox",
             "Auto Sandbox", "Automatically skip tutorial course selection and enter sandbox directly",
             "自动沙盒", "跳过教程课程选择，直接进入沙盒模式",
             "自動沙盒", "跳過教程課程選擇，直接進入沙箱模式",
             "Автоматическая песочница", "Пропустите курс выбора, перейдите прямо в режим песочницы");
-
-        // UI
-        Option("video.ammunition_ui",
-            "Ammunition UI", "Display your ammunition in real time!",
-            "弹药UI", "在原枪械菜单的上方显示枪械剩余弹量和最大弹量",
-            "彈藥UI", "在原槍械菜單的上方顯示槍械剩餘彈量和最大彈量",
-            "Боезапас UI", "Показывать остаток патронов над меню оружия");
-        Option("video.bilingual_name",
-            "Bilingual Name",
-            "Appends a translation in the specified language (e.g. EN / zh-CN / zh-TW) to item names; leave empty for original only",
-            "双语名称", "设定后会在物品原名旁附加指定语言的翻译（如 EN / zh-CN / zh-TW），留空则只显示原名",
-            "雙語名稱", "設定後會在物品原名旁附加指定語言的翻譯（如 EN / zh-CN / zh-TW），留空則只顯示原名",
-            "Двуязычные имена", "Добавить перевод (EN / zh-CN / zh-TW / ru-RU) к названию, пусто: только оригинал");
-        Option("input.console_parameter_switching_speed",
+        
+        // Input
+        Option("video.console_parameter_switching_speed",
             "Console Parameter Switching Speed",
             "The speed of switching candidate parameters by long pressing the up and down keys in the console (ms)",
             "控制台参数切换速度", "控制台中长按上下键切换候选参数的速度（毫秒）",
@@ -118,6 +96,40 @@ internal class LangGenerator : ModLangGenMultiBase
             "隐藏 HUD", "隐藏所有 HUD",
             "隱藏 HUD", "隱藏所有 HUD",
             "Скрыть HUD", "Полное скрытие HUD");
+        Option("input.sort_key",
+            "Sort Key", "Press to sort container items",
+            "整理按键", "按下整理容器物品",
+            "整理按鍵", "按下整理容器物品",
+            "Клавиша сортировки", "Нажмите для сортировки контейнера");
+        Option("input.zoom_key",
+            "Zoom Key", "Press to zoom view",
+            "缩放按键", "按下缩放视角",
+            "縮放按鍵", "按下縮放視角",
+            "Клавиша Масштаб", "Нажмите для увеличения просмотра");
+        
+        // Video
+        Option("video.ctrl_to_expand",
+            "Ctrl for more information", "Press Ctrl to show more information",
+            "Ctrl 更多信息", "按下Ctrl才显示更多信息",
+            "Ctrl 更多資訊", "按下Ctrl才顯示更多資訊",
+            "Ctrl: подробнее", "Зажмите Ctrl для доп информации");
+        Option("video.favourited_item_durability_exhaustion_alert",
+            "Favourite Durability Alert Threshold",
+            "Alert when favourited item durability falls below this ratio (0 = disabled)",
+            "收藏品耐久警报阈值", "当收藏的物品耐久度低于此比例时发出警报（0 = 关闭）",
+            "收藏品耐久警報閾值", "當收藏的物品耐久度低於此比例時發出警報（0 = 關閉）",
+            "Порог износа избранного", "Оповещать при износе ниже порога (0 = отключил)");
+        Option("video.ammunition_ui",
+            "Ammunition UI", "Display your ammunition in real time!",
+            "弹药UI", "在原枪械菜单的上方显示枪械剩余弹量和最大弹量",
+            "彈藥UI", "在原槍械菜單的上方顯示槍械剩餘彈量和最大彈量",
+            "Боезапас UI", "Показывать остаток патронов над меню оружия");
+        Option("video.bilingual_name",
+            "Bilingual Name",
+            "Appends a translation in the specified language (e.g. EN / zh-CN / zh-TW) to item names; leave empty for original only",
+            "双语名称", "设定后会在物品原名旁附加指定语言的翻译（如 EN / zh-CN / zh-TW），留空则只显示原名",
+            "雙語名稱", "設定後會在物品原名旁附加指定語言的翻譯（如 EN / zh-CN / zh-TW），留空則只顯示原名",
+            "Двуязычные имена", "Добавить перевод (EN / zh-CN / zh-TW / ru-RU) к названию, пусто: только оригинал");
         Option("video.debug_screen_speed",
             "Debug Screen Speed", "Speed of debug screen slide animation (ms)",
             "调试屏幕滑动速度", "调试屏幕滑动的速度（毫秒）",
@@ -138,11 +150,16 @@ internal class LangGenerator : ModLangGenMultiBase
             "隐藏试玩提示", "隐藏试玩版提示文字",
             "隱藏試玩提示", "隱藏試玩版提示文字",
             "Скрыть подсказки демо", "Скрыть текст подсказок демо-версии");
-        Option("input.sort_key",
-            "Sort Key", "Press to sort container items",
-            "整理按键", "按下整理容器物品",
-            "整理按鍵", "按下整理容器物品",
-            "Клавиша сортировки", "Нажмите для сортировки контейнера");
+        Option("video.zoom_sensitivity",
+            "Zoom Sensitivity", "Sensitivity of zoom perspective",
+            "缩放灵敏度", "缩放视角的灵敏度",
+            "縮放靈敏度", "縮放視角的靈敏度",
+            "Чувствительность зума", "Чувствительность перспективы зума");
+        Option("video.smooth_zoom",
+            "Smooth Zoom", "Smooth zoom",
+            "平滑缩放", "平滑地缩放视角",
+            "平滑縮放", "平滑地縮放視角",
+            "Чувствительность зума", "Скользящее масштабирование");
 
         // Other
         // Sort

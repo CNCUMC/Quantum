@@ -6,7 +6,7 @@ using Bark.Tool;
 using HarmonyLib;
 using UnityEngine;
 
-namespace Quantum.Info;
+namespace Quantum.Video;
 
 [HarmonyPatch(typeof(PlayerCamera))]
 public class CtrlToExpand

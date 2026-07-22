@@ -1,6 +1,9 @@
-﻿using HarmonyLib;
+﻿using Bark.Tool;
+using HarmonyLib;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
 
 namespace Quantum.Video;
 
@@ -18,12 +21,18 @@ public static class CameraZoom
     private static float _currentZoomMultiplier = 1f;
     private static float _targetZoomMultiplier = 1f;
     private static bool _isZoomActive;
+    private static float _lastZoomKeyTime;
+
+    private static TextMeshProUGUI _zoomText;
+    private static GameObject _zoomUiObject;
+    private static bool _isUiVisible;
 
     [HarmonyPatch("Update")]
     [HarmonyPostfix]
     private static void UpdatePostfix(PlayerCamera __instance)
     {
         UpdateZoom(__instance);
+        UpdateUi();
     }
 
     private static void UpdateZoom(PlayerCamera playerCamera)
@@ -70,12 +79,17 @@ public static class CameraZoom
 
     private static void HandleZoomInput()
     {
-        // 按中键重置缩放
-        if (Input.GetMouseButtonDown(2))
+        if (Input.GetKeyDown(Plugin.ZoomKey))
         {
-            _targetZoomMultiplier = 1f;
-            Plugin.ZoomMultiplier = 1f;
-            return;
+            var currentTime = Time.time;
+            if (currentTime - _lastZoomKeyTime < 0.3f)
+            {
+                _targetZoomMultiplier = 1f;
+                Plugin.ZoomMultiplier = 1f;
+                _lastZoomKeyTime = 0f;
+                return;
+            }
+            _lastZoomKeyTime = currentTime;
         }
 
         if (!Input.GetKey(Plugin.ZoomKey))
@@ -89,7 +103,6 @@ public static class CameraZoom
         if (Mathf.Approximately(scrollAxis, 0f))
             return;
 
-        // 向上滚动（正值）= 放大（缩小 orthographicSize）
         _targetZoomMultiplier -= scrollAxis * Plugin.ZoomSensitivity;
         _targetZoomMultiplier = Mathf.Clamp(_targetZoomMultiplier, MinZoomMultiplier, MaxZoomMultiplier);
         Plugin.ZoomMultiplier = _targetZoomMultiplier;
@@ -133,6 +146,74 @@ public static class CameraZoom
             _normalSightLimiterScale.y * _currentZoomMultiplier,
             _normalSightLimiterScale.z
         );
+    }
+
+    private static void UpdateUi()
+    {
+        if (!_isZoomActive)
+        {
+            HideUi();
+            return;
+        }
+
+        CreateOrUpdateUi();
+        ShowUi();
+    }
+
+    private static void CreateOrUpdateUi()
+    {
+        if (_zoomUiObject == null)
+        {
+            var zoomUi = new GameObject("CameraZoomUi");
+            Object.DontDestroyOnLoad(zoomUi);
+
+            var canvas = zoomUi.AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvas.sortingOrder = 100;
+
+            var canvasScaler = zoomUi.AddComponent<CanvasScaler>();
+            canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            canvasScaler.referenceResolution = new Vector2(1920f, 1080f);
+
+            zoomUi.AddComponent<GraphicRaycaster>();
+            _zoomUiObject = zoomUi;
+
+            var textObj = new GameObject("ZoomText");
+            textObj.transform.SetParent(_zoomUiObject.transform, false);
+
+            var rectTransform = textObj.AddComponent<RectTransform>();
+            rectTransform.anchoredPosition = Vector2.zero;
+            rectTransform.sizeDelta = new Vector2(200f, 50f);
+
+            _zoomText = textObj.AddComponent<TextMeshProUGUI>();
+            _zoomText.alignment = TextAlignmentOptions.Center;
+            _zoomText.font = TextUtil.RetroGamingTMP;
+            _zoomText.fontSize = 32;
+        }
+
+        _zoomText.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, AmmunitionUi.AmunitionUiObject.transform.position.y - 128);
+        _zoomText.text = $"{_currentZoomMultiplier:F1}x";
+        _zoomText.alpha = HiddenHud.Hidden 
+            ? 0f 
+            : 1f;
+    }
+
+    private static void ShowUi()
+    {
+        if (_zoomUiObject == null || _isUiVisible)
+            return;
+
+        _zoomUiObject.SetActive(true);
+        _isUiVisible = true;
+    }
+
+    private static void HideUi()
+    {
+        if (_zoomUiObject == null || !_isUiVisible)
+            return;
+
+        _zoomUiObject.SetActive(false);
+        _isUiVisible = false;
     }
 
     private static void ReleaseCamera()

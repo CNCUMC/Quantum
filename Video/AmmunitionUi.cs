@@ -10,10 +10,10 @@ namespace Quantum.Video;
 [HarmonyPatch(typeof(PlayerCamera))]
 public static class AmmunitionUi
 {
-    private static TextMeshProUGUI _ammunitionText;
-    private static GameObject _ammunitionUiObject;
-    private static int _remainingAmmunition;
-    private static int _maximumAmmunition;
+    public static TextMeshProUGUI AmmunitionUiText;
+    public static GameObject AmunitionUiObject;
+    public static int RemainingAmmunition;
+    public static int MaximumAmmunition;
 
     [HarmonyPatch("HandleGunMenu")]
     [HarmonyPostfix]
@@ -42,8 +42,8 @@ public static class AmmunitionUi
             return;
         }
 
-        _remainingAmmunition = component.roundsInMag;
-        _maximumAmmunition = component.magCapacity;
+        RemainingAmmunition = component.roundsInMag;
+        MaximumAmmunition = component.magCapacity;
 
         CreateOrUpdateAmmunitionUi(__instance);
         UpdateAmmunitionUi();
@@ -53,7 +53,7 @@ public static class AmmunitionUi
 
     private static void CreateOrUpdateAmmunitionUi(PlayerCamera camera)
     {
-        if (_ammunitionUiObject == null)
+        if (AmunitionUiObject == null)
         {
             var ammunitionUi = new GameObject("AmmunitionUi");
             Object.DontDestroyOnLoad(ammunitionUi);
@@ -68,23 +68,23 @@ public static class AmmunitionUi
 
             ammunitionUi.AddComponent<GraphicRaycaster>();
 
-            _ammunitionUiObject = ammunitionUi;
+            AmunitionUiObject = ammunitionUi;
 
             var gameObject = new GameObject("AmmunitionText");
-            gameObject.transform.SetParent(_ammunitionUiObject.transform, false);
+            gameObject.transform.SetParent(AmunitionUiObject.transform, false);
 
             var rectTransform = gameObject.AddComponent<RectTransform>();
             rectTransform.anchoredPosition = Vector2.zero;
             rectTransform.sizeDelta = new Vector2(150f, 30f);
 
-            _ammunitionText = gameObject.AddComponent<TextMeshProUGUI>();
-            _ammunitionText.alignment = TextAlignmentOptions.Center;
+            AmmunitionUiText = gameObject.AddComponent<TextMeshProUGUI>();
+            AmmunitionUiText.alignment = TextAlignmentOptions.Center;
 
-            _ammunitionText.font = TextUtil.RetroGamingTMP;
+            AmmunitionUiText.font = TextUtil.RetroGamingTMP;
         }
 
         var gunMenuPos = GetGunMenuPosition(camera);
-        var textRectTransform = _ammunitionText.GetComponent<RectTransform>();
+        var textRectTransform = AmmunitionUiText.GetComponent<RectTransform>();
         textRectTransform.anchoredPosition = new Vector2(gunMenuPos.x, gunMenuPos.y - 450f);
 
         SyncVisibility(camera.gunMenu);
@@ -103,44 +103,44 @@ public static class AmmunitionUi
     private static void UpdateAmmunitionUi()
     {
         var realRemainingAmmunition = GunScriptPatch.HasOne
-            ? _remainingAmmunition + 1
-            : _remainingAmmunition;
-        if (_ammunitionText == null)
+            ? RemainingAmmunition + 1
+            : RemainingAmmunition;
+        if (AmmunitionUiText == null)
             return;
 
         if (!Plugin.InfiniteAmmunition)
         {
             if (realRemainingAmmunition >= 0.8)
-                _ammunitionText.color = Color.green;
+                AmmunitionUiText.color = Color.green;
             else if (realRemainingAmmunition >= 0.5)
-                _ammunitionText.color = Color.yellow;
+                AmmunitionUiText.color = Color.yellow;
             else
-                _ammunitionText.color = Color.red;
+                AmmunitionUiText.color = Color.red;
 
-            _ammunitionText.fontSize = 32;
-            _ammunitionText.text = $"{realRemainingAmmunition} / {_maximumAmmunition + 1}";
+            AmmunitionUiText.fontSize = 32;
+            AmmunitionUiText.text = $"{realRemainingAmmunition} / {MaximumAmmunition + 1}";
         }
         else
         {
-            _ammunitionText.fontSize = 64;
-            _ammunitionText.color = Color.black;
-            _ammunitionText.text = "\u221e";
+            AmmunitionUiText.fontSize = 64;
+            AmmunitionUiText.color = Color.black;
+            AmmunitionUiText.text = "\u221e";
         }
 
-        _ammunitionText.alpha = HiddenHud.Hidden
+        AmmunitionUiText.alpha = HiddenHud.Hidden
             ? 0f
             : 1f;
     }
 
     private static void SyncVisibility(GameObject gunMenu)
     {
-        if (_ammunitionUiObject == null || gunMenu == null)
+        if (AmunitionUiObject == null || gunMenu == null)
             return;
 
         var camera = PlayerCamera.main;
         if (camera == null)
         {
-            _ammunitionUiObject.SetActive(gunMenu.activeSelf);
+            AmunitionUiObject.SetActive(gunMenu.activeSelf);
             return;
         }
 
@@ -150,14 +150,14 @@ public static class AmmunitionUi
                          && !camera.tradeMenu.activeSelf
                          && !PauseHandler.paused;
 
-        _ammunitionUiObject.SetActive(shouldShow);
+        AmunitionUiObject.SetActive(shouldShow);
     }
 
     public static void Destroy()
     {
-        if (_ammunitionUiObject == null) return;
-        Object.Destroy(_ammunitionUiObject);
-        _ammunitionUiObject = null;
-        _ammunitionText = null;
+        if (AmunitionUiObject == null) return;
+        Object.Destroy(AmunitionUiObject);
+        AmunitionUiObject = null;
+        AmmunitionUiText = null;
     }
 }
